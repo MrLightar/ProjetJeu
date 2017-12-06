@@ -42,18 +42,17 @@ public class Grid {
 	
 	public void init(GameContainer gc) throws SlickException {
 		Grid.grid = new Cell[this.rows][this.cols];
-		for (int j = 0; j < this.rows; j++) {
-			for (int i = 0; i < this.cols; i++) {
-				Cell cell = new Cell(i, j);
-				Grid.grid[j][i] = cell;
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.cols; j++) {
+				Grid.grid[i][j] = new Cell(i, j);
 			}
 		}
 	}
 	
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		for (int j = 0; j < this.rows; j++) {
-			for (int i = 0; i < this.cols; i++) {
-				Grid.grid[j][i].render(gc, g);
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.cols; j++) {
+				Grid.grid[i][j].render(gc, g);
 			}
 		}
 	}

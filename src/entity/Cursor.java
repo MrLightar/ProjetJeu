@@ -11,12 +11,12 @@ import map.Grid;
 
 
 public class Cursor extends Entity {
-
+	
 	private Image texture;
 	private boolean hasCharacter;
 	public Character selection;
-
-
+	
+	
 	public Cursor(Cell pos) {
 		super(pos);
 		try {
@@ -28,17 +28,17 @@ public class Cursor extends Entity {
 		this.hasCharacter = false;
 		this.selection = null;
 	}
-
-
+	
+	
 	public Image getTexture() {
 		return this.texture;
 	}
-	
+
 	public void setTexture(Image texture) {
 		this.texture = texture;
 	}
-
-
+	
+	
 	public void testSelect() {
 		if (this.hasCharacter == false) {
 			if (this.verifSelectChara()) {
@@ -49,8 +49,7 @@ public class Cursor extends Entity {
 			}
 		} else {
 			// appel méthode move
-			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection
-					.getPM()) {
+			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPM()) {
 				this.selection.moveCharacter(this.getPos());
 				this.selection = null;
 				this.hasCharacter = false;
@@ -60,20 +59,20 @@ public class Cursor extends Entity {
 			}
 		}
 	}
-	
+
 	public boolean verifSelectChara() {
 		return this.pos.getChara() != null;
 	}
-	
+
 	@Override
 	public void updateCharaGrid(Cell posInit, Cell posFin) {
 	}
-	
-	
+
+
 	public void render(GameContainer gc, Graphics g) {
-		int x = this.pos.getI() * Grid.cellSize + Grid.cellSize / 2;
-		int y = this.pos.getJ() * Grid.cellSize + Grid.cellSize / 2;
+		int x = this.pos.getJ() * Grid.cellSize + Grid.cellSize / 2;
+		int y = this.pos.getI() * Grid.cellSize + Grid.cellSize / 2;
 		g.drawImage(this.texture, x, y);
 	}
-
+	
 }

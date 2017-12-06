@@ -1,12 +1,7 @@
 package core;
 
 
-import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
+import org.newdawn.slick.*;
 
 import entity.Character;
 import entity.Cursor;
@@ -14,22 +9,22 @@ import map.Grid;
 
 
 public class Main extends BasicGame {
-	
-	public static final int width = 1000;
-	public static final int height = 1000;
-	private static final boolean fullscreen = false;
-	
-	public static Grid gameGrid;
 
+	public static final int width = 1920;
+	public static final int height = 1080;
+	private static final boolean fullscreen = true;
+
+	public static Grid gameGrid;
+	
 	Cursor cursor;
 	Character chara;
-	
-	
+
+
 	public Main(String title) {
 		super(title);
 	}
-	
-	
+
+
 	public static void main(String[] args) {
 		try {
 			AppGameContainer app = new AppGameContainer(new Main("Grid"));
@@ -43,8 +38,8 @@ public class Main extends BasicGame {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	@Override
 	public void keyPressed(int key, char c) {
 		int currentI = this.cursor.getPos().getI();
@@ -52,54 +47,60 @@ public class Main extends BasicGame {
 
 		switch (key) {
 			case Input.KEY_LEFT:
-				if (currentI - 1 >= 0) {
-					this.cursor.setPosFromIndex(currentI - 1, currentJ);
-				}
-				break;
-
-			case Input.KEY_RIGHT:
-				if (currentI + 1 < Main.gameGrid.getCols()) {
-					this.cursor.setPosFromIndex(currentI + 1, currentJ);
-				}
-				break;
-
-			case Input.KEY_UP:
-				if (currentJ - 1 >= 0) {
+				if (currentJ > 0) {
 					this.cursor.setPosFromIndex(currentI, currentJ - 1);
 				}
 				break;
-
-			case Input.KEY_DOWN:
-				if (currentJ + 1 < Main.gameGrid.getRows()) {
+			
+			case Input.KEY_RIGHT:
+				if (currentJ < Main.gameGrid.getCols() - 1) {
 					this.cursor.setPosFromIndex(currentI, currentJ + 1);
 				}
 				break;
 			
+			case Input.KEY_UP:
+				if (currentI > 0) {
+					this.cursor.setPosFromIndex(currentI - 1, currentJ);
+				}
+				break;
+			
+			case Input.KEY_DOWN:
+				if (currentI < Main.gameGrid.getRows() - 1) {
+					this.cursor.setPosFromIndex(currentI + 1, currentJ);
+				}
+				break;
+
 			case Input.KEY_SPACE:
 				this.cursor.testSelect();
 				break;
+			
+			case Input.KEY_ESCAPE:
+				System.exit(0);
+				break;
 		}
+		
 	}
 	
+	
+	@Override
+	public void init(GameContainer gc) throws SlickException {
+		Main.gameGrid = new Grid(16, 16);
+		Main.gameGrid.init(gc);
+		System.out.println("Cell size : " + Grid.cellSize);
+
+		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
+		this.chara = new entity.Character(Main.gameGrid.getCell(4, 4), 6, 3);
+	}
+
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		Main.gameGrid.render(gc, g);
 		this.chara.render(gc, g);
 		this.cursor.render(gc, g);
 	}
-	
-	@Override
-	public void init(GameContainer gc) throws SlickException {
-		Main.gameGrid = new Grid(12, 12);
-		Main.gameGrid.init(gc);
-		System.out.println("Cell size : " + Grid.cellSize);
 
-		this.cursor = new entity.Cursor(Main.gameGrid.getCell(5, 5));
-		this.chara = new entity.Character(Main.gameGrid.getCell(4, 4), 6, 3);
-	}
-	
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 	}
-	
+
 }

@@ -38,11 +38,11 @@ public class Cell {
 		this.j = j;
 	}
 
-	public entity.Character getChara() {
+	public Character getChara() {
 		return this.chara;
 	}
 
-	public void setChara(entity.Character character) {
+	public void setChara(Character character) {
 		this.chara = character;
 	}
 
@@ -52,10 +52,17 @@ public class Cell {
 	
 	
 	public void render(GameContainer gc, Graphics g) {
-		int x = this.i * Grid.cellSize;
-		int y = this.j * Grid.cellSize;
-		Rectangle rect = new Rectangle(x, y, Grid.cellSize, Grid.cellSize);
+		int x = this.j * Grid.cellSize;
+		int y = this.i * Grid.cellSize;
+		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
 		g.draw(rect);
+	}
+
+
+	@Override
+	public String toString() {
+		return "(" + this.i + ", " + this.j + ")";
+
 	}
 
 }
