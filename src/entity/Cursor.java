@@ -39,30 +39,56 @@ public class Cursor extends Entity {
 	}
 	
 	
-	public void testSelect() {
+	public void testSelectMove() {
 		if (this.hasCharacter == false) {
 			if (this.verifSelectChara()) {
 				this.selection = this.pos.getChara();
-				// affichage info, choix (combat/déplacement)
-				System.out.println("Perso selectionné !");
+				// affichage info, choix (combat/dï¿½placement)
+				System.out.println("Personnage selectionnÃ© !");
 				this.hasCharacter = true;
 			}
 		} else {
-			// appel méthode move
+			// appel mï¿½thode move
 			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPM()) {
-				this.selection.moveCharacter(this.getPos());
-				this.selection = null;
-				this.hasCharacter = false;
-				System.out.println("Perso déplacé !");
+				if (!verifSelectChara()) {
+					this.selection.moveCharacter(this.getPos());
+					this.selection = null;
+					this.hasCharacter = false;
+					System.out.println("Perso dÃ©placÃ© !");
+				} else {
+					System.out.println("Case occupÃ©e !");
+				}
+				
 			} else {
 				System.out.println("Pas assez de PM !");
 			}
 		}
 	}
-
-	public boolean verifSelectChara() {
-		return this.pos.getChara() != null;
+	
+	
+	public void testSelectAttack() {
+		if (this.hasCharacter == false) {
+			if (this.verifSelectChara()) {
+				this.selection = this.pos.getChara();
+				// affichage info, choix (combat/dï¿½placement)
+				System.out.println("Personnage selectionnÃ© !");
+				this.hasCharacter = true;
+			}
+		} else {
+			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPO()) {
+				if (verifSelectChara()) {
+					this.selection.attack(this.getPos());
+					this.selection = null;
+					this.hasCharacter = false;
+				} else {
+					System.out.println("Case Vide, Attaque Impossible");
+				}
+			}
+		}
+	
 	}
+
+	
 
 	@Override
 	public void updateCharaGrid(Cell posInit, Cell posFin) {

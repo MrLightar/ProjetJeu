@@ -13,14 +13,27 @@ import map.Grid;
 public class Character extends Entity {
 	
 	private Image texture;
-	private int PA;
+	
+	private int pv_max;
+	private int pv;
+	private int att;
+	private int PO;
 	private int PM;
+	private boolean alive = true;
 	
 	
-	public Character(Cell pos, int PA, int PM) {
+	
+	
+	
+
+
+	public Character(Cell pos, int pv_max, int pv, int att, int PO, int PM) {
 		super(pos);
 		pos.setChara(this);
-		this.PA = PA;
+		this.pv_max = pv_max;
+		this.pv = pv;
+		this.att = att;
+		this.PO = PO;
 		this.PM = PM;
 		try {
 			this.texture = new Image("res/mage.png");
@@ -30,15 +43,39 @@ public class Character extends Entity {
 		}
 	}
 	
+
+	public int getPv_max() {
+		return pv_max;
+	}
+
+	public void setPv_max(int pv_max) {
+		this.pv_max = pv_max;
+	}
+
+	public int getPv() {
+		return pv;
+	}
+
+	public void setPv(int pv) {
+		this.pv = pv;
+	}
+
+	public int getAtt() {
+		return att;
+	}
+
+	public void setAtt(int att) {
+		this.att = att;
+	}
+
+	public int getPO() {
+		return PO;
+	}
+
+	public void setPO(int pO) {
+		PO = pO;
+	}
 	
-	public int getPA() {
-		return this.PA;
-	}
-
-	public void setPA(int PA) {
-		this.PA = PA;
-	}
-
 	public int getPM() {
 		return this.PM;
 	}
@@ -46,17 +83,43 @@ public class Character extends Entity {
 	public void setPM(int PM) {
 		this.PM = PM;
 	}
-
+		
+	
 
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.pos.getJ() * Grid.cellSize;
 		int y = this.pos.getI() * Grid.cellSize;
-		g.drawImage(this.texture, x, y);
+		if (alive) {
+			g.drawImage(this.texture, x, y);
+		}
 	}
 	
 	public void moveCharacter(Cell pos) {
 		this.setPosFromCell(pos);
 	}
+	
+	public void attack(Cell pos) {
+		//if Port�e
+		//if ! deja attack
+		if(verifSelectChara()) {
+			System.out.println("Atatatataa");
+			pos.getChara().dommage(att);
+		}
+		
+	}
+	
+	public void dommage(int dmg) {
+		pv -= dmg;
+		if(pv <= 0) {
+			pos.setChara(null);
+			this.alive = false;
+			System.out.println("La cible est morte !");
+		} else {
+			System.out.println("PV Cible : " + this.pv + " / " + this.pv_max);
+			
+		}
+	}
+	
 	
 	
 	@Override
