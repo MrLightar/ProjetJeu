@@ -2,6 +2,7 @@ package core;
 
 
 import org.newdawn.slick.*;
+import java.awt.Dimension;
 
 import entity.Character;
 import entity.Cursor;
@@ -10,14 +11,16 @@ import map.Grid;
 
 public class Main extends BasicGame {
 
-	public static final int width = 1920;
-	public static final int height = 1080;
-	private static final boolean fullscreen = true;
+	public static final int width = 960;
+	public static final int height = 540;
+//	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+//	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	private static final boolean fullscreen = false;
 
 	public static Grid gameGrid;
 	
 	Cursor cursor;
-	Character chara;
+	Character[] chara = new Character[10];
 
 
 	public Main(String title) {
@@ -71,7 +74,11 @@ public class Main extends BasicGame {
 				break;
 
 			case Input.KEY_SPACE:
-				this.cursor.testSelect();
+				this.cursor.testSelectMove();
+				break;
+				
+			case Input.KEY_A:
+				this.cursor.testSelectAttack();
 				break;
 			
 			case Input.KEY_ESCAPE:
@@ -89,13 +96,22 @@ public class Main extends BasicGame {
 		System.out.println("Cell size : " + Grid.cellSize);
 
 		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
-		this.chara = new entity.Character(Main.gameGrid.getCell(4, 4), 6, 3);
+		
+		for( int i=0; i< chara.length; i++) {
+			this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), 10, 10, 4, 1, 3);
+		}
+//		this.chara[0] = new entity.Character(Main.gameGrid.getCell(4, 4), 10, 10, 4, 1, 3);
+//		this.chara[1] = new entity.Character(Main.gameGrid.getCell(3, 3), 10, 10, 4, 1, 3);
 	}
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		Main.gameGrid.render(gc, g);
-		this.chara.render(gc, g);
+		
+		for( int i=0; i< chara.length; i++) {
+			this.chara[i].render(gc, g);
+		}
+		
 		this.cursor.render(gc, g);
 	}
 
