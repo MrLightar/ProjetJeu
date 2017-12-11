@@ -19,11 +19,12 @@ public class Grid {
 	public Grid(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
-		if (rows >= cols) {
-			Grid.cellSize = Main.height / this.rows;
-		} else {
+
+		Grid.cellSize = Main.height / this.rows;
+		if(cols*Grid.cellSize > Main.width) {
 			Grid.cellSize = Main.width / this.cols;
 		}
+
 	}
 	
 	
