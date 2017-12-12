@@ -1,12 +1,16 @@
 package core;
-//TEST STEPH
+
 
 import org.newdawn.slick.*;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import entity.Character;
 import entity.Cursor;
 import map.Grid;
+import map.Cell;
 
 
 public class Main extends BasicGame {
@@ -91,8 +95,11 @@ public class Main extends BasicGame {
 	
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		Main.gameGrid = new Grid(16, 16);
-		Main.gameGrid.init(gc);
+		
+		
+		this.initGridDB(gc);
+//		Main.gameGrid = new Grid(16, 16);
+//		Main.gameGrid.init(gc);
 		System.out.println("Cell size : " + Grid.cellSize);
 
 		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
@@ -117,6 +124,43 @@ public class Main extends BasicGame {
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+	}
+	
+	
+	public void initGridDB (GameContainer gc) throws SlickException {
+		File f = new File("../Projet Jeu/res/test.txt");
+			try {
+	    	
+			Scanner sc = new Scanner(f);
+			int type, dim;
+			
+//			for(int j = 0; j < choixligne; j++) {
+//				sc.nextLine();
+//			}
+			
+			dim=sc.nextInt();
+			Main.gameGrid = new Grid(dim, dim);
+			Main.gameGrid.init(gc);
+			sc.next(";");
+			
+			for(int i = 0; i < dim; i++) {
+				for(int j = 0; j < dim; j++) {
+					type = sc.nextInt();					
+					Grid.grid[i][j].setCellType(type);					
+					sc.next();
+				}
+				
+				
+			}
+
+		
+			sc.close();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }
