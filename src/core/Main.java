@@ -135,10 +135,10 @@ public class Main extends BasicGame {
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
-			int type, dim, selectedMap = 3; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int type, dim, selectedMap = 2; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
 			int countMap = 0;
 			
-			while(countMap!=selectedMap && sc.hasNext()) {
+			while(countMap!=selectedMap) {
 				sc.next();
 				if(sc.hasNext("&")) {
 					countMap++;
@@ -146,32 +146,19 @@ public class Main extends BasicGame {
 					sc.next();
 				}
 			}
-			if (sc.hasNext()) {
-				dim=sc.nextInt();
-				Main.gameGrid = new Grid(dim, dim);
-				Main.gameGrid.init(gc);
-				sc.next(";");
-				
-				for(int i = 0; i < dim; i++) {
-					for(int j = 0; j < dim; j++) {
-						type = sc.nextInt();					
-						Grid.grid[i][j].setCellType(type);					
-						sc.next(";");
-					}				
-				}
-			}
-			else {
-				dim=10;
-				Main.gameGrid = new Grid(dim, dim);
-				Main.gameGrid.init(gc);
-				
-				for(int i = 0; i < dim; i++) {
-					for(int j = 0; j < dim; j++) {				
-						Grid.grid[i][j].setCellType(0);
-					}				
-				}
-			}
+						
+			dim=sc.nextInt();
+			Main.gameGrid = new Grid(dim, dim);
+			Main.gameGrid.init(gc);
+			sc.next(";");
 			
+			for(int i = 0; i < dim; i++) {
+				for(int j = 0; j < dim; j++) {
+					type = sc.nextInt();					
+					Grid.grid[i][j].setCellType(type);					
+					sc.next(";");
+				}				
+			}
 			sc.close();			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
