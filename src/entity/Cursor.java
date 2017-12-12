@@ -39,26 +39,55 @@ public class Cursor extends Entity {
 	}
 	
 	
+	public void testSelect() {
+		if (this.verifSelectChara()) {
+			this.selection = this.pos.getChara();
+			// affichage info, choix (combat/deplacement)
+			System.out.println("Personnage selectionne !");
+			this.hasCharacter = true;
+			try {
+				this.texture = new Image("res/cursor_selected.png");
+				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			} catch (SlickException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
 	public void testSelectMove() {
 		if (this.hasCharacter == false) {
-			if (this.verifSelectChara()) {
-				this.selection = this.pos.getChara();
-				// affichage info, choix (combat/d�placement)
-				System.out.println("Personnage selectionné !");
-				this.hasCharacter = true;
-			}
+			testSelect();
 		} else {
-			// appel m�thode move
+			// appel methode move
 			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPM()) {
 				if (verifTypeCell()) {
-					if (!verifSelectChara()) {
-						this.selection.moveCharacter(this.getPos());
-						this.selection = null;
-						this.hasCharacter = false;
-						System.out.println("Perso déplacé !");
+					if (this.pos.getChara() != selection) {
+						if (!verifSelectChara()) {
+							this.selection.moveCharacter(this.getPos());
+							this.selection = null;
+							this.hasCharacter = false;
+							try {
+								this.texture = new Image("res/cursor.png");
+								this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+							} catch (SlickException e) {
+								e.printStackTrace();
+							}
+							System.out.println("Perso deplace !");
+						} else {
+							System.out.println("Case occupee !");
+						}
 					} else {
-						System.out.println("Case occupée !");
-					}
+						this.hasCharacter = false;
+						this.selection = null;
+						try {
+							this.texture = new Image("res/cursor.png");
+							this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+						} catch (SlickException e) {
+							e.printStackTrace();
+						}
+						System.out.println("Perso deselectionne");
+					}	
 				} else {
 					System.out.println("Case non praticable !");
 				}				
@@ -76,20 +105,25 @@ public class Cursor extends Entity {
 	
 	public void testSelectAttack() {
 		if (this.hasCharacter == false) {
-			if (this.verifSelectChara()) {
-				this.selection = this.pos.getChara();
-				// affichage info, choix (combat/d�placement)
-				System.out.println("Personnage selectionné !");
-				this.hasCharacter = true;
-			}
+			System.out.println("Veullier selectionner un personnage avant");
 		} else {
 			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPO()) {
-				if (verifSelectChara()) {
-					this.selection.attack(this.getPos());
-					this.selection = null;
-					this.hasCharacter = false;
+				if (this.pos.getChara() != selection) {
+					if (verifSelectChara()) {
+						this.selection.attack(this.getPos());
+						this.selection = null;
+						this.hasCharacter = false;
+						try {
+							this.texture = new Image("res/cursor.png");
+							this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+						} catch (SlickException e) {
+							e.printStackTrace();
+						}
+					} else {
+						System.out.println("Case Vide, Attaque Impossible");
+					}
 				} else {
-					System.out.println("Case Vide, Attaque Impossible");
+					System.out.println("Impossible de t'attaquer toi meme !!!");
 				}
 			}
 		}
