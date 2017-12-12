@@ -131,7 +131,7 @@ public class Main extends BasicGame {
 	
 	
 	public void initGridDB (GameContainer gc) throws SlickException {
-		File f = new File("../Projet Jeu/res/test.txt");
+		File f = new File("../ProjetJeu/res/test.txt");
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
