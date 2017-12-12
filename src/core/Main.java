@@ -84,7 +84,7 @@ public class Main extends BasicGame {
 	
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		Main.gameGrid = new Grid(16, 16);
+		Main.gameGrid = new Grid(20, 25);
 		Main.gameGrid.init(gc);
 		System.out.println("Cell size : " + Grid.cellSize);
 
