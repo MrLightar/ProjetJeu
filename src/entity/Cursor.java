@@ -50,19 +50,27 @@ public class Cursor extends Entity {
 		} else {
 			// appel m�thode move
 			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPM()) {
-				if (!verifSelectChara()) {
-					this.selection.moveCharacter(this.getPos());
-					this.selection = null;
-					this.hasCharacter = false;
-					System.out.println("Perso déplacé !");
+				if (verifTypeCell()) {
+					if (!verifSelectChara()) {
+						this.selection.moveCharacter(this.getPos());
+						this.selection = null;
+						this.hasCharacter = false;
+						System.out.println("Perso déplacé !");
+					} else {
+						System.out.println("Case occupée !");
+					}
 				} else {
-					System.out.println("Case occupée !");
-				}
-				
+					System.out.println("Case non praticable !");
+				}				
 			} else {
 				System.out.println("Pas assez de PM !");
 			}
 		}
+	}
+
+	//return si la cell est utilisable
+	public boolean verifTypeCell() {
+		return this.pos.getCellType()==0; 
 	}
 	
 	

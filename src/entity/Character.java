@@ -19,12 +19,7 @@ public class Character extends Entity {
 	private int att;
 	private int PO;
 	private int PM;
-	private boolean alive = true;
-	
-	
-	
-	
-	
+	private boolean alive;	
 
 
 	public Character(Cell pos, int pv_max, int pv, int att, int PO, int PM) {
@@ -35,6 +30,7 @@ public class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.alive = true;
 		try {
 			this.texture = new Image("res/mage.png");
 			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
