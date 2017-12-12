@@ -70,6 +70,10 @@ public class Cell {
 				this.texture = new Image("res/wall.png");
 				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 				break;
+			case 2:
+				this.texture = new Image("res/water.png");
+				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+				break;
 		}
 	}
 
