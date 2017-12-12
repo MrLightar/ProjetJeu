@@ -24,7 +24,8 @@ public class Main extends BasicGame {
 	public static Grid gameGrid;
 	
 	Cursor cursor;
-	Character[] chara = new Character[10];
+	//taille du tableau défini actuellement le nb de personnage crée
+	Character[] chara = new Character[2];
 
 
 	public Main(String title) {
@@ -127,17 +128,25 @@ public class Main extends BasicGame {
 	}
 	
 	
+	
+	
 	public void initGridDB (GameContainer gc) throws SlickException {
 		File f = new File("../Projet Jeu/res/test.txt");
-			try {
-	    	
+			
+		try {	    	
 			Scanner sc = new Scanner(f);
-			int type, dim;
+			int type, dim, selectedMap = 2; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int countMap = 0;
 			
-//			for(int j = 0; j < choixligne; j++) {
-//				sc.nextLine();
-//			}
-			
+			while(countMap!=selectedMap) {
+				sc.next();
+				if(sc.hasNext("&")) {
+					countMap++;
+					sc.next();
+					sc.next();
+				}
+			}
+						
 			dim=sc.nextInt();
 			Main.gameGrid = new Grid(dim, dim);
 			Main.gameGrid.init(gc);
@@ -147,15 +156,10 @@ public class Main extends BasicGame {
 				for(int j = 0; j < dim; j++) {
 					type = sc.nextInt();					
 					Grid.grid[i][j].setCellType(type);					
-					sc.next();
-				}
-				
-				
+					sc.next(";");
+				}				
 			}
-
-		
-			sc.close();
-			
+			sc.close();			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
