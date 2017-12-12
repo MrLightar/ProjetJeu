@@ -63,11 +63,11 @@ public class Cell {
 		this.cellType = cellType;
 		switch (this.cellType) {
 			case 0:
-				this.texture = new Image("res/vide.jpg");
+				this.texture = new Image("res/grass.png");
 				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 				break;
 			case 1:
-				this.texture = new Image("res/wall.jpg");
+				this.texture = new Image("res/wall.png");
 				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 				break;
 		}
