@@ -16,6 +16,7 @@ public class Grid {
 	public static Cell[][] grid;
 
 
+
 	public Grid(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
