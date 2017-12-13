@@ -96,11 +96,13 @@ public class Main extends BasicGame {
 	
 	@Override
 	public void init(GameContainer gc) throws SlickException {
+
 		
 		
 		this.initGridDB(gc);
 //		Main.gameGrid = new Grid(16, 16);
 //		Main.gameGrid.init(gc);
+
 		System.out.println("Cell size : " + Grid.cellSize);
 
 		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
