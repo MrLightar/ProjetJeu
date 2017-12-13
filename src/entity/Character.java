@@ -14,33 +14,58 @@ public class Character extends Entity {
 	
 	private Image texture;
 	
+	private int job;
+	private int level;
 	private int pv_max;
 	private int pv;
 	private int att;
 	private int PO;
 	private int PM;
-	private int bonus;
 	private boolean alive;	
 
 
-	public Character(Cell pos, int pv_max, int pv, int att, int PO, int PM) {
+	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
 		super(pos);
 		pos.setChara(this);
+		this.job = job;
+		this.level = lvl;
 		this.pv_max = pv_max;
-		this.pv = pv;
+		this.pv = pv_max;
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
-		this.bonus = 0;
 		this.alive = true;
+		
 		try {
-			this.texture = new Image("res/mage.png");
-			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			switch(this.job) {
+				case 0:
+					this.texture = new Image("res/mage.png");
+					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+					break;
+				case 1:
+					this.texture = new Image("res/warrior.png");
+					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+					break;
+				case 2:
+					this.texture = new Image("res/archer.png");
+					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+					break;
+			}
+//			this.texture = new Image("res/mage.png");
+//			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
 	public int getPv_max() {
 		return pv_max;
@@ -81,14 +106,6 @@ public class Character extends Entity {
 	public void setPM(int PM) {
 		this.PM = PM;
 	}
-	
-	public int getBonus() {
-		return bonus;
-	}
-
-	public void setBonus(int bonus) {
-		this.bonus = bonus;
-	}
 		
 	
 
@@ -109,7 +126,7 @@ public class Character extends Entity {
 		//if ! deja attack
 		if(verifSelectChara()) {
 			System.out.println("Atatatataa");
-			pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
+			pos.getChara().dommage(att);
 		}
 		
 	}
@@ -133,5 +150,6 @@ public class Character extends Entity {
 		posInit.setChara(null);
 		posFin.setChara(this);
 	}
-
+	
 }
+
