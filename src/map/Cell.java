@@ -74,6 +74,14 @@ public class Cell {
 				this.texture = new Image("res/water.png");
 				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 				break;
+			case 3:
+				this.texture = new Image("res/grass_bonus_attack.png");
+				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+				break;
+			case 4:
+				this.texture = new Image("res/grass_bonus_move.png");
+				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+				break;
 		}
 	}
 

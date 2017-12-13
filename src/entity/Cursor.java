@@ -60,11 +60,20 @@ public class Cursor extends Entity {
 			testSelect();
 		} else {
 			// appel methode move
-			if (this.getPos().distanceFrom(this.selection.getPos()) <= this.selection.getPM()) {
+			if (this.getPos().distanceFrom(this.selection.getPos()) <= (this.selection.getPM() + (3*((selection.getBonus()==4)?1:0)))) {
 				if (verifTypeCell()) {
 					if (this.pos.getChara() != selection) {
 						if (!verifSelectChara()) {
-							this.selection.moveCharacter(this.getPos());
+							this.selection.moveCharacter(this.pos);
+							int cellType = this.pos.getCellType();
+							if (cellType > 2) {
+								selection.setBonus(cellType);
+								try {
+									pos.setCellType(0);
+								} catch (SlickException e) {
+									e.printStackTrace();
+								}
+							}
 							this.selection = null;
 							this.hasCharacter = false;
 							try {
@@ -99,7 +108,7 @@ public class Cursor extends Entity {
 
 	//return si la cell est utilisable
 	public boolean verifTypeCell() {
-		return this.pos.getCellType()==0; 
+		return (this.pos.getCellType()!=1 && this.pos.getCellType()!=2); 
 	}
 	
 	
