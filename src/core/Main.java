@@ -2,22 +2,30 @@ package core;
 
 
 import org.newdawn.slick.*;
+import java.awt.Dimension;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 import entity.Character;
 import entity.Cursor;
 import map.Grid;
+import map.Cell;
 
 
 public class Main extends BasicGame {
 
-	public static final int width = 1920;
-	public static final int height = 1080;
-	private static final boolean fullscreen = true;
+	public static final int width = 960;
+	public static final int height = 540;
+//	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+//	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+	private static final boolean fullscreen = false;
 
 	public static Grid gameGrid;
 	
 	Cursor cursor;
-	Character chara;
+	//taille du tableau défini actuellement le nb de personnage crée
+	Character[] chara = new Character[2];
 
 
 	public Main(String title) {
@@ -71,7 +79,11 @@ public class Main extends BasicGame {
 				break;
 
 			case Input.KEY_SPACE:
-				this.cursor.testSelect();
+				this.cursor.testSelectMove();
+				break;
+				
+			case Input.KEY_A:
+				this.cursor.testSelectAttack();
 				break;
 			
 			case Input.KEY_ESCAPE:
@@ -84,23 +96,77 @@ public class Main extends BasicGame {
 	
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-		Main.gameGrid = new Grid(20, 25);
-		Main.gameGrid.init(gc);
+
+		
+		
+		this.initGridDB(gc);
+//		Main.gameGrid = new Grid(16, 16);
+//		Main.gameGrid.init(gc);
+
 		System.out.println("Cell size : " + Grid.cellSize);
 
 		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
-		this.chara = new entity.Character(Main.gameGrid.getCell(4, 4), 6, 3);
+		
+		for( int i=0; i< chara.length; i++) {
+			this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), 10, 10, 4, 1, 3);
+		}
+//		this.chara[0] = new entity.Character(Main.gameGrid.getCell(4, 4), 10, 10, 4, 1, 3);
+//		this.chara[1] = new entity.Character(Main.gameGrid.getCell(3, 3), 10, 10, 4, 1, 3);
 	}
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		Main.gameGrid.render(gc, g);
-		this.chara.render(gc, g);
+		
+		for( int i=0; i< chara.length; i++) {
+			this.chara[i].render(gc, g);
+		}
+		
 		this.cursor.render(gc, g);
 	}
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+	}
+	
+	
+	
+	
+	public void initGridDB (GameContainer gc) throws SlickException {
+		File f = new File("../ProjetJeu/res/test.txt");
+			
+		try {	    	
+			Scanner sc = new Scanner(f);
+			int type, dim, selectedMap = 2; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int countMap = 0;
+			
+			while(countMap!=selectedMap) {
+				sc.next();
+				if(sc.hasNext("&")) {
+					countMap++;
+					sc.next();
+					sc.next();
+				}
+			}
+						
+			dim=sc.nextInt();
+			Main.gameGrid = new Grid(dim, dim);
+			Main.gameGrid.init(gc);
+			sc.next(";");
+			
+			for(int i = 0; i < dim; i++) {
+				for(int j = 0; j < dim; j++) {
+					type = sc.nextInt();					
+					Grid.grid[i][j].setCellType(type);					
+					sc.next(";");
+				}				
+			}
+			sc.close();			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

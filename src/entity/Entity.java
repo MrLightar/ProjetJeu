@@ -29,6 +29,10 @@ public abstract class Entity {
 		this.updateCharaGrid(this.pos, Main.gameGrid.getCell(rows, cols));
 		this.pos = Main.gameGrid.getCell(rows, cols);
 	}
+	
+	public boolean verifSelectChara() {
+		return this.pos.getChara() != null;
+	}
 
 	abstract public void updateCharaGrid(Cell posInit, Cell posFin);
 	

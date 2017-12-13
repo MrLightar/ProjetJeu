@@ -16,13 +16,16 @@ public class Grid {
 	public static Cell[][] grid;
 
 
+
 	public Grid(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
+    
 		Grid.cellSize = Main.height / this.rows;
-		if (cols * Grid.cellSize > Main.width) {
+		if(cols*Grid.cellSize > Main.width) {
 			Grid.cellSize = Main.width / this.cols;
 		}
+
 	}
 	
 	
