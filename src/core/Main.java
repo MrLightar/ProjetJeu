@@ -25,7 +25,7 @@ public class Main extends BasicGame {
 	
 	Cursor cursor;
 	//taille du tableau défini actuellement le nb de personnage crée
-	Character[] chara = new Character[2];
+	Character[] chara = new Character[6];
 
 
 	public Main(String title) {
@@ -94,25 +94,25 @@ public class Main extends BasicGame {
 	}
 	
 	
+	
 	@Override
 	public void init(GameContainer gc) throws SlickException {
-
 		
 		
 		this.initGridDB(gc);
-//		Main.gameGrid = new Grid(16, 16);
-//		Main.gameGrid.init(gc);
-
+				
 		System.out.println("Cell size : " + Grid.cellSize);
 
 		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
 		
-		for( int i=0; i< chara.length; i++) {
-			this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), 10, 10, 4, 1, 3);
-		}
-//		this.chara[0] = new entity.Character(Main.gameGrid.getCell(4, 4), 10, 10, 4, 1, 3);
-//		this.chara[1] = new entity.Character(Main.gameGrid.getCell(3, 3), 10, 10, 4, 1, 3);
+		//for( int i=0; i< chara.length; i++) {
+		//	this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), 0, 1, 10, 4, 1, 3);
+		//}
+		
+		initCharacter();
 	}
+	
+	
 
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
@@ -125,15 +125,41 @@ public class Main extends BasicGame {
 		this.cursor.render(gc, g);
 	}
 
+	
+	
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
 	}
 	
 	
+	public void initCharacter() {
+		File f = new File("../ProjetJeu/res/character.txt");
+		
+		try {
+			Scanner sc = new Scanner(f);
+			
+			int stat[] = new int[6];
+			for (int i = 0; i < chara.length; i++) {
+				for (int j = 0; j < 6; j++) {
+					stat[j] = sc.nextInt();
+					sc.next(";");
+				}
+				this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]);
+			}
+			
+			
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 	
 	
 	public void initGridDB (GameContainer gc) throws SlickException {
-		File f = new File("../ProjetJeu/res/test.txt");
+		File f = new File("../ProjetJeu/res/map.txt");
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
