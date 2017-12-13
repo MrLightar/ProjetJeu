@@ -163,7 +163,7 @@ public class Main extends BasicGame {
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
-			int type, dim, selectedMap = 0; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int type, dim, selectedMap = 2; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
 			int countMap = 0;
 			
 			while(countMap!=selectedMap) {

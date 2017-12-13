@@ -21,6 +21,7 @@ public class Character extends Entity {
 	private int att;
 	private int PO;
 	private int PM;
+	private int bonus;
 	private boolean alive;	
 
 
@@ -34,6 +35,7 @@ public class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.bonus = 0;
 		this.alive = true;
 		
 		try {
@@ -106,6 +108,14 @@ public class Character extends Entity {
 	public void setPM(int PM) {
 		this.PM = PM;
 	}
+	
+	public int getBonus() {
+		return bonus;
+	}
+
+	public void setBonus(int bonus) {
+		this.bonus = bonus;
+	}
 		
 	
 
@@ -126,7 +136,7 @@ public class Character extends Entity {
 		//if ! deja attack
 		if(verifSelectChara()) {
 			System.out.println("Atatatataa");
-			pos.getChara().dommage(att);
+			pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
 		}
 		
 	}
