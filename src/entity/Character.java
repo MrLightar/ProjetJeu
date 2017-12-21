@@ -131,6 +131,38 @@ public class Character extends Entity {
 		this.setPosFromCell(pos);
 	}
 	
+	public void moveDown() {
+		int rows = this.pos.getI();
+		int cols = this.pos.getJ();
+		this.pos.setChara(null);
+		this.setPosFromIndex(rows+1, cols);
+		this.pos.setChara(this);
+	}
+	
+	public void moveUp() {
+		int rows = this.pos.getI();
+		int cols = this.pos.getJ();
+		this.pos.setChara(null);
+		this.setPosFromIndex(rows - 1, cols);
+		this.pos.setChara(this);
+	}
+	
+	public void moveLeft() {
+		int rows = this.pos.getI();
+		int cols = this.pos.getJ();
+		this.pos.setChara(null);
+		this.setPosFromIndex(rows, cols - 1);
+		this.pos.setChara(this);
+	}
+	
+	public void moveRight() {
+		int rows = this.pos.getI();
+		int cols = this.pos.getJ();
+		this.pos.setChara(null);
+		this.setPosFromIndex(rows, cols + 1);
+		this.pos.setChara(this);
+	}
+	
 	public void attack(Cell pos) {
 		//if Port�e
 		//if ! deja attack
