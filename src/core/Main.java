@@ -85,6 +85,10 @@ public class Main extends BasicGame {
 			case Input.KEY_A:
 				this.cursor.testSelectAttack();
 				break;
+				
+			case Input.KEY_B:
+				this.cursor.selection.moveRight();;
+				break;
 			
 			case Input.KEY_ESCAPE:
 				System.exit(0);
