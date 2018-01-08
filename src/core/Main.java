@@ -7,21 +7,25 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import entity.Archer;
 import entity.Character;
 import entity.Cursor;
+import entity.Mage;
+import entity.Warrior;
 import map.Grid;
 import map.Cell;
 
 
 public class Main extends BasicGame {
 
-	public static final int width = 960;
-	public static final int height = 540;
-//	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-//	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+//	public static final int width = 960;
+//	public static final int height = 540;
+	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	private static final boolean fullscreen = false;
 
 	public static Grid gameGrid;
+	
 	
 	Cursor cursor;
 	//taille du tableau défini actuellement le nb de personnage crée
@@ -86,8 +90,20 @@ public class Main extends BasicGame {
 				this.cursor.testSelectAttack();
 				break;
 				
-			case Input.KEY_B:
-				this.cursor.selection.moveRight();;
+			case Input.KEY_Z:
+				this.chara[1].moveUp();
+				break;
+				
+			case Input.KEY_Q:
+				this.chara[1].moveLeft();
+				break;
+				
+			case Input.KEY_S:
+				this.chara[1].moveDown();
+				break;
+				
+			case Input.KEY_D:
+				this.chara[1].moveRight();
 				break;
 			
 			case Input.KEY_ESCAPE:
@@ -102,18 +118,15 @@ public class Main extends BasicGame {
 	@Override
 	public void init(GameContainer gc) throws SlickException {
 		
-		
-		this.initGridDB(gc);
-				
+		//initialisation grille
+		this.initGridDB(gc);				
 		System.out.println("Cell size : " + Grid.cellSize);
-
+		//création curseur
 		this.cursor = new entity.Cursor(Main.gameGrid.getCell(1, 2));
+		//initialisation personnage		
+		initCharacter(gc);
 		
-		//for( int i=0; i< chara.length; i++) {
-		//	this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), 0, 1, 10, 4, 1, 3);
-		//}
 		
-		initCharacter();
 	}
 	
 	
@@ -124,19 +137,24 @@ public class Main extends BasicGame {
 		
 		for( int i=0; i< chara.length; i++) {
 			this.chara[i].render(gc, g);
+			
 		}
 		
 		this.cursor.render(gc, g);
+		
 	}
 
 	
 	
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
+		for( int i=0; i< chara.length; i++) {
+			this.chara[i].update(gc, delta);			
+		}
 	}
 	
 	
-	public void initCharacter() {
+	public void initCharacter(GameContainer gc) throws SlickException {
 		File f = new File("../ProjetJeu/res/character.txt");
 		
 		try {
@@ -148,11 +166,25 @@ public class Main extends BasicGame {
 					stat[j] = sc.nextInt();
 					sc.next(";");
 				}
-				this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]);
+				switch(stat[0]) {
+					case 0:
+						this.chara[i] = new Mage(Main.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]);
+						break;
+					
+					case 1:
+						this.chara[i] = new Warrior(Main.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]);
+						break;
+					
+					case 2:
+						this.chara[i] = new Archer(Main.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]);
+						break;
+				}
+			//	this.chara[i] = new entity.Character(Main.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]);
+				this.chara[i].init(gc);
 			}
 			
 			
-			
+			sc.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -160,14 +192,14 @@ public class Main extends BasicGame {
 		
 		
 	}
-	
+		
 	
 	public void initGridDB (GameContainer gc) throws SlickException {
 		File f = new File("../ProjetJeu/res/map.txt");
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
-			int type, dim, selectedMap = 2; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int type, dim, selectedMap = 1; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
 			int countMap = 0;
 			
 			while(countMap!=selectedMap) {
