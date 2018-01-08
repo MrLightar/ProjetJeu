@@ -1,6 +1,9 @@
 package entity;
 
 
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.SlickException;
+
 import core.Main;
 import map.Cell;
 
@@ -35,5 +38,11 @@ public abstract class Entity {
 	}
 
 	abstract public void updateCharaGrid(Cell posInit, Cell posFin);
+
+
+	public void update(GameContainer gc, int delta) throws SlickException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
