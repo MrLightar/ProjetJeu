@@ -5,6 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
 import core.Main;
+import core.Play;
 import map.Cell;
 
 
@@ -29,8 +30,8 @@ public abstract class Entity {
 	}
 	
 	public void setPosFromIndex(int rows, int cols) {
-		this.updateCharaGrid(this.pos, Main.gameGrid.getCell(rows, cols));
-		this.pos = Main.gameGrid.getCell(rows, cols);
+		this.updateCharaGrid(this.pos, Play.gameGrid.getCell(rows, cols));
+		this.pos = Play.gameGrid.getCell(rows, cols);
 	}
 	
 	public boolean verifSelectChara() {
