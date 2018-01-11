@@ -1,10 +1,14 @@
 package core;
 
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -32,10 +36,24 @@ public class Menu extends BasicGameState {
 	private int heightButton;
 	private int widthButton;
 	
+	private Image texture;
+	private Animation animationMenu = new Animation();
+	
 	
 	public Menu(int state) {
 		
 	}
+	
+	
+	public Animation loadAnimation(SpriteSheet spriteSheet, int startX, int endX, int y, int animSpeed) {
+		Animation animation = new Animation();
+		for( int x = startX; x < endX; x++) {
+			animation.addFrame(spriteSheet.getSprite(x, y), animSpeed);
+		}
+		
+		return animation;
+	}
+	
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -45,7 +63,7 @@ public class Menu extends BasicGameState {
 		heightButton = Main.height / 8;
 		widthButton = Main.width / 3;
 		
-		this.resumeButton = new Image("res/resumeButtonGrey.png");
+		this.resumeButton = new Image("res/resumeButton.png");
 		this.resumeButton = this.resumeButton.getScaledCopy(widthButton, heightButton);
 		this.newGameButton = new Image("res/newGameButton.png");
 		this.newGameButton = this.newGameButton.getScaledCopy(widthButton, heightButton);
@@ -54,20 +72,35 @@ public class Menu extends BasicGameState {
 		this.menuCursor = new Image("res/menuCursor.png");
 		this.menuCursor = this.menuCursor.getScaledCopy(widthButton, heightButton);
 		
+		this.texture = new Image("res/AnimationWallpaper.png");
+		this.texture = this.texture.getScaledCopy(960*6, 540);	
+		SpriteSheet spriteSheetMenu = new SpriteSheet(this.texture, 960, 540);
+
+		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 6, 0, 100);
 		
-		selectedButton = resume;
+//		Music background = new Music("res/MainMenu.ogg");
+//		background.loop();
+		
+		selectedButton = newGame;
 		inGame = false;
 
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
-		g.drawImage(resumeButton, widthButton *1, heightButton *2);
+		
+//		animationMenu.draw(0, 0);
+		
+		if(inGame) {
+			g.drawImage(resumeButton, widthButton *1, heightButton *2);
+		} else {
+			g.drawImage(resumeButton, widthButton *1, heightButton *2, Color.transparent);
+		}
+		
 		g.drawImage(newGameButton, widthButton *1, heightButton *4);
 		g.drawImage(exitButton, widthButton *1, heightButton *6);
 		g.drawImage(menuCursor, widthButton *1, (selectedButton*2 + 2) * heightButton);
 		
-		renderMenuCursor(selectedButton);
 	}
 
 	@Override
@@ -91,7 +124,9 @@ public class Menu extends BasicGameState {
 		switch (key) {
 			case Input.KEY_UP:
 				if (selectedButton != resume) {
-					selectedButton -= 1;
+					if(inGame || selectedButton != newGame) {
+						selectedButton -= 1;
+					}
 				}
 				break;
 			
@@ -118,26 +153,24 @@ public class Menu extends BasicGameState {
 				break;
 
 			case Input.KEY_ESCAPE:
-				sbg.enterState(Main.play);
+				if(inGame) {
+					sbg.enterState(Main.play);
+				}
+				
 				break;
 
 		}
 		
 	}
 	
-	private void renderMenuCursor(int selectedButton){
-		
-	}
 	
 	void startGame (StateBasedGame sbg, GameContainer gc){
 		try {
 			sbg.getState(Main.menu).init(gc, sbg);
 			sbg.getState(Main.play).init(gc, sbg);
 			sbg.getState(Main.selectCharaScreen).init(gc, sbg);
-			
-			this.resumeButton = new Image("res/resumeButton.png");
-			this.resumeButton = this.resumeButton.getScaledCopy(widthButton, heightButton);
 			inGame = true;
+			selectedButton = resume;
 			
 			sbg.enterState(Main.play);
 		} catch (SlickException e) {
