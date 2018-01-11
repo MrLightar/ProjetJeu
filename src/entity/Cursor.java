@@ -1,6 +1,7 @@
 package entity;
 
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -45,12 +46,6 @@ public class Cursor extends Entity {
 			// affichage info, choix (combat/deplacement)
 			System.out.println("Personnage selectionne !");
 			this.hasCharacter = true;
-			try {
-				this.texture = new Image("res/cursor_selected.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-			} catch (SlickException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 	
@@ -76,12 +71,6 @@ public class Cursor extends Entity {
 							}
 							this.selection = null;
 							this.hasCharacter = false;
-							try {
-								this.texture = new Image("res/cursor.png");
-								this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-							} catch (SlickException e) {
-								e.printStackTrace();
-							}
 							System.out.println("Perso deplace !");
 						} else {
 							System.out.println("Case occupee !");
@@ -122,12 +111,6 @@ public class Cursor extends Entity {
 						this.selection.attack(this.getPos());
 						this.selection = null;
 						this.hasCharacter = false;
-						try {
-							this.texture = new Image("res/cursor.png");
-							this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-						} catch (SlickException e) {
-							e.printStackTrace();
-						}
 					} else {
 						System.out.println("Case Vide, Attaque Impossible");
 					}
@@ -149,7 +132,12 @@ public class Cursor extends Entity {
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.pos.getJ() * Grid.cellSize + Grid.cellSize / 2;
 		int y = this.pos.getI() * Grid.cellSize + Grid.cellSize / 2;
-		g.drawImage(this.texture, x, y);
+		if(this.hasCharacter) {
+			g.drawImage(this.texture, x, y, Color.red);
+		} else {
+			g.drawImage(this.texture, x, y);
+		}
+		
 	}
 	
 }
