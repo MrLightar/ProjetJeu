@@ -18,6 +18,7 @@ public abstract class Character extends Entity {
 	protected Image textureAttack;
 
 	protected Animation[] animations = new Animation[10];
+	protected Animation[] attackAnimations = new Animation[3];
 	
 	protected int job;
 	protected int level;
@@ -28,14 +29,17 @@ public abstract class Character extends Entity {
 	protected int PM;
 	protected int bonus;
 	protected int action;
-	protected boolean alive;
-	protected boolean moving;
 	protected int x;
 	protected int y;
 	protected int endMoveX;
 	protected int endMoveY;
+	protected boolean alive;
+	protected boolean moving;
+	protected boolean underAttack;
+	protected boolean animationChange;
 
-
+	protected int animationCount;
+	
 
 	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
 		super(pos);
@@ -48,9 +52,13 @@ public abstract class Character extends Entity {
 		this.PO = PO;
 		this.PM = PM;
 		this.bonus = 0;
+		this.action = 6;
 		this.alive = true;
 		this.moving = false;
-		this.action = 6;
+		this.underAttack = false;
+		
+		this.animationCount = 0;
+		
 		this.x = this.pos.getJ() * Grid.cellSize;
 		this.y = this.pos.getI() * Grid.cellSize;
 		
@@ -203,7 +211,8 @@ public abstract class Character extends Entity {
 	
 	
 	public void dommage(int dmg) {
-		pv -= dmg;
+		this.pv -= dmg;
+		this.underAttack = true;
 		if(pv <= 0) {
 			pos.setChara(null);
 			this.alive = false;			
@@ -217,30 +226,7 @@ public abstract class Character extends Entity {
 	
 	
 	abstract public void init(GameContainer gc) throws SlickException;
-//	public void init(GameContainer gc) throws SlickException {		
-//		
-//		//animation de mouvement et d'attaque du personnage
-//		this.texture = new Image("res/animationmage.png");
-//		this.texture = this.texture.getScaledCopy(Grid.cellSize*9, Grid.cellSize*9);	
-//		SpriteSheet spriteSheet = new SpriteSheet(this.texture, Grid.cellSize, Grid.cellSize);
-//		
-//		this.textureAttackMag = new Image("res/explosion.png");
-//		this.textureAttackMag = this.textureAttackMag.getScaledCopy(Grid.cellSize*16, Grid.cellSize);
-//		SpriteSheet sS2 = new SpriteSheet(this.textureAttackMag, Grid.cellSize, Grid.cellSize);
-//
-//		
-//		this.animations[0] = loadAnimation(spriteSheet, 0, 7, 0, 150);
-//		this.animations[1] = loadAnimation(spriteSheet, 0, 7, 1, 150);
-//		this.animations[2] = loadAnimation(spriteSheet, 0, 7, 2, 150);
-//		this.animations[3] = loadAnimation(spriteSheet, 0, 7, 3, 150);
-//		this.animations[4] = loadAnimation(spriteSheet, 1, 9, 4, 150);
-//		this.animations[5] = loadAnimation(spriteSheet, 1, 9, 5, 150);
-//		this.animations[6] = loadAnimation(spriteSheet, 1, 9, 6, 150);
-//		this.animations[7] = loadAnimation(spriteSheet, 1, 9, 7, 150);
-//		this.animations[8] = loadAnimation(spriteSheet, 1, 7, 8, 150);
-//		this.animations[9] = loadAnimation(sS2, 0, 16, 0, 50);
-//			
-//	}
+
 	
 	
 	public Animation loadAnimation(SpriteSheet spriteSheet, int startX, int endX, int y, int animSpeed) {
@@ -254,30 +240,7 @@ public abstract class Character extends Entity {
 	
 
 	abstract public void render(GameContainer gc, Graphics g);
-//	public void render(GameContainer gc, Graphics g) {
-//		//this.x = this.pos.getJ() * Grid.cellSize;
-//		//this.y = this.pos.getI() * Grid.cellSize;
-//		
-//		
-//					
-//			if(action >= 0 && action <= 3) {				
-//				animations[action].draw(this.x, this.y);
-//				if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
-//					animations[action].setCurrentFrame(0);
-//					this.action = this.action + 4;
-//				}				
-//				animations[9].draw(this.endMoveX, this.endMoveY);
-//				animations[9].setLooping(false);
-//			} else {
-//				if(action == 8) {
-//					animations[8].draw(this.x, this.y);
-//					animations[8].setLooping(false);
-//				} else {
-//					animations[action].draw(this.x, this.y);
-//				}
-//				
-//			}			
-//	}
+
 	
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
