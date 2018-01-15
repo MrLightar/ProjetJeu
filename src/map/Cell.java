@@ -3,6 +3,7 @@ package map;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -67,6 +68,14 @@ public class Cell {
 	
 	public void setChara(Character character) {
 		this.chara = character;
+	}
+
+	public boolean hasChara() {
+		if (this.getChara() != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	public int getCellType() {
@@ -176,6 +185,16 @@ public class Cell {
 	@Override
 	public String toString() {
 		return "(" + this.i + ", " + this.j + ")";
+	}
+
+
+	public void render(GameContainer gc, Graphics g, Color c) {
+		g.setColor(c);
+		
+		int x = this.j * Grid.cellSize;
+		int y = this.i * Grid.cellSize;
+		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
+		g.fill(rect);
 	}
 	
 }

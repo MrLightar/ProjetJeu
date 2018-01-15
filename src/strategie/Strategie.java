@@ -1,28 +1,40 @@
-package entity;
+package strategie;
 
 
 import java.util.ArrayList;
 
 import map.*;
 import core.*;
+import entity.Character;
 
 
-public class Strategie {
-	
+public abstract class Strategie {
+
 	protected Character chara;
-	
-	
+
+	protected ArrayList<Cell> rangeOfAction;
+	protected ArrayList<Cell> enemiesPos;
+	protected ArrayList<Cell> bonusPos;
+
+
 	public Strategie(Character chara) {
 		this.chara = chara;
-	}
 
-
-	public void gameTurn() {
-		
+		// Déterminer la zone d'action du personnage
+		this.rangeOfAction = this.evaluateRangeOfAction(this.chara.getPos(), this.chara.getPM() + this.chara.getPO());
+		// Chercher les positions des adversaires et des bonus dans cette zone d'action
+		this.enemiesPos = this.getCharactersInRange(this.rangeOfAction);
+		this.enemiesPos.remove(chara.getPos());
+		this.bonusPos = this.getBonusInRange(this.rangeOfAction);
 	}
 	
-	public ArrayList<Cell> findPath(Cell start, Cell end) {
-		
+	/* ========================================================================================== */
+	
+	public abstract void gameTurn();
+	
+	/* ========================================================================================== */
+	
+	public ArrayList<Cell> evaluatePath(Cell start, Cell end) {
 		ArrayList<Cell> openSet = new ArrayList<>();
 		ArrayList<Cell> closedSet = new ArrayList<>();
 		ArrayList<Cell> path = new ArrayList<>();
@@ -53,7 +65,7 @@ public class Strategie {
 					path.add(temp.getPrevious());
 					temp = temp.getPrevious();
 				}
-				System.out.println("DONE !");
+				System.out.println("Path Finding : DONE !");
 				return path;
 			}
 			
@@ -63,7 +75,7 @@ public class Strategie {
 			ArrayList<Cell> neighbors = current.getNeighbors();
 			for (Cell neighbor : neighbors) {
 				if (!closedSet.contains(neighbor) && neighbor.getCellType() != 1 && neighbor.getCellType() != 2
-						&& neighbor.getChara() == null) {
+						&& !neighbor.hasChara()) {
 					double tempgScore = current.getPathGScore() + 1;
 					
 					boolean newPath = false;
@@ -87,24 +99,28 @@ public class Strategie {
 			}
 		}
 		if (openSet.size() == 0) {
-			System.out.println("No solution");
+			System.out.println("Path Finding : No solution");
 		}
 		
 		return null;
 	}
-	
+
 	private double heuristic(Cell a, Cell b) {
 		// double dist = Math.sqrt(Math.pow(a.getI() - b.getI(), 2) + Math.pow(a.getJ() - b.getJ(), 2));
 		double dist = Math.abs(a.getI() - b.getI()) + Math.abs(a.getJ() - b.getJ());
 		return dist;
 	}
-	
-	
-	public ArrayList<Cell> findSeightView(Cell start, Cell end) {
-		int dx, dy, dp, deltaE, deltaNE, x, y, ybas, yhaut, xbas, xhaut;
 
-		ArrayList<Cell> path = new ArrayList<>();
+	/* ========================================================================================== */
+
+
+	public ArrayList<Cell> evaluateSightView(Cell start, Cell end) {
+		int x, y, xbas, xhaut, ybas, yhaut;
+		int dx, dy;
+		int dp, deltaE, deltaNE;
 		
+		ArrayList<Cell> path = new ArrayList<>();
+
 		if (start.getI() < end.getI()) {
 			yhaut = start.getI();
 			ybas = end.getI();
@@ -116,7 +132,7 @@ public class Strategie {
 			xbas = start.getJ();
 			xhaut = end.getJ();
 		}
-		
+
 		if (xhaut >= xbas) {
 			dx = xhaut - xbas;
 			dy = ybas - yhaut;
@@ -127,7 +143,7 @@ public class Strategie {
 				x = xbas;
 				y = ybas;
 				path.add(Main.gameGrid.getCell(y, x));
-				while (x < xhaut) {
+				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						x++;
@@ -144,13 +160,13 @@ public class Strategie {
 				deltaNE = 2 * (dx - dy);
 				x = xbas;
 				y = ybas;
-				
+
 				path.add(Main.gameGrid.getCell(y, x));
-				while (x < xhaut) {
+				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						y--;
-						
+
 					} else {
 						dp = dp + deltaNE;
 						x++;
@@ -168,13 +184,13 @@ public class Strategie {
 				deltaNE = 2 * (dy - dx);
 				x = xhaut;
 				y = yhaut;
-				
+
 				path.add(Main.gameGrid.getCell(y, x));
-				while (x < xbas) {
+				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						x++;
-						
+
 					} else {
 						dp = dp + deltaNE;
 						x++;
@@ -188,13 +204,13 @@ public class Strategie {
 				deltaNE = 2 * (dx - dy);
 				x = xhaut;
 				y = yhaut;
-				
+
 				path.add(Main.gameGrid.getCell(y, x));
-				while (x < xbas) {
+				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						y++;
-						
+
 					} else {
 						dp = dp + deltaNE;
 						x++;
@@ -204,16 +220,75 @@ public class Strategie {
 				}
 			}
 		}
+		
+		if (start.hasChara()) {
+			path.remove(start);
+		}
+		if (end.hasChara()) {
+			path.remove(end);
+		}
+		
 		return path;
 	}
-
-	public boolean isInSeightView(ArrayList<Cell> sightView) {
+	
+	public boolean isInSightView(ArrayList<Cell> sightView) {
 		for (Cell cell : sightView) {
-			if (cell.getCellType() == 1) {
+			if (cell.getCellType() == 1 || cell.hasChara()) {
 				return false;
 			}
 		}
 		return true;
 	}
+	
+	/* ========================================================================================== */
+	
+	
+	public ArrayList<Cell> evaluateRangeOfAction(Cell pos, int dist) {
+		ArrayList<Cell> rangeOfAction = new ArrayList<>();
+		for (int i = -dist; i <= dist; i++) {
+			for (int j = -dist; j <= dist; j++) {
+				if (Math.abs(i) + Math.abs(j) <= dist) {
+					int neighborI = pos.getI() + i;
+					int neighborJ = pos.getJ() + j;
+					if (Main.gameGrid.isInGrid(neighborI, neighborJ)) {
+						rangeOfAction.add(Main.gameGrid.getCell(neighborI, neighborJ));
+					}
+				}
+			}
+		}
+		return rangeOfAction;
+	}
+	
+	public ArrayList<Cell> getCharactersInRange(ArrayList<Cell> range) {
+		ArrayList<Cell> characters = new ArrayList<>();
+		for (Cell cell : range) {
+			if (cell.hasChara()) {
+				characters.add(cell);
+			}
+		}
+		return characters;
+	}
 
+	public ArrayList<Cell> getBonusInRange(ArrayList<Cell> range) {
+		ArrayList<Cell> bonus = new ArrayList<>();
+		for (Cell cell : range) {
+			if (cell.getCellType() == 3 || cell.getCellType() == 4) {
+				bonus.add(cell);
+			}
+		}
+		return bonus;
+	}
+
+	public Cell getClosest(Cell pos, ArrayList<Cell> collection) {
+		Cell closest = null;
+		int minDist = Main.gameGrid.getRows() + Main.gameGrid.getCols();
+		for (Cell cell : collection) {
+			if (pos.distanceFrom(cell) < minDist) {
+				minDist = pos.distanceFrom(cell);
+				closest = cell;
+			}
+		}
+		return closest;
+	}
+	
 }

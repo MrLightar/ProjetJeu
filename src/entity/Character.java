@@ -20,7 +20,7 @@ public class Character extends Entity {
 	private int PO;
 	private int PM;
 	private int bonus;
-	private boolean alive;	
+	private boolean alive;
 
 
 	public Character(Cell pos, int pv_max, int pv, int att, int PO, int PM) {
@@ -40,10 +40,10 @@ public class Character extends Entity {
 			e.printStackTrace();
 		}
 	}
-	
+
 
 	public int getPv_max() {
-		return pv_max;
+		return this.pv_max;
 	}
 
 	public void setPv_max(int pv_max) {
@@ -51,7 +51,7 @@ public class Character extends Entity {
 	}
 
 	public int getPv() {
-		return pv;
+		return this.pv;
 	}
 
 	public void setPv(int pv) {
@@ -59,7 +59,7 @@ public class Character extends Entity {
 	}
 
 	public int getAtt() {
-		return att;
+		return this.att;
 	}
 
 	public void setAtt(int att) {
@@ -67,11 +67,11 @@ public class Character extends Entity {
 	}
 
 	public int getPO() {
-		return PO;
+		return this.PO;
 	}
 
 	public void setPO(int pO) {
-		PO = pO;
+		this.PO = pO;
 	}
 	
 	public int getPM() {
@@ -83,41 +83,41 @@ public class Character extends Entity {
 	}
 	
 	public int getBonus() {
-		return bonus;
+		return this.bonus;
 	}
 
 	public void setBonus(int bonus) {
 		this.bonus = bonus;
 	}
-		
-	
+
 
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.pos.getJ() * Grid.cellSize;
 		int y = this.pos.getI() * Grid.cellSize;
-		if (alive) {
+		if (this.alive) {
 			g.drawImage(this.texture, x, y);
 		}
 	}
+	
 	
 	public void moveCharacter(Cell pos) {
 		this.setPosFromCell(pos);
 	}
 	
 	public void attack(Cell pos) {
-		//if Port�e
-		//if ! deja attack
-		if(verifSelectChara()) {
+		// if Port�e
+		// if ! deja attack
+		if (this.verifSelectChara()) {
 			System.out.println("Atatatataa");
-			pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
+			pos.getChara().dommage(this.att + 3 * (this.bonus == 3 ? 1 : 0));
 		}
 		
 	}
 	
 	public void dommage(int dmg) {
-		pv -= dmg;
-		if(pv <= 0) {
-			pos.setChara(null);
+		this.pv -= dmg;
+		if (this.pv <= 0) {
+			this.pos.setChara(null);
 			this.alive = false;
 			System.out.println("La cible est morte !");
 		} else {
@@ -125,7 +125,14 @@ public class Character extends Entity {
 			
 		}
 	}
-	
+
+	public boolean isKillable(int dmg) {
+		if (this.pv <= dmg) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 	
 	@Override
