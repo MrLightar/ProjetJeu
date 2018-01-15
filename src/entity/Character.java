@@ -294,5 +294,9 @@ public abstract class Character extends Entity {
 		posFin.setChara(this);
 	}
 	
+	public Image getTexture() {
+		return texture;
+	}
+	
 }
 

@@ -17,9 +17,10 @@ import map.Cell;
 
 public class Main extends StateBasedGame {
 
-	public static final int width = 960;
-	public static final int height = 540;
-//	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+//	public static final int width = 960;
+//	public static final int height = 540;
+	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+	public static final int height = width*9/16;
 //	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 	private static final boolean fullscreen = false;
 	private static final String gameName = "Projet Poutinator";
@@ -40,6 +41,7 @@ public class Main extends StateBasedGame {
 	
 	public static void main(String[] args) {
 		try {
+			System.out.println(height);
 			AppGameContainer app = new AppGameContainer(new Main(Main.gameName));
 			app.setDisplayMode(Main.width, Main.height, Main.fullscreen);
 			app.setTitle("Grid");
@@ -58,7 +60,7 @@ public class Main extends StateBasedGame {
 		this.getState(Main.menu).init(gc, this);
 		this.getState(Main.play).init(gc, this);
 		this.getState(Main.selectCharaScreen).init(gc, this);
-		this.enterState(Main.menu);
+		this.enterState(Main.selectCharaScreen);
 	}
 
 

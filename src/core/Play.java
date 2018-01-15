@@ -140,6 +140,10 @@ public class Play extends BasicGameState {
 			case Input.KEY_ESCAPE:
 				sbg.enterState(Main.menu);
 				break;
+				
+			case Input.KEY_ENTER:
+				sbg.enterState(Main.selectCharaScreen);
+				break;
 		}
 		
 	}
