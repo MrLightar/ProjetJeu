@@ -13,13 +13,20 @@ import map.Grid;
 
 public class Mage extends Character {
 
-	public Mage(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
+	public Mage(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) throws SlickException {
 		super(pos, job, lvl, pv_max, att, PO, PM);
 		// TODO Auto-generated constructor stub
+		this.textureSimple = new Image("res/mage.png");
+	}
+	
+	public Mage(int job, int lvl, int pv_max, int att, int PO, int PM) throws SlickException {
+		super(job, lvl, pv_max, att, PO, PM);
+		// TODO Auto-generated constructor stub
+		this.textureSimple = new Image("res/mage.png");
 	}
 
 	
-	public void init(GameContainer gc) throws SlickException {
+	public void init() throws SlickException {
 		//super.init(gc);
 		//animation de mouvement et d'attaque du personnage
 		this.texture = new Image("res/animationmage.png");

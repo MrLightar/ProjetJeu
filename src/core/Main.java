@@ -22,7 +22,7 @@ public class Main extends StateBasedGame {
 	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 	public static final int height = width*9/16;
 //	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-	private static final boolean fullscreen = false;
+	private static final boolean fullscreen = true;
 	private static final String gameName = "Projet Poutinator";
 
 	public static final int menu = 0;
@@ -60,7 +60,7 @@ public class Main extends StateBasedGame {
 		this.getState(Main.menu).init(gc, this);
 		this.getState(Main.play).init(gc, this);
 		this.getState(Main.selectCharaScreen).init(gc, this);
-		this.enterState(Main.selectCharaScreen);
+		this.enterState(Main.menu);
 	}
 
 

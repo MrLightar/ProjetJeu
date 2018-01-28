@@ -12,13 +12,20 @@ import map.Grid;
 
 public class Archer extends Character {
 
-	public Archer(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
+	public Archer(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) throws SlickException {
 		super(pos, job, lvl, pv_max, att, PO, PM);
 		// TODO Auto-generated constructor stub
+		this.textureSimple = new Image("res/archer.png");
+	}
+	
+	public Archer(int job, int lvl, int pv_max, int att, int PO, int PM) throws SlickException {
+		super(job, lvl, pv_max, att, PO, PM);
+		// TODO Auto-generated constructor stub
+		this.textureSimple = new Image("res/archer.png");
 	}
 
 	
-	public void init(GameContainer gc) throws SlickException {
+	public void init() throws SlickException {
 		
 		//super.init(gc);
 		//animation de mouvement et d'attaque du personnage

@@ -73,13 +73,14 @@ public class Menu extends BasicGameState {
 		this.menuCursor = this.menuCursor.getScaledCopy(widthButton, heightButton);
 		
 		this.texture = new Image("res/AnimationWallpaper.png");
-		this.texture = this.texture.getScaledCopy(960*6, 540);	
-		SpriteSheet spriteSheetMenu = new SpriteSheet(this.texture, 960, 540);
+		this.texture = this.texture.getScaledCopy(Main.width*6, Main.height);	
+		SpriteSheet spriteSheetMenu = new SpriteSheet(this.texture, Main.width, Main.height);
 
 		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 6, 0, 100);
 		
 //		Music background = new Music("res/MainMenu.ogg");
 //		background.loop();
+		
 		
 		selectedButton = newGame;
 		inGame = false;

@@ -17,6 +17,9 @@ public abstract class Entity {
 	public Entity(Cell pos) {
 		this.pos = pos;
 	}
+	public Entity() {
+		this.pos = null;
+	}
 	
 	
 	public Cell getPos() {
@@ -34,7 +37,7 @@ public abstract class Entity {
 		this.pos = Play.gameGrid.getCell(rows, cols);
 	}
 	
-	public boolean verifSelectChara() {
+	public boolean verifPosChara() {
 		return this.pos.getChara() != null;
 	}
 

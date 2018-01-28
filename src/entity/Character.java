@@ -8,6 +8,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 
+//import core.Play;
 import map.Cell;
 import map.Grid;
 
@@ -16,6 +17,7 @@ public abstract class Character extends Entity {
 	
 	protected Image texture;
 	protected Image textureAttack;
+	protected Image textureSimple;
 
 	protected Animation[] animations = new Animation[10];
 	protected Animation[] attackAnimations = new Animation[3];
@@ -61,6 +63,28 @@ public abstract class Character extends Entity {
 		
 		this.x = this.pos.getJ() * Grid.cellSize;
 		this.y = this.pos.getI() * Grid.cellSize;
+		
+	}
+	
+	public Character(int job, int lvl, int pv_max, int att, int PO, int PM) {
+		super();
+		this.job = job;
+		this.level = lvl;
+		this.pv_max = pv_max;
+		this.pv = pv_max;
+		this.att = att;
+		this.PO = PO;
+		this.PM = PM;
+		this.bonus = 0;
+		this.action = 6;
+		this.alive = true;
+		this.moving = false;
+		this.underAttack = false;
+		
+		this.animationCount = 0;
+		
+		this.x = 0;
+		this.y = 0;
 		
 	}
 		
@@ -184,7 +208,7 @@ public abstract class Character extends Entity {
 	public void attack(Cell pos) {
 		//if Port�e
 		//if ! deja attack
-		if(verifSelectChara()) {
+		if(verifPosChara()) {
 			System.out.println("Atatatataa");
 			
 			
@@ -218,6 +242,7 @@ public abstract class Character extends Entity {
 			this.alive = false;			
 			System.out.println("La cible est morte !");
 			action = 8 ;
+//			Play.getChara().remove(this);
 		} else {
 			System.out.println("PV Cible : " + this.pv + " / " + this.pv_max);
 			
@@ -225,7 +250,7 @@ public abstract class Character extends Entity {
 	}
 	
 	
-	abstract public void init(GameContainer gc) throws SlickException;
+	abstract public void init() throws SlickException;
 
 	
 	
@@ -290,12 +315,21 @@ public abstract class Character extends Entity {
 	
 	@Override
 	public void updateCharaGrid(Cell posInit, Cell posFin) {
-		posInit.setChara(null);
-		posFin.setChara(this);
+		if (posInit==null) {
+			posFin.setChara(this);
+		}
+		else {
+			posInit.setChara(null);
+			posFin.setChara(this);
+		}
 	}
 	
 	public Image getTexture() {
 		return texture;
+	}
+
+	public Image getTextureSimple() {
+		return textureSimple;
 	}
 	
 }
