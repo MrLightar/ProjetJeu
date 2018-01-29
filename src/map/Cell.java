@@ -1,6 +1,9 @@
 package map;
 
 
+import java.util.ArrayList;
+
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -19,13 +22,25 @@ public class Cell {
 	
 	private Image texture;
 	
+	private double PathFScore;
+	private double PathGScore;
+	private double PathHScore;
+	
+	private ArrayList<Cell> neighbors;
+	private Cell previous;
 	
 	
-
 	public Cell(int i, int j) {
 		this.i = i;
 		this.j = j;
 		this.chara = null;
+		
+		this.PathFScore = 0;
+		this.PathGScore = 0;
+		this.PathHScore = 0;
+
+		this.neighbors = new ArrayList<>();
+		this.previous = null;
 	}
 	
 	
@@ -45,6 +60,56 @@ public class Cell {
 		this.j = j;
 	}
 	
+	public double getPathFScore() {
+		return PathFScore;
+	}
+
+
+	public void setPathFScore(double pathFScore) {
+		PathFScore = pathFScore;
+	}
+
+
+	public double getPathGScore() {
+		return PathGScore;
+	}
+
+
+	public void setPathGScore(double pathGScore) {
+		PathGScore = pathGScore;
+	}
+
+
+	public double getPathHScore() {
+		return PathHScore;
+	}
+
+
+	public void setPathHScore(double pathHScore) {
+		PathHScore = pathHScore;
+	}
+
+
+	public ArrayList<Cell> getNeighbors() {
+		return neighbors;
+	}
+
+
+	public void setNeighbors(ArrayList<Cell> neighbors) {
+		this.neighbors = neighbors;
+	}
+
+
+	public Cell getPrevious() {
+		return previous;
+	}
+
+
+	public void setPrevious(Cell previous) {
+		this.previous = previous;
+	}
+
+
 	public Character getChara() {
 		return this.chara;
 	}
@@ -84,12 +149,45 @@ public class Cell {
 				break;
 		}
 	}
+	
+	
+	public boolean hasChara() {
+		if (this.getChara() != null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 
 	public int distanceFrom(Cell other) {
 		return Math.abs(other.i - this.i) + Math.abs(other.j - this.j);
 	}
 	
+	
+	public void addNeighbors(Grid grid) {
+		int i = this.i;
+		int j = this.j;
+		if (j < grid.getCols() - 1) {
+			this.neighbors.add(grid.getCell(i, j + 1));
+		}
+		if (j > 0) {
+			this.neighbors.add(grid.getCell(i, j - 1));
+		}
+		if (i < grid.getRows() - 1) {
+			this.neighbors.add(grid.getCell(i + 1, j));
+		}
+		if (i > 0) {
+			this.neighbors.add(grid.getCell(i - 1, j));
+		}
+	}
+
+	
+	public void printNeighbors() {
+		for (Cell cell : this.neighbors) {
+			System.out.println(cell);
+		}
+}
 	
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.j * Grid.cellSize;
@@ -98,6 +196,16 @@ public class Cell {
 		g.draw(rect);
 		g.drawImage(this.texture, x, y);
 	}
+	
+	
+	public void render(GameContainer gc, Graphics g, Color c) {
+		g.setColor(c);
+		
+		int x = this.j * Grid.cellSize;
+		int y = this.i * Grid.cellSize;
+		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
+		g.fill(rect);
+}
 
 
 	@Override
@@ -105,5 +213,6 @@ public class Cell {
 		return "(" + this.i + ", " + this.j + ")";
 
 	}
+
 
 }

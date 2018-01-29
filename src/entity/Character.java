@@ -11,6 +11,7 @@ import org.newdawn.slick.SpriteSheet;
 //import core.Play;
 import map.Cell;
 import map.Grid;
+import strategie.Strategie;
 
 
 public abstract class Character extends Entity {
@@ -31,16 +32,23 @@ public abstract class Character extends Entity {
 	protected int PM;
 	protected int bonus;
 	protected int action;
+	protected int animationCount;
+	protected int team;
+	
 	protected int x;
 	protected int y;
 	protected int endMoveX;
 	protected int endMoveY;
+	
+	protected Strategie strategie;
+	
 	protected boolean alive;
 	protected boolean moving;
 	protected boolean underAttack;
 	protected boolean animationChange;
+	
 
-	protected int animationCount;
+	
 	
 
 	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
@@ -142,6 +150,14 @@ public abstract class Character extends Entity {
 
 	public void setBonus(int bonus) {
 		this.bonus = bonus;
+	}
+	
+	public Image getTexture() {
+		return texture;
+	}
+
+	public Image getTextureSimple() {
+		return textureSimple;
 	}
 		
 	
@@ -250,6 +266,14 @@ public abstract class Character extends Entity {
 	}
 	
 	
+	public boolean isKillable(int dmg) {
+		if (this.pv <= dmg) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	abstract public void init() throws SlickException;
 
 	
@@ -323,14 +347,10 @@ public abstract class Character extends Entity {
 			posFin.setChara(this);
 		}
 	}
-	
-	public Image getTexture() {
-		return texture;
-	}
 
-	public Image getTextureSimple() {
-		return textureSimple;
-	}
+	
+	
+
 	
 }
 

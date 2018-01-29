@@ -42,6 +42,11 @@ public class Grid {
 	}
 	
 	
+	public boolean isInGrid(int i, int j) {
+		return i >= 0 && i < this.rows && j >= 0 && j < this.cols;
+	}
+	
+	
 	public void init(GameContainer gc) throws SlickException {
 		Grid.grid = new Cell[this.rows][this.cols];
 		for (int i = 0; i < this.rows; i++) {

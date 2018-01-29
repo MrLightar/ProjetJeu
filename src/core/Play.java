@@ -81,6 +81,7 @@ public class Play extends BasicGameState {
 		for( int i=0; i< chara.size(); i++) {
 			Play.chara.get(i).render(gc, g);
 		}
+//		Play.chara.get(1).render(gc, g);
 		
 		Play.cursor.render(gc, g);
 	}
