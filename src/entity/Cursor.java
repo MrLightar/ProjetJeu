@@ -61,6 +61,7 @@ public class Cursor extends Entity {
 		if(this.pos.getChara()==null) {
 			if(verifTypeCell()) {
 				this.selection.moveCharacter(this.pos);
+				SelectCharaScreen.choiceGrid.noplacable(selection);
 				Play.getChara().add(selection);
 				try {
 					Play.getChara().get(Play.getChara().size()-1).init();

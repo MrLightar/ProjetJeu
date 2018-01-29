@@ -92,7 +92,7 @@ public class SelectCharaScreen extends BasicGameState {
 
 			case Input.KEY_ENTER:
 					if(cursor.getPos().hasChara() && !cursor.getPos().isPlaced()) {
-						cursor.getPos().setPlaced(true);
+//						cursor.getPos().setPlaced(true);
 						Play.getCursor().setSelection(cursor.getPos().getChara());
 						sbg.enterState(Main.play);
 					}

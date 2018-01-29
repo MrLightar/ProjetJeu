@@ -100,17 +100,33 @@ public class SelectCell {
 		g.draw(rect);
 		
 		if (this.hasChara()) {
-			g.drawImage(this.chara.getTextureSimple().getScaledCopy(SelectGrid.cellSizeY/2, SelectGrid.cellSizeY/2), x + SelectGrid.cellSizeY/4, y);
-			g.drawImage(image_pv.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*3);
-			g.drawImage(image_att.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*4, y + SelectGrid.cellSizeY/6*3);
-			g.drawImage(image_po.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*4);
-			g.drawImage(image_pm.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*4, y + SelectGrid.cellSizeY/6*4);
-		
-			SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getPv_max()).toString());
-			SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getAtt()).toString());
-			SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPO()).toString());
-			SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPM()).toString());
-			SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*3, y + SelectGrid.cellSizeY/6*5, testCout.toString()); //new Integer(this.chara.getCout()).toString());
+			if (!placed) {
+				g.drawImage(this.chara.getTextureSimple().getScaledCopy(SelectGrid.cellSizeY/2, SelectGrid.cellSizeY/2), x + SelectGrid.cellSizeY/4, y);
+				g.drawImage(image_pv.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*3);
+				g.drawImage(image_att.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*4, y + SelectGrid.cellSizeY/6*3);
+				g.drawImage(image_po.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*4);
+				g.drawImage(image_pm.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*4, y + SelectGrid.cellSizeY/6*4);
+			
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getPv_max()).toString());
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getAtt()).toString());
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPO()).toString());
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPM()).toString());
+				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*3, y + SelectGrid.cellSizeY/6*5, testCout.toString()); //new Integer(this.chara.getCout()).toString());
+			}
+			else {
+				g.drawImage(this.chara.getTextureSimple().getScaledCopy(SelectGrid.cellSizeY/2, SelectGrid.cellSizeY/2), x + SelectGrid.cellSizeY/4, y, Color.gray);
+				g.drawImage(image_pv.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*3, Color.gray);
+				g.drawImage(image_att.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*4, y + SelectGrid.cellSizeY/6*3, Color.gray);
+				g.drawImage(image_po.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*4, Color.gray);
+				g.drawImage(image_pm.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8), x + SelectGrid.cellSizeX/8*4, y + SelectGrid.cellSizeY/6*4, Color.gray);
+			
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getPv_max()).toString(), Color.gray);
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getAtt()).toString(), Color.gray);
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPO()).toString(), Color.gray);
+				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPM()).toString(), Color.gray);
+				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*3, y + SelectGrid.cellSizeY/6*5, testCout.toString(), Color.gray); //new Integer(this.chara.getCout()).toString());
+			}
+			
 		}
 		
 	}

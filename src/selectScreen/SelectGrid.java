@@ -52,12 +52,21 @@ public class SelectGrid {
 		return SelectGrid.grid[i][j];
 	}
 	
+	public void noplacable(entity.Character selection) {
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.cols; j++) {
+				if(SelectGrid.grid[i][j].hasChara() && SelectGrid.grid[i][j].getChara() == selection) {
+					SelectGrid.grid[i][j].setPlaced(true);
+				}
+			}
+		}
+	}
+	
 	public void replacable(entity.Character selection) {
 		for (int i = 0; i < this.rows; i++) {
 			for (int j = 0; j < this.cols; j++) {
 				if(SelectGrid.grid[i][j].hasChara() && SelectGrid.grid[i][j].getChara() == selection) {
 					SelectGrid.grid[i][j].setPlaced(false);
-//					SelectGrid.grid[i][j].getChara().action = 6;
 				}
 			}
 		}
