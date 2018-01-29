@@ -12,20 +12,17 @@ public abstract class Strategie {
 
 	protected Character chara;
 
-	protected ArrayList<Cell> rangeOfAction;
-	protected ArrayList<Cell> enemiesPos;
-	protected ArrayList<Cell> bonusPos;
+	protected ArrayList<Cell> enemies;
+	protected ArrayList<Cell> bonuses;
+
+	protected ArrayList<Cell> rangeOfActionEnemies;
+	protected ArrayList<Cell> rangeOfActionBonuses;
+	protected ArrayList<Cell> enemiesInRange;
+	protected ArrayList<Cell> bonusesInRange;
 
 
 	public Strategie(Character chara) {
 		this.chara = chara;
-
-		// Déterminer la zone d'action du personnage
-		this.rangeOfAction = this.evaluateRangeOfAction(this.chara.getPos(), this.chara.getPM() + this.chara.getPO());
-		// Chercher les positions des adversaires et des bonus dans cette zone d'action
-		this.enemiesPos = this.getCharactersInRange(this.rangeOfAction);
-		this.enemiesPos.remove(chara.getPos());
-		this.bonusPos = this.getBonusInRange(this.rangeOfAction);
 	}
 	
 	/* ========================================================================================== */
@@ -33,11 +30,32 @@ public abstract class Strategie {
 	public abstract void gameTurn();
 	
 	/* ========================================================================================== */
+
+	public void analyseMap() {
+		for (int i = 0; i < Main.gameGrid.getRows(); i++) {
+			for (int j = 0; j < Main.gameGrid.getCols(); j++) {
+				Cell current = Main.gameGrid.getCell(i, j);
+				if (current.hasChara() /* && current.getChara.team */) {
+					this.enemies.add(current);
+				} else if (current.getCellType() == 3 || current.getCellType() == 4) {
+					this.bonuses.add(current);
+				}
+			}
+		}
+	}
+	
+	/* ========================================================================================== */
 	
 	public ArrayList<Cell> evaluatePath(Cell start, Cell end) {
 		ArrayList<Cell> openSet = new ArrayList<>();
 		ArrayList<Cell> closedSet = new ArrayList<>();
 		ArrayList<Cell> path = new ArrayList<>();
+		
+		if (start == end || end.hasChara() && start.distanceFrom(end) == 1) {
+			System.out.println("Path Finding : Already at destination\n");
+			path.add(start);
+			return path;
+		}
 		
 		for (int i = 0; i < Main.gameGrid.getRows(); i++) {
 			for (int j = 0; j < Main.gameGrid.getCols(); j++) {
@@ -60,12 +78,23 @@ public abstract class Strategie {
 			if (current == end) {
 				// Find the path
 				Cell temp = current;
+				if (end.hasChara()) {
+					temp = temp.getPrevious();
+				}
 				path.add(temp);
 				while (temp.getPrevious() != null) {
 					path.add(temp.getPrevious());
 					temp = temp.getPrevious();
 				}
-				System.out.println("Path Finding : DONE !");
+				
+				// Reinitialisation of cells
+				for (int i = 0; i < Main.gameGrid.getRows(); i++) {
+					for (int j = 0; j < Main.gameGrid.getCols(); j++) {
+						Main.gameGrid.getCell(i, j).setPrevious(null);
+					}
+				}
+				
+				System.out.println("Path Finding : DONE !\n");
 				return path;
 			}
 			
@@ -77,7 +106,6 @@ public abstract class Strategie {
 				if (!closedSet.contains(neighbor) && neighbor.getCellType() != 1 && neighbor.getCellType() != 2
 						&& !neighbor.hasChara()) {
 					double tempgScore = current.getPathGScore() + 1;
-					
 					boolean newPath = false;
 					if (openSet.contains(neighbor)) {
 						if (tempgScore < neighbor.getPathGScore()) {
@@ -97,9 +125,13 @@ public abstract class Strategie {
 					}
 				}
 			}
+			if (neighbors.contains(end)) {
+				openSet.add(end);
+				end.setPrevious(current);
+			}
 		}
 		if (openSet.size() == 0) {
-			System.out.println("Path Finding : No solution");
+			System.out.println("Path Finding : No solution\n");
 		}
 		
 		return null;
@@ -112,8 +144,7 @@ public abstract class Strategie {
 	}
 
 	/* ========================================================================================== */
-
-
+	
 	public ArrayList<Cell> evaluateSightView(Cell start, Cell end) {
 		int x, y, xbas, xhaut, ybas, yhaut;
 		int dx, dy;
@@ -166,7 +197,6 @@ public abstract class Strategie {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						y--;
-
 					} else {
 						dp = dp + deltaNE;
 						x++;
@@ -190,7 +220,6 @@ public abstract class Strategie {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						x++;
-
 					} else {
 						dp = dp + deltaNE;
 						x++;
@@ -210,7 +239,6 @@ public abstract class Strategie {
 					if (dp <= 0) {
 						dp = dp + deltaE;
 						y++;
-
 					} else {
 						dp = dp + deltaNE;
 						x++;
@@ -242,16 +270,17 @@ public abstract class Strategie {
 	
 	/* ========================================================================================== */
 	
-	
 	public ArrayList<Cell> evaluateRangeOfAction(Cell pos, int dist) {
 		ArrayList<Cell> rangeOfAction = new ArrayList<>();
 		for (int i = -dist; i <= dist; i++) {
 			for (int j = -dist; j <= dist; j++) {
-				if (Math.abs(i) + Math.abs(j) <= dist) {
-					int neighborI = pos.getI() + i;
-					int neighborJ = pos.getJ() + j;
-					if (Main.gameGrid.isInGrid(neighborI, neighborJ)) {
-						rangeOfAction.add(Main.gameGrid.getCell(neighborI, neighborJ));
+				if (!(i == 0 && j == 0)) {
+					if (Math.abs(i) + Math.abs(j) <= dist) {
+						int neighborI = pos.getI() + i;
+						int neighborJ = pos.getJ() + j;
+						if (Main.gameGrid.isInGrid(neighborI, neighborJ)) {
+							rangeOfAction.add(Main.gameGrid.getCell(neighborI, neighborJ));
+						}
 					}
 				}
 			}
@@ -268,6 +297,22 @@ public abstract class Strategie {
 		}
 		return characters;
 	}
+	
+	
+	/* ====== TO DO WHEN TEAMS ARE IMPLEMENTED ====== */
+	
+	public ArrayList<Cell> getEnemiesInRange(ArrayList<Cell> range) {
+		ArrayList<Cell> characters = new ArrayList<>();
+		for (Cell cell : range) {
+			// GESTION DES TEAMS A AJOUTER
+			if (cell.hasChara() /* && cell.getChara().team */) {
+				characters.add(cell);
+			}
+		}
+		return characters;
+	}
+
+	/* =============================================== */
 
 	public ArrayList<Cell> getBonusInRange(ArrayList<Cell> range) {
 		ArrayList<Cell> bonus = new ArrayList<>();
