@@ -14,13 +14,12 @@ import entity.Character;
 
 
 public class Cell {
-
+	
 	private int i;
 	private int j;
-
 	private Character chara;
-
 	private int cellType;
+	
 	private Image texture;
 	
 	private double PathFScore;
@@ -34,9 +33,8 @@ public class Cell {
 	public Cell(int i, int j) {
 		this.i = i;
 		this.j = j;
-
 		this.chara = null;
-
+		
 		this.PathFScore = 0;
 		this.PathGScore = 0;
 		this.PathHScore = 0;
@@ -44,44 +42,88 @@ public class Cell {
 		this.neighbors = new ArrayList<>();
 		this.previous = null;
 	}
-
-
+	
+	
 	public int getI() {
 		return this.i;
 	}
-
+	
 	public void setI(int i) {
 		this.i = i;
 	}
-
+	
 	public int getJ() {
 		return this.j;
 	}
-
+	
 	public void setJ(int j) {
 		this.j = j;
 	}
+	
+	public double getPathFScore() {
+		return PathFScore;
+	}
+
+
+	public void setPathFScore(double pathFScore) {
+		PathFScore = pathFScore;
+	}
+
+
+	public double getPathGScore() {
+		return PathGScore;
+	}
+
+
+	public void setPathGScore(double pathGScore) {
+		PathGScore = pathGScore;
+	}
+
+
+	public double getPathHScore() {
+		return PathHScore;
+	}
+
+
+	public void setPathHScore(double pathHScore) {
+		PathHScore = pathHScore;
+	}
+
+
+	public ArrayList<Cell> getNeighbors() {
+		return neighbors;
+	}
+
+
+	public void setNeighbors(ArrayList<Cell> neighbors) {
+		this.neighbors = neighbors;
+	}
+
+
+	public Cell getPrevious() {
+		return previous;
+	}
+
+
+	public void setPrevious(Cell previous) {
+		this.previous = previous;
+	}
+
 
 	public Character getChara() {
 		return this.chara;
 	}
-	
+
 	public void setChara(Character character) {
 		this.chara = character;
 	}
+	
 
-	public boolean hasChara() {
-		if (this.getChara() != null) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
 	public int getCellType() {
-		return this.cellType;
+		return cellType;
 	}
-	
+
+
 	public void setCellType(int cellType) throws SlickException {
 		this.cellType = cellType;
 		switch (this.cellType) {
@@ -108,47 +150,21 @@ public class Cell {
 		}
 	}
 	
-	public double getPathFScore() {
-		return this.PathFScore;
-	}
 	
-	public void setPathFScore(double pathFScore) {
-		this.PathFScore = pathFScore;
+	public boolean hasChara() {
+		if (this.getChara() != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public double getPathGScore() {
-		return this.PathGScore;
-	}
 
-	public void setPathGScore(double pathGScore) {
-		this.PathGScore = pathGScore;
-	}
-
-	public double getPathHScore() {
-		return this.PathHScore;
-	}
-
-	public void setPathHScore(double pathHScore) {
-		this.PathHScore = pathHScore;
-	}
-	
-	public ArrayList<Cell> getNeighbors() {
-		return this.neighbors;
-	}
-
-	public Cell getPrevious() {
-		return this.previous;
-	}
-	
-	public void setPrevious(Cell previous) {
-		this.previous = previous;
-	}
-	
-	
 	public int distanceFrom(Cell other) {
 		return Math.abs(other.i - this.i) + Math.abs(other.j - this.j);
 	}
-
+	
+	
 	public void addNeighbors(Grid grid) {
 		int i = this.i;
 		int j = this.j;
@@ -166,13 +182,13 @@ public class Cell {
 		}
 	}
 
+	
 	public void printNeighbors() {
 		for (Cell cell : this.neighbors) {
 			System.out.println(cell);
 		}
-	}
-
-
+}
+	
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.j * Grid.cellSize;
 		int y = this.i * Grid.cellSize;
@@ -182,12 +198,6 @@ public class Cell {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return "(" + this.i + ", " + this.j + ")";
-	}
-
-
 	public void render(GameContainer gc, Graphics g, Color c) {
 		g.setColor(c);
 		
@@ -195,6 +205,14 @@ public class Cell {
 		int y = this.i * Grid.cellSize;
 		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
 		g.fill(rect);
+}
+
+
+	@Override
+	public String toString() {
+		return "(" + this.i + ", " + this.j + ")";
+
 	}
-	
+
+
 }

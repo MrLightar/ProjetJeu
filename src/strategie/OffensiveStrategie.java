@@ -28,7 +28,7 @@ public class OffensiveStrategie extends Strategie {
 		// Analyse de la carte
 		this.analyseMap();
 		
-		// Déterminer la zone d'action du personnage
+		// Dï¿½terminer la zone d'action du personnage
 		this.rangeOfActionEnemies = this.evaluateRangeOfAction(this.chara.getPos(), this.chara.getPM() + this.chara.getPO());
 		this.rangeOfActionBonuses = this.evaluateRangeOfAction(this.chara.getPos(), this.chara.getPM());
 		// Chercher les positions des adversaires et des bonus dans cette zone d'action
@@ -51,7 +51,7 @@ public class OffensiveStrategie extends Strategie {
 						bestMove = true;
 						mainTarget = enemyPos;
 						mainPath = this.evaluatePath(this.chara.getPos(), mainTarget);
-						// S'il reste des PM apres s'être déplacé
+						// S'il reste des PM apres s'ï¿½tre dï¿½placï¿½
 						int mTargetDist = mainPath.size() - 1;
 						int remainingPM = this.chara.getPM() - mTargetDist;
 						if (remainingPM > 0) {
@@ -65,7 +65,7 @@ public class OffensiveStrategie extends Strategie {
 								secondTarget = closestBonus;
 								secondPath = this.evaluatePath(mainTarget, secondTarget);
 							}
-							// Sinon pas de bonus après déplacement
+							// Sinon pas de bonus aprï¿½s dï¿½placement
 							else {
 								// Se rapprocher de l'ennemi le plus proche
 								System.out.println("\t\t\t\tPas de bonus accessible, on se rapproche");
@@ -103,7 +103,7 @@ public class OffensiveStrategie extends Strategie {
 							secondTarget = closestEnemy;
 							secondPath = this.evaluatePath(mainTarget, secondTarget);
 						}
-						// Sinon pas d'ennemis accessible après déplacement
+						// Sinon pas d'ennemis accessible aprï¿½s dï¿½placement
 						else {
 							System.out.println("\t\t\t\tPas d'ennemi accessible avec PM restants");
 							// Se rapprocher de l'ennemi le plus proche

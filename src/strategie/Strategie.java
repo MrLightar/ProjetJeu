@@ -3,8 +3,8 @@ package strategie;
 
 import java.util.ArrayList;
 
-import map.*;
 import core.*;
+import map.*;
 import entity.Character;
 
 
@@ -32,9 +32,10 @@ public abstract class Strategie {
 	/* ========================================================================================== */
 
 	public void analyseMap() {
-		for (int i = 0; i < Main.gameGrid.getRows(); i++) {
-			for (int j = 0; j < Main.gameGrid.getCols(); j++) {
-				Cell current = Main.gameGrid.getCell(i, j);
+		
+		for (int i = 0; i < Play.gameGrid.getRows(); i++) {
+			for (int j = 0; j < Play.gameGrid.getCols(); j++) {
+				Cell current = Play.gameGrid.getCell(i, j);
 				if (current.hasChara() /* && current.getChara.team */) {
 					this.enemies.add(current);
 				} else if (current.getCellType() == 3 || current.getCellType() == 4) {
@@ -57,9 +58,9 @@ public abstract class Strategie {
 			return path;
 		}
 		
-		for (int i = 0; i < Main.gameGrid.getRows(); i++) {
-			for (int j = 0; j < Main.gameGrid.getCols(); j++) {
-				Grid.grid[i][j].addNeighbors(Main.gameGrid);
+		for (int i = 0; i < Play.gameGrid.getRows(); i++) {
+			for (int j = 0; j < Play.gameGrid.getCols(); j++) {
+				Grid.grid[i][j].addNeighbors(Play.gameGrid);
 			}
 		}
 		
@@ -88,9 +89,9 @@ public abstract class Strategie {
 				}
 				
 				// Reinitialisation of cells
-				for (int i = 0; i < Main.gameGrid.getRows(); i++) {
-					for (int j = 0; j < Main.gameGrid.getCols(); j++) {
-						Main.gameGrid.getCell(i, j).setPrevious(null);
+				for (int i = 0; i < Play.gameGrid.getRows(); i++) {
+					for (int j = 0; j < Play.gameGrid.getCols(); j++) {
+						Play.gameGrid.getCell(i, j).setPrevious(null);
 					}
 				}
 				
@@ -173,7 +174,7 @@ public abstract class Strategie {
 				deltaNE = 2 * (dy - dx);
 				x = xbas;
 				y = ybas;
-				path.add(Main.gameGrid.getCell(y, x));
+				path.add(Play.gameGrid.getCell(y, x));
 				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -183,7 +184,7 @@ public abstract class Strategie {
 						x++;
 						y--;
 					}
-					path.add(Main.gameGrid.getCell(y, x));
+					path.add(Play.gameGrid.getCell(y, x));
 				}
 			} else {
 				dp = 2 * dx - dy;
@@ -192,7 +193,7 @@ public abstract class Strategie {
 				x = xbas;
 				y = ybas;
 
-				path.add(Main.gameGrid.getCell(y, x));
+				path.add(Play.gameGrid.getCell(y, x));
 				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -202,7 +203,7 @@ public abstract class Strategie {
 						x++;
 						y--;
 					}
-					path.add(Main.gameGrid.getCell(y, x));
+					path.add(Play.gameGrid.getCell(y, x));
 				}
 			}
 		} else {
@@ -215,7 +216,7 @@ public abstract class Strategie {
 				x = xhaut;
 				y = yhaut;
 
-				path.add(Main.gameGrid.getCell(y, x));
+				path.add(Play.gameGrid.getCell(y, x));
 				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -225,7 +226,7 @@ public abstract class Strategie {
 						x++;
 						y++;
 					}
-					path.add(Main.gameGrid.getCell(y, x));
+					path.add(Play.gameGrid.getCell(y, x));
 				}
 			} else {
 				dp = 2 * dx - dy;
@@ -234,7 +235,7 @@ public abstract class Strategie {
 				x = xhaut;
 				y = yhaut;
 
-				path.add(Main.gameGrid.getCell(y, x));
+				path.add(Play.gameGrid.getCell(y, x));
 				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -244,7 +245,7 @@ public abstract class Strategie {
 						x++;
 						y++;
 					}
-					path.add(Main.gameGrid.getCell(y, x));
+					path.add(Play.gameGrid.getCell(y, x));
 				}
 			}
 		}
@@ -278,8 +279,8 @@ public abstract class Strategie {
 					if (Math.abs(i) + Math.abs(j) <= dist) {
 						int neighborI = pos.getI() + i;
 						int neighborJ = pos.getJ() + j;
-						if (Main.gameGrid.isInGrid(neighborI, neighborJ)) {
-							rangeOfAction.add(Main.gameGrid.getCell(neighborI, neighborJ));
+						if (Play.gameGrid.isInGrid(neighborI, neighborJ)) {
+							rangeOfAction.add(Play.gameGrid.getCell(neighborI, neighborJ));
 						}
 					}
 				}
@@ -326,7 +327,7 @@ public abstract class Strategie {
 
 	public Cell getClosest(Cell pos, ArrayList<Cell> collection) {
 		Cell closest = null;
-		int minDist = Main.gameGrid.getRows() + Main.gameGrid.getCols();
+		int minDist = Play.gameGrid.getRows() + Play.gameGrid.getCols();
 		for (Cell cell : collection) {
 			if (pos.distanceFrom(cell) < minDist) {
 				minDist = pos.distanceFrom(cell);

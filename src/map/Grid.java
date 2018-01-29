@@ -9,38 +9,44 @@ import core.Main;
 
 
 public class Grid {
-	
+
 	private int rows;
 	private int cols;
 	public static int cellSize;
 	public static Cell[][] grid;
-	
-	
+
+
+
 	public Grid(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
-		
+    
 		Grid.cellSize = Main.height / this.rows;
-		if (cols * Grid.cellSize > Main.width) {
+		if(cols*Grid.cellSize > Main.width) {
 			Grid.cellSize = Main.width / this.cols;
 		}
-		
+
 	}
-
-
+	
+	
 	public int getRows() {
 		return this.rows;
 	}
-	
+
 	public int getCols() {
 		return this.cols;
 	}
-	
+
 	public Cell getCell(int i, int j) {
 		return Grid.grid[i][j];
 	}
-
-
+	
+	
+	public boolean isInGrid(int i, int j) {
+		return i >= 0 && i < this.rows && j >= 0 && j < this.cols;
+	}
+	
+	
 	public void init(GameContainer gc) throws SlickException {
 		Grid.grid = new Cell[this.rows][this.cols];
 		for (int i = 0; i < this.rows; i++) {
@@ -49,7 +55,7 @@ public class Grid {
 			}
 		}
 	}
-
+	
 	public void render(GameContainer gc, Graphics g) throws SlickException {
 		for (int i = 0; i < this.rows; i++) {
 			for (int j = 0; j < this.cols; j++) {
@@ -57,10 +63,5 @@ public class Grid {
 			}
 		}
 	}
-
-
-	public boolean isInGrid(int i, int j) {
-		return i >= 0 && i < this.rows && j >= 0 && j < this.cols;
-	}
-
+	
 }
