@@ -336,5 +336,32 @@ public abstract class Strategie {
 		}
 		return closest;
 	}
+	/* =============================================== */
+	
+	public void applyPath(ArrayList<Cell> path) {
+		for(int i=0; i< path.size()-1;i++) {
+			
+			//si la cellule suivante est vers le bas
+			if(path.get(i).getI() < path.get(i+1).getI()) {
+				chara.moveDown();
+			}
+			
+			//si la cellule suivante est vers le haut
+			if(path.get(i).getI() > path.get(i+1).getI()) {
+				chara.moveUp();
+			}
+			
+			//si la cellule suivante est vers la droite
+			if(path.get(i).getJ() < path.get(i+1).getJ()) {
+				chara.moveRight();
+			}
+			
+			//si la cellule suivante est vers la gauche
+			if(path.get(i).getJ() > path.get(i+1).getJ()) {
+				chara.moveLeft();
+			}
+		}
+		
+	}
 	
 }
