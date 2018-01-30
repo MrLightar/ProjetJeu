@@ -17,6 +17,7 @@ public class Cursor extends Entity {
 	
 	private Image texture;
 	private Character selection;
+	private boolean selected;
 	
 	
 	public Cursor(Cell pos) {
@@ -55,38 +56,52 @@ public class Cursor extends Entity {
 		return verifPosChara();
 	}
 	
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 	
-	
-	public void placeCharacter() {
-		if(this.pos.getChara()==null) {
-			if(verifTypeCell()) {
-				this.selection.moveCharacter(this.pos);
-				SelectCharaScreen.choiceGrid.noplacable(selection);
-				Play.getChara().add(selection);
-				try {
-					Play.getChara().get(Play.getChara().size()-1).init();
-				} catch (SlickException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				this.selection = null;
-				System.out.println("Perso deplace !");
+	public boolean isPlacable() {
+		if(this.pos.getJ() <= Play.gameGrid.getCols()/5) {
+			if(this.pos.getChara()==null) {
+				if(verifTypeCell()) {
+					return true;
+				} else {
+					System.out.println("Case impraticable !");
+				}	
 			} else {
-				System.out.println("Case impraticable !");
-			}		
+				System.out.println("Case occupee !");
+			}
 		} else {
-			System.out.println("Case occupee !");
+			System.out.println("Hors de la zone de spawn");
 		}
+		return false;
+	}
+
+	public void placeCharacter() {
+		this.selection.moveCharacter(this.pos);
+		SelectCharaScreen.choiceGrid.noplacable(selection);
+		Play.getChara().add(selection);
+		try {
+			Play.getChara().get(Play.getChara().size()-1).init();
+		} catch (SlickException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.selection = null;
+		System.out.println("Perso deplace !");
 	}
 	
 	public void selectMove() {
-		if (!this.hasCharacter()) {
-			this.select();
-		} else {
+		if(this.pos.getJ() <= Play.gameGrid.getCols()/5) {
 			if(!this.verifPosChara()) {
 				if(verifTypeCell()) {
 					this.selection.moveCharacter(this.pos);
 					this.selection = null;
+					this.selected = false;
 					System.out.println("Perso deplace !");
 				} else {
 					System.out.println("Case impraticable !");
@@ -94,12 +109,15 @@ public class Cursor extends Entity {
 			} else {
 				System.out.println("Case occupee !");
 			}
+		} else {
+			System.out.println("Hors de la zone de spawn");
 		}
 	}
 	
 	public void select() {
 		if (this.verifPosChara()) {
 			this.selection = this.pos.getChara();
+			this.selected = true;
 			// affichage info
 			System.out.println("Personnage selectionne !");
 		}
@@ -107,6 +125,7 @@ public class Cursor extends Entity {
 	
 	public void deselect() {
 		this.selection = null;
+		this.selected = false;
 	}
 	
 	public void supr() {
@@ -116,6 +135,7 @@ public class Cursor extends Entity {
 		Play.getChara().remove(selection);
 		SelectCharaScreen.choiceGrid.replacable(selection);
 		this.selection = null;
+		this.selected = false;
 		System.out.println("supression");
 	}
 	
@@ -146,11 +166,12 @@ public class Cursor extends Entity {
 							int cellType = this.pos.getCellType();
 							if (cellType > 2) {
 								selection.setBonus(cellType);
-								try {
-									pos.setCellType(0);
-								} catch (SlickException e) {
-									e.printStackTrace();
-								}
+//								try {
+//									pos.setCellType(0);
+//								} catch (SlickException e) {
+//									e.printStackTrace();
+//								}
+								pos.setCellType(0);
 							}
 							this.selection = null;
 							System.out.println("Perso deplace !");
@@ -210,7 +231,9 @@ public class Cursor extends Entity {
 		int y = this.pos.getI() * Grid.cellSize;
 		if(this.hasCharacter()) {
 			g.drawImage(this.texture, x, y, Color.red);
-			g.drawImage(selection.getTextureSimple().getScaledCopy(Grid.cellSize, Grid.cellSize), x, y, Color.lightGray);
+			if(selection.getTeam()==Character.ally) {
+				g.drawImage(selection.getTextureSimple().getScaledCopy(Grid.cellSize, Grid.cellSize), x, y, Color.lightGray);
+			}
 		} else {
 			g.drawImage(this.texture, x, y);
 		}
