@@ -93,8 +93,8 @@ public class DefensiveStrategy extends Strategy {
 						rangebonus = this.bonusesInRange.get(j);
 						pathsave2 = this.evaluatePath(pathsave1.get(0), rangebonus);
 						pathsave3 = this.evaluatePath(rangebonus, celldef);
-						System.out.println(pathsave2 + " " + pathsave3 + " " + tempPM + " " + rangebonus + " " + celldef);
-						if (pathsave2.size() - 1 <= tempPM && pathsave3.size() - 1 <= tempPM - pathsave2.size() + 1) {
+
+						if (pathsave1!=null && pathsave2!=null && pathsave3!=null && pathsave2.size() - 1 <= tempPM && pathsave3.size() - 1 <= tempPM - pathsave2.size() + 1) {
 							play = true;
 							cellsave = rangenemy;
 						}
@@ -119,16 +119,16 @@ public class DefensiveStrategy extends Strategy {
 					rangebonus = this.bonusesInRange.get(j); // for(Cell rangebonus: bonusesInRange) {
 					tempPM = PM;
 					pathsave1 = this.evaluatePath(this.chara.getPos(), rangebonus);
-					if (pathsave1.size() - 1 <= tempPM) {
+					if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
 						tempPM -= pathsave1.size() - 1;
 						i = 0;
 						while (!play && i <= this.enemiesInRange.size() - 1) {
 							rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
 							pathsave2 = this.evaluatePathAttack(rangebonus, rangenemy);
-							if (tempPM >= pathsave2.size() - 1) {
+							if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
 								tempPM -= pathsave2.size() - 1;
 								pathsave3 = this.evaluatePath(pathsave2.get(0), celldef);
-								if (tempPM >= pathsave3.size() - 1) {
+								if (pathsave3!=null && tempPM >= pathsave3.size() - 1) {
 									play = true;
 									cellsave = rangenemy;
 								}
@@ -153,10 +153,10 @@ public class DefensiveStrategy extends Strategy {
 						rangebonus = this.bonusesInRange.get(j); // for(Cell rangebonus: bonusesInRange) {
 						tempPM = PM;
 						pathsave1 = this.evaluatePath(this.chara.getPos(), rangebonus);
-						if (pathsave1.size() - 1 <= tempPM) {
+						if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
 							tempPM -= pathsave1.size() - 1;
 							pathsave2 = this.evaluatePath(rangebonus, celldef);
-							if (tempPM >= pathsave2.size() - 1) {
+							if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
 								play = true;
 							}
 						}
@@ -176,10 +176,10 @@ public class DefensiveStrategy extends Strategy {
 							if (rangenemy.getChara().isKillable(this.chara.getAtt())) {
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-								if (pathsave1.size() - 1 <= tempPM) {
+								if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
 									tempPM -= pathsave1.size() - 1;
 									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-									if (tempPM >= pathsave2.size() - 1) {
+									if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
 										play = true;
 										cellsave = rangenemy;
 									}
@@ -201,10 +201,10 @@ public class DefensiveStrategy extends Strategy {
 								rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-								if (pathsave1.size() - 1 <= tempPM) {
+								if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
 									tempPM -= pathsave1.size() - 1;
 									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-									if (tempPM >= pathsave2.size() - 1) {
+									if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
 										play = true;
 										cellsave = rangenemy;
 									}
@@ -231,7 +231,7 @@ public class DefensiveStrategy extends Strategy {
 								while (!play && i < 100) {
 									if (this.chara.getPos().distanceFrom(celldef) <= tempPM) {
 										pathsave2 = this.evaluatePath(this.chara.getPos(), celldef);
-										if (pathsave2.size() - 1 <= tempPM) {
+										if (pathsave2 !=null && pathsave2.size() - 1 <= tempPM) {
 											System.out.println(pathsave2);
 											this.applyPath(pathsave2, tempPM);
 											play = true;
