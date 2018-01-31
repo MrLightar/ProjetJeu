@@ -30,8 +30,7 @@ public class Main extends StateBasedGame {
 	public static final int menu = 0;
 	public static final int play = 1;
 	public static final int selectCharaScreen = 2;
-	
-	public static ByteArrayOutputStream baos;
+
 	
 	public Main(String name) {
 		super(name);
@@ -44,23 +43,8 @@ public class Main extends StateBasedGame {
 	
 	public static void main(String[] args) {
 		try {
-			
-			// Create a stream to hold the output
-		    baos = new ByteArrayOutputStream();
-		    PrintStream ps = new PrintStream(baos);
-		    // IMPORTANT: Save the old System.out!
-		    PrintStream old = System.out;
-		    // Tell Java to use your special stream
-		    System.setOut(ps);
-//		    // Print some output: goes to your special stream
-//		    System.out.println("Foofoofoo!");
-//		    // Put things back
-//		    System.out.flush();
-//		    System.setOut(old);
-//		    // Show what happened
-//		    System.out.println("Here: " + baos.toString());
-			
 			System.out.println(height);
+			
 			AppGameContainer app = new AppGameContainer(new Main(Main.gameName));
 			app.setDisplayMode(Main.width, Main.height, Main.fullscreen);
 			app.setTitle("Grid");

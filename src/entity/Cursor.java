@@ -92,7 +92,7 @@ public class Cursor extends Entity {
 			e.printStackTrace();
 		}
 		this.selection = null;
-		System.out.println("Perso deplace !");
+		System.out.println("Perso place !");
 	}
 	
 	public void selectMove() {
@@ -136,7 +136,7 @@ public class Cursor extends Entity {
 		SelectCharaScreen.choiceGrid.replacable(selection);
 		this.selection = null;
 		this.selected = false;
-		System.out.println("supression");
+		System.out.println("Perso suprimme !");
 	}
 	
 	

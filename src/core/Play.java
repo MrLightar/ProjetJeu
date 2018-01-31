@@ -1,8 +1,10 @@
 package core;
 
 import java.awt.Font;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -23,7 +25,7 @@ import entity.Mage;
 import entity.Warrior;
 import map.Grid;
 import selectScreen.SelectGrid;
-import strategy.OffensiveStrategy;
+import strategy.*;
 
 public class Play extends BasicGameState {
 	
@@ -41,6 +43,7 @@ public class Play extends BasicGameState {
 	
 	
 	public static TrueTypeFont ttf1;
+	public static TrueTypeFont ttf2;
 	
 	private Image background;
 	private Image image_pv;
@@ -69,11 +72,26 @@ public class Play extends BasicGameState {
 	private int heightButton;
 	private int widthButton;
 	
+	private Strategy strat;//POUR TEST
 	
+	public static ByteArrayOutputStream baos;
 	
 	
 	public Play(int state) {
 		this.mapLevel = 9;//a suprimmer
+		
+		// Create a stream to hold the output
+	    baos = new ByteArrayOutputStream();
+	    PrintStream ps = new PrintStream(baos);
+	    // IMPORTANT: Save the old System.out!
+	    PrintStream old = System.out;
+	    // Tell Java to use your special stream
+	    System.setOut(ps);
+//	    // Print some output: goes to your special stream
+//	    System.out.println("Foofoofoo!");
+//	    // Put things back
+//	    System.out.flush();
+//	    System.setOut(old);
 	}
 	
 	
@@ -101,12 +119,11 @@ public class Play extends BasicGameState {
 		this.sbg = sbg;
 		this.gc = gc;
 		
-		 chara = new ArrayList<>();
-		 enemyTeam = new ArrayList<>();
+		chara = new ArrayList<>();
+		enemyTeam = new ArrayList<>();
 		
 		//initialisation grille
 		this.initGridDB(gc);
-		System.out.println("Cell size : " + Grid.cellSize);
 
 		//creation curseur
 		Play.cursor = new entity.Cursor(Play.gameGrid.getCell(1, 2));
@@ -116,6 +133,7 @@ public class Play extends BasicGameState {
 		initEnemy();
 		
 		ttf1 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/30), true);
+		ttf2 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/50), true);
 		
 		background = new Image("/res/right_background.png");
 		background = background.getScaledCopy(Main.width-Main.height, Main.height);
@@ -143,6 +161,14 @@ public class Play extends BasicGameState {
 		
 		selectedStrat = offensive;
 		state = placement;
+		
+		
+		this.strat = new DefensiveStrategy(Play.chara.get(0)); //POUR TEST
+		
+		System.out.println("\n");
+		System.out.println("\n");
+		System.out.println("\n");
+		System.out.println("\n");
 	}
 	
 	
@@ -161,7 +187,17 @@ public class Play extends BasicGameState {
 		
 		g.drawImage(background, Main.height, 0);
 		
-		ttf1.drawString(Main.width*17/24, Main.height*15/20, Main.baos.toString());
+		
+		
+		String[] words = baos.toString().split("\n");
+		for (int i=0; i<5; i++) {
+			if(words.length>5) {
+				ttf2.drawString(Main.width*16/24, Main.height*(14+i)/20, words[words.length-(5-i)]);
+			}
+		}
+		
+		
+		
 		
 		if(cursor.hasCharacter()) {
 			ttf1.drawString(Main.width*17/24, Main.height*10/20, new Integer(cursor.getSelection().getPv_max()).toString());
@@ -208,6 +244,8 @@ public class Play extends BasicGameState {
 		for( int i=0; i< enemyTeam.size(); i++) {
 			Play.enemyTeam.get(i).update(gc, delta);
 		}
+		
+		this.strat.update();
 	}
 	
 	@Override
@@ -453,6 +491,10 @@ public class Play extends BasicGameState {
 				
 			case Input.KEY_D:
 				Play.chara.get(1).moveRight();
+				break;
+				
+			case Input.KEY_I:
+				this.strat.gameTurn();
 				break;
 			
 			case Input.KEY_ESCAPE:
