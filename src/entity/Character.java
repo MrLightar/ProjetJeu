@@ -2,6 +2,7 @@ package entity;
 
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -11,7 +12,7 @@ import org.newdawn.slick.SpriteSheet;
 //import core.Play;
 import map.Cell;
 import map.Grid;
-import strategie.Strategie;
+import strategy.Strategy;
 
 
 public abstract class Character extends Entity {
@@ -40,7 +41,7 @@ public abstract class Character extends Entity {
 	protected int endMoveX;
 	protected int endMoveY;
 	
-	protected Strategie strategie;
+	protected Strategy strategie;
 	
 	protected boolean alive;
 	protected boolean moving;
@@ -48,10 +49,18 @@ public abstract class Character extends Entity {
 	protected boolean animationChange;
 	
 
+	public static final int mage = 0;
+	public static final int warrior = 1;
+	public static final int archer = 2;
+	public static final int ally = 1;
+	public static final int enemy = -1;
+	
+	public static final int moveBonus = 1;
+	public static final int attackBonus = 2;
 	
 	
 
-	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
+	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM, int team) {
 		super(pos);
 		pos.setChara(this);
 		this.job = job;
@@ -61,11 +70,14 @@ public abstract class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.team = team;
 		this.bonus = 0;
 		this.action = 6;
 		this.alive = true;
 		this.moving = false;
 		this.underAttack = false;
+		
+		this.team = team;
 		
 		this.animationCount = 0;
 		
@@ -74,7 +86,7 @@ public abstract class Character extends Entity {
 		
 	}
 	
-	public Character(int job, int lvl, int pv_max, int att, int PO, int PM) {
+	public Character(int job, int lvl, int pv_max, int att, int PO, int PM, int team) {
 		super();
 		this.job = job;
 		this.level = lvl;
@@ -83,11 +95,14 @@ public abstract class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.team = team;
 		this.bonus = 0;
 		this.action = 6;
 		this.alive = true;
 		this.moving = false;
 		this.underAttack = false;
+		
+		this.team = team;
 		
 		this.animationCount = 0;
 		
@@ -152,6 +167,22 @@ public abstract class Character extends Entity {
 		this.bonus = bonus;
 	}
 	
+	public int getTeam() {
+		return team;
+	}
+
+	public void setTeam(int team) {
+		this.team = team;
+	}
+
+	public Strategy getStrategie() {
+		return strategie;
+	}
+
+	public void setStrategie(Strategy strategie) {
+		this.strategie = strategie;
+	}
+
 	public Image getTexture() {
 		return texture;
 	}
@@ -166,7 +197,7 @@ public abstract class Character extends Entity {
 		this.x = this.pos.getJ() * Grid.cellSize;
 		this.y = this.pos.getI() * Grid.cellSize;
 		
-	}	
+	}
 	
 	public void moveUp() {
 		if(this.moving == false) {
@@ -178,6 +209,7 @@ public abstract class Character extends Entity {
 			this.moving = true;		
 			this.setPosFromIndex(rows - 1, cols);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}		
 	}	
 
@@ -191,6 +223,7 @@ public abstract class Character extends Entity {
 			this.moving = true;
 			this.setPosFromIndex(rows, cols - 1);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}		
 	}
 	
@@ -204,6 +237,7 @@ public abstract class Character extends Entity {
 			this.moving = true;	
 			this.setPosFromIndex(rows+1, cols);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}			
 	}	
 	
@@ -217,9 +251,20 @@ public abstract class Character extends Entity {
 			this.moving = true;
 			this.setPosFromIndex(rows, cols + 1);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}
 	}
 	
+	public void testBonusCell() {
+		if(this.pos.getCellType() == Cell.moveBonusCell) {
+			this.bonus = Character.moveBonus;
+			this.pos.setCellType(Cell.grassCell);
+		}
+		if(this.pos.getCellType() == Cell.attackBonusCell) {
+			this.bonus = Character.attackBonus;
+			this.pos.setCellType(Cell.grassCell);
+		}
+	}
 	
 	public void attack(Cell pos) {
 		//if Port�e
@@ -288,8 +333,24 @@ public abstract class Character extends Entity {
 	}
 	
 
-	abstract public void render(GameContainer gc, Graphics g);
+	public void render(GameContainer gc, Graphics g) {
+		if(this.alive) {
+			Color c = g.getColor();
+			g.setColor(new Color(0, 0, 255, .5f));
+			g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);
+			g.setColor(c);
+		}
+	}
 
+	public void renderEnemy(GameContainer gc, Graphics g) {
+		if(this.alive) {
+			Color c = g.getColor();
+			g.setColor(new Color(255, 0, 0, .5f));
+		    g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);	
+		    g.setColor(c);
+		}
+	}
+	
 	
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {

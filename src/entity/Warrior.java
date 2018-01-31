@@ -12,14 +12,14 @@ import map.Grid;
 
 public class Warrior extends Character {
 
-	public Warrior(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) throws SlickException {
-		super(pos, job, lvl, pv_max, att, PO, PM);
+	public Warrior(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM, int team) throws SlickException {
+		super(pos, job, lvl, pv_max, att, PO, PM, team);
 		// TODO Auto-generated constructor stub
 		this.textureSimple = new Image("res/guerrier.png");
 	}
 	
-	public Warrior(int job, int lvl, int pv_max, int att, int PO, int PM) throws SlickException {
-		super(job, lvl, pv_max, att, PO, PM);
+	public Warrior(int job, int lvl, int pv_max, int att, int PO, int PM, int team) throws SlickException {
+		super(job, lvl, pv_max, att, PO, PM, team);
 		// TODO Auto-generated constructor stub
 		this.textureSimple = new Image("res/guerrier.png");
 	}
@@ -53,7 +53,7 @@ public class Warrior extends Character {
 		//this.x = this.pos.getJ() * Grid.cellSize;
 		//this.y = this.pos.getI() * Grid.cellSize;
 		
-		
+		super.render(gc, g);
 					
 			if(action >= 0 && action <= 3) {				
 				
@@ -95,4 +95,48 @@ public class Warrior extends Character {
 			}
 				
 		}
+	@Override
+	public void renderEnemy(GameContainer gc, Graphics g) {
+		
+		super.renderEnemy(gc, g);
+		if(action >= 0 && action <= 3) {				
+			
+			animations[action].setAutoUpdate(false);
+			animations[action].start();			
+			animations[action].draw(this.x, this.y, Color.lightGray);
+			animations[action].update(18);
+			
+			if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
+				animations[action].setCurrentFrame(0);
+				animations[action].restart();
+				this.action = this.action + 4;
+			}
+		} else {
+			if(action == 8) {
+				animations[8].draw(this.x, this.y, Color.lightGray);
+				animations[8].setLooping(false);
+			} else {
+				if((this.underAttack == true) ) {		
+					animations[action].draw(this.x, this.y , Color.red);
+					if(animations[action].getFrame()  < 4) {
+						animations[action].draw(this.x, this.y, Color.lightGray);
+						
+					} else {
+						animations[action].draw(this.x, this.y , Color.red);
+					}
+					this.animationCount++;
+					if(this.animationCount == 80 ) {
+						this.underAttack = false;
+						this.animationCount = 0;
+					}
+					
+				} else {
+					animations[action].draw(this.x, this.y, Color.lightGray);
+				}
+					
+			}
+				
+		}
+		
+	}
 }

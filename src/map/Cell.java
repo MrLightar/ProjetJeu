@@ -21,6 +21,7 @@ public class Cell {
 	private int cellType;
 	
 	private Image texture;
+	private Image textureBonus;
 	
 	private double PathFScore;
 	private double PathGScore;
@@ -28,6 +29,12 @@ public class Cell {
 	
 	private ArrayList<Cell> neighbors;
 	private Cell previous;
+	
+	public static final int grassCell = 0;
+	public static final int wallCell = 1;
+	public static final int waterCell = 2;
+	public static final int moveBonusCell = 3;
+	public static final int attackBonusCell = 4;
 	
 	
 	public Cell(int i, int j) {
@@ -124,30 +131,30 @@ public class Cell {
 	}
 
 
-	public void setCellType(int cellType) throws SlickException {
+	public void setCellType(int cellType) {
 		this.cellType = cellType;
-		switch (this.cellType) {
-			case 0:
-				this.texture = new Image("res/grass.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 1:
-				this.texture = new Image("res/wall.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 2:
-				this.texture = new Image("res/water.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 3:
-				this.texture = new Image("res/grass_bonus_attack.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 4:
-				this.texture = new Image("res/grass_bonus_move.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-		}
+//		switch (this.cellType) {
+//			case 0:
+//				this.texture = new Image("res/grass.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 1:
+//				this.texture = new Image("res/wall.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 2:
+//				this.texture = new Image("res/water.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 3:
+//				this.texture = new Image("res/grass_bonus_attack.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 4:
+//				this.texture = new Image("res/grass_bonus_move.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//		}
 	}
 	
 	
@@ -189,12 +196,45 @@ public class Cell {
 		}
 }
 	
+	public void init() throws SlickException {
+		switch (this.cellType) {
+		case 0:
+			this.texture = new Image("res/grass.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 1:
+			this.texture = new Image("res/wall.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 2:
+			this.texture = new Image("res/water.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 3:
+			this.texture = new Image("res/grass.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			this.textureBonus = new Image("res/moveBonus.png");
+			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 4:
+			this.texture = new Image("res/grass.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			this.textureBonus = new Image("res/attackBonus.png");
+			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;		
+		}
+	}
+	
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.j * Grid.cellSize;
 		int y = this.i * Grid.cellSize;
-		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
-		g.draw(rect);
 		g.drawImage(this.texture, x, y);
+		if(this.cellType == 3) {
+			g.drawImage(this.textureBonus, x, y);
+		}
+		if(this.cellType == 4) {
+			g.drawImage(this.textureBonus, x, y);
+		}
 	}
 	
 	

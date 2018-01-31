@@ -1,14 +1,18 @@
 package core;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -18,6 +22,8 @@ import entity.Cursor;
 import entity.Mage;
 import entity.Warrior;
 import map.Grid;
+import selectScreen.SelectGrid;
+import strategy.OffensiveStrategy;
 
 public class Play extends BasicGameState {
 	
@@ -29,9 +35,45 @@ public class Play extends BasicGameState {
 	private static Cursor cursor;
 	//taille du tableau defini actuellement le nb de personnage cree
 	private static ArrayList<Character> chara;
+	private static ArrayList<Character> enemyTeam;
+	
+	private static int mapLevel;
+	
+	
+	public static TrueTypeFont ttf1;
+	
+	private Image background;
+	private Image image_pv;
+	private Image image_att;
+	private Image image_po;
+	private Image image_pm;
+	
+	
+	private int state;
+	
+	private static final int placement = 0;
+	private static final int stratSelect = 1;
+	private static final int playing = 2;
+	
+	private int selectedStrat;
+	
+	private Image offensiveButton;
+	private Image defensiveButton;
+	private Image balancedButton;
+	private Image stratCursor;
+	
+	private static final int offensive = 0;
+	private static final int balanced = 1;
+	private static final int defensive = 2;
+	
+	private int heightButton;
+	private int widthButton;
+	
+	
 	
 	
 	public Play(int state) {
+		this.mapLevel = 9;//a suprimmer
 	}
 	
 	
@@ -60,6 +102,7 @@ public class Play extends BasicGameState {
 		this.gc = gc;
 		
 		 chara = new ArrayList<>();
+		 enemyTeam = new ArrayList<>();
 		
 		//initialisation grille
 		this.initGridDB(gc);
@@ -70,6 +113,36 @@ public class Play extends BasicGameState {
 		
 		//initialisation personnage	
 		initCharacter();
+		initEnemy();
+		
+		ttf1 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/30), true);
+		
+		background = new Image("/res/right_background.png");
+		background = background.getScaledCopy(Main.width-Main.height, Main.height);
+		image_pv = new Image("res/pv.png");
+		image_pv = image_pv.getScaledCopy(Main.height/20, Main.height/20);
+		image_att = new Image("res/att.png");
+		image_att = image_att.getScaledCopy(Main.height/20, Main.height/20);
+		image_po = new Image("res/po.png");
+		image_po = image_po.getScaledCopy(Main.height/20, Main.height/20);
+		image_pm = new Image("res/pm.png");
+		image_pm = image_pm.getScaledCopy(Main.height/20, Main.height/20);
+		
+		
+		heightButton = Main.height / 16;
+		widthButton = Main.width / 6;
+		
+		this.offensiveButton = new Image("res/offensiveButton.png");
+		this.offensiveButton = this.offensiveButton.getScaledCopy(widthButton, heightButton);
+		this.balancedButton = new Image("res/balancedButton.png");
+		this.balancedButton = this.balancedButton.getScaledCopy(widthButton, heightButton);
+		this.defensiveButton = new Image("res/defensiveButton.png");
+		this.defensiveButton = this.defensiveButton.getScaledCopy(widthButton, heightButton);
+		this.stratCursor = new Image("res/stratCursor.png");
+		this.stratCursor = this.stratCursor.getScaledCopy(widthButton, heightButton);
+		
+		selectedStrat = offensive;
+		state = placement;
 	}
 	
 	
@@ -81,9 +154,48 @@ public class Play extends BasicGameState {
 		for( int i=0; i< chara.size(); i++) {
 			Play.chara.get(i).render(gc, g);
 		}
+		for( int i=0; i< enemyTeam.size(); i++) {
+			Play.enemyTeam.get(i).renderEnemy(gc, g);
+		}
 //		Play.chara.get(1).render(gc, g);
 		
+		g.drawImage(background, Main.height, 0);
+		
+		ttf1.drawString(Main.width*17/24, Main.height*15/20, Main.baos.toString());
+		
+		if(cursor.hasCharacter()) {
+			ttf1.drawString(Main.width*17/24, Main.height*10/20, new Integer(cursor.getSelection().getPv_max()).toString());
+			ttf1.drawString(Main.width*19/24, Main.height*10/20, new Integer(cursor.getSelection().getAtt()).toString());
+			ttf1.drawString(Main.width*17/24, Main.height*12/20, new Integer(cursor.getSelection().getPO()).toString());
+			ttf1.drawString(Main.width*19/24, Main.height*12/20, new Integer(cursor.getSelection().getPM()).toString());
+			g.drawImage(image_pv, Main.width*16/24, Main.height*10/20);
+			g.drawImage(image_att, Main.width*18/24, Main.height*10/20);
+			g.drawImage(image_po, Main.width*16/24, Main.height*12/20);
+			g.drawImage(image_pm, Main.width*18/24, Main.height*12/20);
+		}
+		
+//		if(cursor.isSelected()) {
+//			switch(cursor.getSelection().getStrategie().toString()) {
+//			case "offensive":
+//				g.drawImage(offensiveButton, widthButton *4, heightButton *7);
+//				break;
+//			case "defensive":
+//				g.drawImage(defensiveButton, widthButton *4, heightButton *7);
+//				break;
+//			case "balanced":
+//				g.drawImage(balancedButton, widthButton *4, heightButton *7);
+//				break;
+//			}
+//		}
+		
 		Play.cursor.render(gc, g);
+		if(state == stratSelect) {
+			g.drawImage(offensiveButton, widthButton *4, heightButton *5);
+			g.drawImage(balancedButton, widthButton *4, heightButton *6);
+			g.drawImage(defensiveButton, widthButton *4, heightButton *7);
+			g.drawImage(stratCursor, widthButton *4, (selectedStrat + 5) * heightButton);
+		}
+		
 	}
 
 	
@@ -92,6 +204,9 @@ public class Play extends BasicGameState {
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
 		for( int i=0; i< chara.size(); i++) {
 			Play.chara.get(i).update(gc, delta);			
+		}
+		for( int i=0; i< enemyTeam.size(); i++) {
+			Play.enemyTeam.get(i).update(gc, delta);
 		}
 	}
 	
@@ -108,25 +223,80 @@ public class Play extends BasicGameState {
 			Scanner sc = new Scanner(f);
 			
 			int stat[] = new int[6];
-			for (int i = 0; i < 6; i++) {
+			int i = 0;
+			while(!sc.hasNext("&")) {
 				for (int j = 0; j < 6; j++) {
 					stat[j] = sc.nextInt();
 					sc.next(";");
 				}
 				switch(stat[0]) {
 					case 0:
-						Play.chara.add(new Mage(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						Play.chara.add(new Mage(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
 				
 					case 1:
-						Play.chara.add(new Warrior(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						Play.chara.add(new Warrior(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
 				
 					case 2:
-						Play.chara.add(new Archer(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						Play.chara.add(new Archer(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
 					}
 					Play.chara.get(Play.chara.size()-1).init();
+					i++;
+			}
+			
+			
+			sc.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	public void initEnemy() throws SlickException {
+		File f = new File("../ProjetJeu/res/enemy.txt");
+		
+		try {
+			Scanner sc = new Scanner(f);
+	
+			int nbStat = 8;
+			int stat[] = new int[nbStat];
+			
+			int countMap = 0;
+			
+			while(countMap != mapLevel /*mapLevel*/) {
+				sc.next();
+				if(sc.hasNext("&")) {
+					countMap++;
+					sc.next();
+					sc.next();
+				}
+			}
+			
+			while(!sc.hasNext("&")) {
+				
+				for (int j = 0; j < nbStat; j++) {
+					stat[j] = sc.nextInt();
+					sc.next(";");
+				}
+				switch(stat[0]) {
+				case 0:
+					Play.enemyTeam.add(new Mage(Play.gameGrid.getCell(stat[6], stat[7]), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.enemy));
+					break;
+				
+				case 1:
+					Play.enemyTeam.add(new Warrior(Play.gameGrid.getCell(stat[6], stat[7]), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.enemy));
+					break;
+				
+				case 2:
+					Play.enemyTeam.add(new Archer(Play.gameGrid.getCell(stat[6], stat[7]), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.enemy));
+					break;
+				}
+				Play.enemyTeam.get(Play.enemyTeam.size()-1).setTeam(Character.enemy);
+				Play.enemyTeam.get(Play.enemyTeam.size()-1).init();
 			}
 			
 			
@@ -145,10 +315,10 @@ public class Play extends BasicGameState {
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
-			int type, dim, selectedMap = 0; //selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int type, dim;//selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
 			int countMap = 0;
 			
-			while(countMap!=selectedMap) {
+			while(countMap!=mapLevel) {
 				sc.next();
 				if(sc.hasNext("&")) {
 					countMap++;
@@ -165,7 +335,8 @@ public class Play extends BasicGameState {
 			for(int i = 0; i < dim; i++) {
 				for(int j = 0; j < dim; j++) {
 					type = sc.nextInt();					
-					Grid.grid[i][j].setCellType(type);					
+					Grid.grid[i][j].setCellType(type);	
+					Grid.grid[i][j].init();
 					sc.next(";");
 				}				
 			}
@@ -185,26 +356,78 @@ public class Play extends BasicGameState {
 
 		switch (key) {
 			case Input.KEY_LEFT:
-				if (currentJ > 0) {
-					Play.cursor.setPosFromIndex(currentI, currentJ - 1);
+				switch(state) {
+					case placement:
+						if (currentJ > 0) {
+							Play.cursor.setPosFromIndex(currentI, currentJ - 1);
+						}
+						break;
+				
+					case stratSelect:
+						
+						break;
+				
+					case playing:
+						
+						break;
 				}
 				break;
 			
 			case Input.KEY_RIGHT:
-				if (currentJ < Play.gameGrid.getCols() - 1) {
-					Play.cursor.setPosFromIndex(currentI, currentJ + 1);
+				switch(state) {
+					case placement:
+						if (currentJ < Play.gameGrid.getCols() - 1) {
+							Play.cursor.setPosFromIndex(currentI, currentJ + 1);
+						}
+						break;
+			
+					case stratSelect:
+						
+						break;
+			
+					case playing:
+						
+						break;
 				}
 				break;
 			
 			case Input.KEY_UP:
-				if (currentI > 0) {
-					Play.cursor.setPosFromIndex(currentI - 1, currentJ);
+				switch(state) {
+					case placement:
+						if (currentI > 0) {
+							Play.cursor.setPosFromIndex(currentI - 1, currentJ);
+						}
+						break;
+						
+					case stratSelect:
+						if (selectedStrat != offensive) {
+							selectedStrat -= 1;
+						}
+						break;
+						
+					case playing:
+						
+						break;
 				}
 				break;
 			
 			case Input.KEY_DOWN:
-				if (currentI < Play.gameGrid.getRows() - 1) {
-					Play.cursor.setPosFromIndex(currentI + 1, currentJ);
+				switch(state) {
+					case placement:
+						if (currentI < Play.gameGrid.getRows() - 1) {
+							Play.cursor.setPosFromIndex(currentI + 1, currentJ);
+						}
+						break;
+						
+					case stratSelect:
+						if (selectedStrat != defensive) {
+							selectedStrat += 1;
+						}
+						break;
+						
+					case playing:
+						
+						break;
 				}
 				break;
 
@@ -233,11 +456,23 @@ public class Play extends BasicGameState {
 				break;
 			
 			case Input.KEY_ESCAPE:
-				if(cursor.hasCharacter()) {
-					cursor.deselect();
-				}
-				else {
-					sbg.enterState(Main.menu);
+				switch(state) {
+				case placement:
+					if(cursor.hasCharacter()) {
+						cursor.deselect();
+					}
+					else {
+						sbg.enterState(Main.menu);
+					}
+					break;
+				
+				case stratSelect:
+					state = placement;
+					break;
+				
+				case playing:
+					
+					break;
 				}
 				break;
 				
@@ -248,14 +483,50 @@ public class Play extends BasicGameState {
 				break;
 				
 			case Input.KEY_ENTER:
-				if(cursor.hasCharacter()) {
-					cursor.placeCharacter();
-				}
-				else if(cursor.onCharacter()) {
-					cursor.selectMove();
-				}
-				else {
-					sbg.enterState(Main.selectCharaScreen);
+				switch(state) {
+					case placement:
+						if(cursor.isSelected()) {
+							if(cursor.getSelection().getTeam()==Character.ally) {
+								cursor.selectMove();
+							}
+						}
+						else if(cursor.hasCharacter()) {
+							if (cursor.isPlacable()) {
+								state = stratSelect;
+							}
+						}
+						else if(cursor.onCharacter()){
+							cursor.select();
+						}
+						else {
+							sbg.enterState(Main.selectCharaScreen);
+						}
+						break;
+					
+					case stratSelect:
+						switch (selectedStrat) {
+						case offensive:
+							cursor.getSelection().setStrategie(new OffensiveStrategy(cursor.getSelection()));
+							cursor.placeCharacter();
+							selectedStrat = offensive;
+							break;
+						case defensive:
+//							cursor.getSelection().setStrategie(new BalancedStrategy(cursor.getSelection()));
+							cursor.placeCharacter();
+							selectedStrat = offensive;
+							break;
+						case balanced:
+//							cursor.getSelection().setStrategie(new DefensiveStrategy(cursor.getSelection()));
+							cursor.placeCharacter();
+							selectedStrat = offensive;
+							break;
+						}
+						state = placement;
+						break;
+					
+					case playing:
+						
+						break;
 				}
 				break;
 		}

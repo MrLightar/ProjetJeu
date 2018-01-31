@@ -1,4 +1,4 @@
-package strategie;
+package strategy;
 
 
 import java.util.ArrayList;
@@ -8,7 +8,7 @@ import map.*;
 import entity.Character;
 
 
-public abstract class Strategie {
+public abstract class Strategy {
 
 	protected Character chara;
 
@@ -21,7 +21,7 @@ public abstract class Strategie {
 	protected ArrayList<Cell> bonusesInRange;
 
 
-	public Strategie(Character chara) {
+	public Strategy(Character chara) {
 		this.chara = chara;
 	}
 	

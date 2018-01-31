@@ -1,4 +1,4 @@
-package strategie;
+package strategy;
 
 
 import map.*;
@@ -7,10 +7,14 @@ import entity.Character;
 import java.util.ArrayList;
 
 
-public class OffensiveStrategie extends Strategie {
+public class OffensiveStrategy extends Strategy {
 	
-	public OffensiveStrategie(Character chara) {
+	public OffensiveStrategy(Character chara) {
 		super(chara);
+	}
+	
+	public String toString() {
+		return "offensive";
 	}
 	
 	
