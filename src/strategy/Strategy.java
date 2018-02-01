@@ -104,8 +104,7 @@ public abstract class Strategy {
 		ArrayList<Cell> openSet = new ArrayList<>();
 		ArrayList<Cell> closedSet = new ArrayList<>();
 		ArrayList<Cell> path = new ArrayList<>();
-
-		if (start == end || end.hasChara() && start.distanceFrom(end) == 1) {
+		if (start == end || (end.hasChara() && end.getChara()!=chara) && start.distanceFrom(end) == 1) {
 //			System.out.println("Path Finding : Already at destination\n");
 			path.add(start);
 			return path;
@@ -132,7 +131,7 @@ public abstract class Strategy {
 			if (current == end) {
 				// Find the path
 				Cell temp = current;
-				if (end.hasChara()) {
+				if (end.hasChara() && end.getChara()!=chara) {
 					temp = temp.getPrevious();
 				}
 				path.add(temp);
@@ -418,7 +417,7 @@ public abstract class Strategy {
 
 	public void applyPath(ArrayList<Cell> path, int nummove) {
 		int end = Math.min(nummove - 1, path.size() - 2);
-		for (int i = end; i >= 0; i--) {
+		for (int i = path.size() - 2; i >= path.size() - 2-end; i--) {
 			// si la cellule suivante est vers le haut
 			if (path.get(i).getI() < path.get(i + 1).getI()) {
 				this.actions.add(0);
@@ -462,7 +461,7 @@ public abstract class Strategy {
 			for (Cell othercell : neighbors) {
 				// si il y a un allie
 				if (othercell.hasChara()) {
-					if (othercell.getChara().isAnEnemy(this.chara) && othercell.getChara() != this.chara) {
+					if (!othercell.getChara().isAnEnemy(this.chara) && othercell.getChara() != this.chara) {
 						res += 5;
 					}
 				}
@@ -476,7 +475,7 @@ public abstract class Strategy {
 				}
 			}
 
-			if (cell.getCellType() == 3 || cell.getCellType() == 3) { // si il y a un bonus sur la case
+			if ((cell.getCellType() == 3 || cell.getCellType() == 4) && chara.getBonus()==0 ) { // si il y a un bonus sur la case
 				res += 3;
 			}
 
@@ -533,7 +532,7 @@ public abstract class Strategy {
 			i--;
 		}
 		for (int k = 0; k < rangegrid.size(); k++) {
-			System.out.println("i= " + rangegrid.get(k).getI() + " j= " + rangegrid.get(k).getJ() + " value= " + tab[k]);
+			//System.out.println("i= " + rangegrid.get(k).getI() + " j= " + rangegrid.get(k).getJ() + " value= " + tab[k]);
 		}
 	}
 	
