@@ -2,6 +2,7 @@ package entity;
 
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -15,14 +16,14 @@ import strategy.Strategy;
 
 
 public abstract class Character extends Entity {
-	
+
 	protected Image texture;
 	protected Image textureAttack;
 	protected Image textureSimple;
 
 	protected Animation[] animations = new Animation[10];
 	protected Animation[] attackAnimations = new Animation[3];
-	
+
 	protected int job;
 	protected int level;
 	protected int pv_max;
@@ -34,18 +35,19 @@ public abstract class Character extends Entity {
 	protected int action;
 	protected int animationCount;
 	protected int team;
-	
+
 	protected int x;
 	protected int y;
 	protected int endMoveX;
 	protected int endMoveY;
-	
-	protected Strategy strategie;
-	
+
+	protected Strategy strategy;
+
 	protected boolean alive;
 	protected boolean moving;
 	protected boolean underAttack;
 	protected boolean animationChange;
+
 
 	public static final int mage = 0;
 	public static final int warrior = 1;
@@ -53,8 +55,12 @@ public abstract class Character extends Entity {
 	public static final int ally = 1;
 	public static final int enemy = -1;
 
+	public static final int moveBonus = 1;
+	public static final int attackBonus = 2;
 
-	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM) {
+
+
+	public Character(Cell pos, int job, int lvl, int pv_max, int att, int PO, int PM, int team) {
 		super(pos);
 		pos.setChara(this);
 		this.job = job;
@@ -64,20 +70,23 @@ public abstract class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.team = team;
 		this.bonus = 0;
 		this.action = 6;
 		this.alive = true;
 		this.moving = false;
 		this.underAttack = false;
-		
+
+		this.team = team;
+
 		this.animationCount = 0;
-		
+
 		this.x = this.pos.getJ() * Grid.cellSize;
 		this.y = this.pos.getI() * Grid.cellSize;
-		
+
 	}
-	
-	public Character(int job, int lvl, int pv_max, int att, int PO, int PM) {
+
+	public Character(int job, int lvl, int pv_max, int att, int PO, int PM, int team) {
 		super();
 		this.job = job;
 		this.level = lvl;
@@ -86,21 +95,24 @@ public abstract class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.team = team;
 		this.bonus = 0;
 		this.action = 6;
 		this.alive = true;
 		this.moving = false;
 		this.underAttack = false;
-		
+
+		this.team = team;
+
 		this.animationCount = 0;
-		
+
 		this.x = 0;
 		this.y = 0;
-		
+
 	}
 
 	public int getLevel() {
-		return this.level;
+		return level;
 	}
 
 	public void setLevel(int level) {
@@ -108,7 +120,7 @@ public abstract class Character extends Entity {
 	}
 
 	public int getPv_max() {
-		return this.pv_max;
+		return pv_max;
 	}
 
 	public void setPv_max(int pv_max) {
@@ -116,7 +128,7 @@ public abstract class Character extends Entity {
 	}
 
 	public int getPv() {
-		return this.pv;
+		return pv;
 	}
 
 	public void setPv(int pv) {
@@ -124,7 +136,7 @@ public abstract class Character extends Entity {
 	}
 
 	public int getAtt() {
-		return this.att;
+		return att;
 	}
 
 	public void setAtt(int att) {
@@ -132,13 +144,13 @@ public abstract class Character extends Entity {
 	}
 
 	public int getPO() {
-		return this.PO;
+		return PO;
 	}
 
 	public void setPO(int pO) {
-		this.PO = pO;
+		PO = pO;
 	}
-	
+
 	public int getPM() {
 		return this.PM;
 	}
@@ -146,26 +158,37 @@ public abstract class Character extends Entity {
 	public void setPM(int PM) {
 		this.PM = PM;
 	}
-	
+
 	public int getBonus() {
-		return this.bonus;
+		return bonus;
 	}
 
 	public void setBonus(int bonus) {
 		this.bonus = bonus;
 	}
-	
+
+	public int getTeam() {
+		return team;
+	}
+
+	public void setTeam(int team) {
+		this.team = team;
+	}
+
+	public Strategy getStrategy() {
+		return strategy;
+	}
+
+	public void setStrategie(Strategy strategy) {
+		this.strategy = strategy;
+	}
+
 	public Image getTexture() {
-		return this.texture;
+		return texture;
 	}
 
 	public Image getTextureSimple() {
-		return this.textureSimple;
-	}
-
-
-	public void setTeam(int i) {
-		this.team = i;
+		return textureSimple;
 	}
 
 	public boolean isMoving() {
@@ -177,11 +200,11 @@ public abstract class Character extends Entity {
 		this.setPosFromCell(pos);
 		this.x = this.pos.getJ() * Grid.cellSize;
 		this.y = this.pos.getI() * Grid.cellSize;
-		
+
 	}
 
 	public void moveUp() {
-		if (this.moving == false) {
+		if(this.moving == false) {
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
@@ -190,11 +213,12 @@ public abstract class Character extends Entity {
 			this.moving = true;
 			this.setPosFromIndex(rows - 1, cols);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}
 	}
 
 	public void moveLeft() {
-		if (this.moving == false) {
+		if(this.moving == false) {
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
@@ -203,24 +227,26 @@ public abstract class Character extends Entity {
 			this.moving = true;
 			this.setPosFromIndex(rows, cols - 1);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}
 	}
-	
+
 	public void moveDown() {
-		if (this.moving == false) {
+		if(this.moving == false) {
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
 			this.action = 6;
 			this.endMoveY = (rows + 1) * Grid.cellSize;
 			this.moving = true;
-			this.setPosFromIndex(rows + 1, cols);
+			this.setPosFromIndex(rows+1, cols);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}
 	}
 
 	public void moveRight() {
-		if (this.moving == false) {
+		if(this.moving == false) {
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
@@ -229,55 +255,66 @@ public abstract class Character extends Entity {
 			this.moving = true;
 			this.setPosFromIndex(rows, cols + 1);
 			this.pos.setChara(this);
+			this.testBonusCell();
 		}
 	}
-	
-	
+
+	public void testBonusCell() {
+		if(this.pos.getCellType() == Cell.moveBonusCell) {
+			this.bonus = Character.moveBonus;
+			this.pos.setCellType(Cell.grassCell);
+		}
+		if(this.pos.getCellType() == Cell.attackBonusCell) {
+			this.bonus = Character.attackBonus;
+			this.pos.setCellType(Cell.grassCell);
+		}
+	}
+
 	public void attack(Cell pos) {
-		// if Port�e
-		// if ! deja attack
-		if (this.verifPosChara()) {
+		//if Port�e
+		//if ! deja attack
+		if(verifPosChara()) {
 			System.out.println("Atatatataa");
-			
-			
-			if (this.getPos().getJ() > pos.getJ()) {
-				this.action = 1;
+
+
+			if(this.getPos().getJ() > pos.getJ()) {
+				action = 1;
 			}
-			if (this.getPos().getJ() < pos.getJ()) {
-				this.action = 3;
+			if(this.getPos().getJ() < pos.getJ()) {
+				action = 3;
 			}
-			if (this.getPos().getI() > pos.getI()) {
-				this.action = 0;
+			if(this.getPos().getI() > pos.getI()) {
+				action = 0 ;
 			}
-			if (this.getPos().getI() < pos.getI()) {
-				this.action = 2;
+			if(this.getPos().getI() < pos.getI()) {
+				action = 2;
 			}
 			this.endMoveX = pos.getI() * Grid.cellSize;
 			this.endMoveY = pos.getJ() * Grid.cellSize;
-			
-			
-			pos.getChara().dommage(this.att + 3 * (this.bonus == 3 ? 1 : 0));
+
+
+			pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
 		}
-		
+
 	}
-	
-	
+
+
 	public void dommage(int dmg) {
 		this.pv -= dmg;
 		this.underAttack = true;
-		if (this.pv <= 0) {
-			this.pos.setChara(null);
+		if(pv <= 0) {
+			pos.setChara(null);
 			this.alive = false;
 			System.out.println("La cible est morte !");
-			this.action = 8;
+			action = 8 ;
 //			Play.getChara().remove(this);
 		} else {
 			System.out.println("PV Cible : " + this.pv + " / " + this.pv_max);
-			
+
 		}
 	}
-	
-	
+
+
 	public boolean isKillable(int dmg) {
 		if (this.pv <= dmg) {
 			return true;
@@ -285,7 +322,7 @@ public abstract class Character extends Entity {
 			return false;
 		}
 	}
-	
+
 	public boolean isAnEnemy(Character chara) {
 		if (this.team == chara.team) {
 			return false;
@@ -293,77 +330,99 @@ public abstract class Character extends Entity {
 			return true;
 		}
 	}
-	
-	
+
 	abstract public void init() throws SlickException;
+
 
 
 	public Animation loadAnimation(SpriteSheet spriteSheet, int startX, int endX, int y, int animSpeed) {
 		Animation animation = new Animation();
-		for (int x = startX; x < endX; x++) {
+		for( int x = startX; x < endX; x++) {
 			animation.addFrame(spriteSheet.getSprite(x, y), animSpeed);
 		}
-		
+
 		return animation;
 	}
 
 
-	abstract public void render(GameContainer gc, Graphics g);
+	public void render(GameContainer gc, Graphics g) {
+		if(this.alive) {
+			Color c = g.getColor();
+			g.setColor(new Color(0, 0, 255, .5f));
+			g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);
+			g.setColor(c);
+		}
+	}
+
+	public void renderEnemy(GameContainer gc, Graphics g) {
+		if(this.alive) {
+			Color c = g.getColor();
+			g.setColor(new Color(255, 0, 0, .5f));
+		    g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);
+		    g.setColor(c);
+		}
+	}
 
 
 	@Override
 	public void update(GameContainer gc, int delta) throws SlickException {
-		// System.out.println(this.x + " et " + this.y);
-		
-		if (this.moving == true) {
+		//System.out.println(this.x + " et " + this.y);
+
+		if(this.moving == true) {
 			switch (this.action) {
 				case 4:
 					this.y -= 3;
-					if (this.y <= this.endMoveY) {
-						this.moving = false;
-						this.x = this.pos.getJ() * Grid.cellSize;
-						this.y = this.pos.getI() * Grid.cellSize;
-					}
+					if ( this.y <= this.endMoveY) {
+		        		this.moving = false;
+		        		this.x = this.pos.getJ() * Grid.cellSize;
+		        		this.y = this.pos.getI() * Grid.cellSize;
+		        	}
+
 					break;
-				case 5:
-					this.x -= 3;
-					if (this.x <= this.endMoveX) {
-						this.moving = false;
-						this.x = this.pos.getJ() * Grid.cellSize;
-						this.y = this.pos.getI() * Grid.cellSize;
-					}
+		        case 5:
+		        	this.x -= 3;
+		        	if ( this.x <= this.endMoveX) {
+		        		this.moving = false;
+		        		this.x = this.pos.getJ() * Grid.cellSize;
+		        		this.y = this.pos.getI() * Grid.cellSize;
+		        	}
 					break;
-				case 6:
-					this.y += 3;
-					if (this.y >= this.endMoveY) {
-						this.moving = false;
-						this.x = this.pos.getJ() * Grid.cellSize;
-						this.y = this.pos.getI() * Grid.cellSize;
-					}
+		        case 6:
+		        	this.y += 3;
+		        	if ( this.y >= this.endMoveY) {
+		        		this.moving = false;
+		        		this.x = this.pos.getJ() * Grid.cellSize;
+		        		this.y = this.pos.getI() * Grid.cellSize;
+		        	}
+		        	break;
+		        case 7:
+		        	this.x += 3;
+		        	if ( this.x >= this.endMoveX) {
+		        		this.moving = false;
+		        		this.x = this.pos.getJ() * Grid.cellSize;
+		        		this.y = this.pos.getI() * Grid.cellSize;
+		        	}
 					break;
-				case 7:
-					this.x += 3;
-					if (this.x >= this.endMoveX) {
-						this.moving = false;
-						this.x = this.pos.getJ() * Grid.cellSize;
-						this.y = this.pos.getI() * Grid.cellSize;
-					}
-					break;
+
 			}
 		}
 	}
 
 
+
 	@Override
 	public void updateCharaGrid(Cell posInit, Cell posFin) {
-		if (posInit == null) {
+		if (posInit==null) {
 			posFin.setChara(this);
-		} else {
+		}
+		else {
 			posInit.setChara(null);
 			posFin.setChara(this);
 		}
 	}
 
 
-}
 
+
+
+}

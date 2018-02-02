@@ -7,14 +7,6 @@ import entity.Character;
 import java.util.ArrayList;
 
 
-//  ==================================================
-//
-//	gameTurn -> remplir arraylist de méthodes
-//	update -> dérouler le tableau de méthodes
-//
-//  ==================================================
-
-
 public class OffensiveStrategy extends Strategy {
 
 	public OffensiveStrategy(Character chara) {
@@ -34,9 +26,12 @@ public class OffensiveStrategy extends Strategy {
 		boolean bestMove = false;
 
 		int PM = this.chara.getPM();
-		;
+		int Att =  this.chara.getAtt();
 		if (this.chara.getBonus() == 1) {
 			PM += 3;
+		}
+		if (this.chara.getBonus() == 2) {
+			Att += 3;
 		}
 
 
@@ -57,7 +52,7 @@ public class OffensiveStrategy extends Strategy {
 			for (Cell enemyPos : this.enemiesInRange) {
 				Character enemy = enemyPos.getChara();
 				// S'il est achevable
-				if (enemy.isKillable(this.chara.getAtt())) {
+				if (enemy.isKillable(Att)) {
 					System.out.println("\tEnnemi achevable");
 					bestMove = true;
 					mainTarget = enemyPos;
@@ -155,4 +150,3 @@ public class OffensiveStrategy extends Strategy {
 		System.out.println(secondPath);
 	}
 }
-

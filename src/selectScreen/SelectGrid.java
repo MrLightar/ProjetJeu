@@ -13,6 +13,7 @@ import org.newdawn.slick.TrueTypeFont;
 
 import core.Main;
 import entity.Archer;
+import entity.Character;
 import entity.Mage;
 import entity.Warrior;
 
@@ -97,15 +98,15 @@ public class SelectGrid {
 				
 				switch(stat[0]) {
 					case 0:
-						SelectGrid.grid[i][j].setChara(new Mage(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						SelectGrid.grid[i][j].setChara(new Mage(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
 				
 					case 1:
-						SelectGrid.grid[i][j].setChara(new Warrior(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						SelectGrid.grid[i][j].setChara(new Warrior(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
 				
 					case 2:
-						SelectGrid.grid[i][j].setChara(new Archer(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						SelectGrid.grid[i][j].setChara(new Archer(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
 					}
 				

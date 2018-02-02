@@ -1,246 +1,579 @@
 package core;
 
-
+import java.awt.Font;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.newdawn.slick.*;
-import org.newdawn.slick.state.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.state.BasicGameState;
+import org.newdawn.slick.state.StateBasedGame;
 
-import map.*;
-import strategy.*;
-import entity.*;
+import entity.Archer;
 import entity.Character;
-
+import entity.Cursor;
+import entity.Mage;
+import entity.Warrior;
+import map.Grid;
+import selectScreen.SelectGrid;
+import strategy.*;
 
 public class Play extends BasicGameState {
-
+	
 	private StateBasedGame sbg;
 	private GameContainer gc;
-
+	
 	public static Grid gameGrid;
-
+	
 	private static Cursor cursor;
-	// taille du tableau defini actuellement le nb de personnage cree
+	//taille du tableau defini actuellement le nb de personnage cree
 	private static ArrayList<Character> chara;
+	private static ArrayList<Character> enemyTeam;
 	
-	private Strategy strat;
-
-
+	private static int mapLevel;
+	
+	
+	public static TrueTypeFont ttf1;
+	public static TrueTypeFont ttf2;
+	
+	private Image background;
+	private Image image_pv;
+	private Image image_att;
+	private Image image_po;
+	private Image image_pm;
+	
+	
+	private int state;
+	
+	private static final int placement = 0;
+	private static final int stratSelect = 1;
+	private static final int playing = 2;
+	
+	private int selectedStrat;
+	
+	private Image offensiveButton;
+	private Image defensiveButton;
+	private Image balancedButton;
+	private Image stratCursor;
+	
+	private static final int offensive = 0;
+	private static final int balanced = 1;
+	private static final int defensive = 2;
+	
+	private int heightButton;
+	private int widthButton;
+	
+	private Strategy strat;//POUR TEST
+	
+	public static ByteArrayOutputStream baos;
+	
+	
 	public Play(int state) {
+		this.mapLevel = 9;//a suprimmer
+		
+		// Create a stream to hold the output
+	    baos = new ByteArrayOutputStream();
+	    PrintStream ps = new PrintStream(baos);
+	    // IMPORTANT: Save the old System.out!
+	    PrintStream old = System.out;
+	    // Tell Java to use your special stream
+	    System.setOut(ps);
+//	    // Print some output: goes to your special stream
+//	    System.out.println("Foofoofoo!");
+//	    // Put things back
+//	    System.out.flush();
+//	    System.setOut(old);
 	}
 	
 	
+
 	public static Cursor getCursor() {
-		return Play.cursor;
+		return cursor;
 	}
-	
+
 	public static void setCursor(Cursor cursor) {
 		Play.cursor = cursor;
 	}
-	
+
 	public static ArrayList<Character> getChara() {
-		return Play.chara;
+		return chara;
 	}
-	
+
 	public static void setChara(ArrayList<Character> chara) {
 		Play.chara = chara;
 	}
+
 	
-	
+
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		this.sbg = sbg;
 		this.gc = gc;
-
-		Play.chara = new ArrayList<>();
-
-		// initialisation grille
+		
+		chara = new ArrayList<>();
+		enemyTeam = new ArrayList<>();
+		
+		//initialisation grille
 		this.initGridDB(gc);
-		System.out.println("Cell size : " + Grid.cellSize);
 
-		// creation curseur
+		//creation curseur
 		Play.cursor = new entity.Cursor(Play.gameGrid.getCell(1, 2));
-
-		// initialisation personnage
-		this.initCharacter();
-		Play.chara.get(0).setTeam(Character.ally);
-
-		this.strat = new DefensiveStrategy(Play.chara.get(0));
+		
+		//initialisation personnage	
+		initCharacter();
+		initEnemy();
+		
+		ttf1 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/30), true);
+		ttf2 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/50), true);
+		
+		background = new Image("/res/right_background.png");
+		background = background.getScaledCopy(Main.width-Main.height, Main.height);
+		image_pv = new Image("res/pv.png");
+		image_pv = image_pv.getScaledCopy(Main.height/20, Main.height/20);
+		image_att = new Image("res/att.png");
+		image_att = image_att.getScaledCopy(Main.height/20, Main.height/20);
+		image_po = new Image("res/po.png");
+		image_po = image_po.getScaledCopy(Main.height/20, Main.height/20);
+		image_pm = new Image("res/pm.png");
+		image_pm = image_pm.getScaledCopy(Main.height/20, Main.height/20);
+		
+		
+		heightButton = Main.height / 16;
+		widthButton = Main.width / 6;
+		
+		this.offensiveButton = new Image("res/offensiveButton.png");
+		this.offensiveButton = this.offensiveButton.getScaledCopy(widthButton, heightButton);
+		this.balancedButton = new Image("res/balancedButton.png");
+		this.balancedButton = this.balancedButton.getScaledCopy(widthButton, heightButton);
+		this.defensiveButton = new Image("res/defensiveButton.png");
+		this.defensiveButton = this.defensiveButton.getScaledCopy(widthButton, heightButton);
+		this.stratCursor = new Image("res/stratCursor.png");
+		this.stratCursor = this.stratCursor.getScaledCopy(widthButton, heightButton);
+		
+		selectedStrat = offensive;
+		state = placement;
+		
+		
+		this.strat = new DefensiveStrategy(Play.chara.get(0)); //POUR TEST
+		
+		System.out.println("\n");
+		System.out.println("\n");
+		System.out.println("\n");
+		System.out.println("\n");
 	}
 	
 	
+
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		Play.gameGrid.render(gc, g);
-
-		for (int i = 0; i < Play.chara.size(); i++) {
+		
+		for( int i=0; i< chara.size(); i++) {
 			Play.chara.get(i).render(gc, g);
 		}
+		for( int i=0; i< enemyTeam.size(); i++) {
+			Play.enemyTeam.get(i).renderEnemy(gc, g);
+		}
+//		Play.chara.get(1).render(gc, g);
+		
+		g.drawImage(background, Main.height, 0);
+		
+		
+		
+		String[] words = baos.toString().split("\n");
+		for (int i=0; i<5; i++) {
+			if(words.length>5) {
+				ttf2.drawString(Main.width*16/24, Main.height*(14+i)/20, words[words.length-(5-i)]);
+			}
+		}
+		
+		
+		
+		
+		if(cursor.hasCharacter()) {
+			ttf1.drawString(Main.width*17/24, Main.height*10/20, new Integer(cursor.getSelection().getPv_max()).toString());
+			ttf1.drawString(Main.width*19/24, Main.height*10/20, new Integer(cursor.getSelection().getAtt()).toString());
+			ttf1.drawString(Main.width*17/24, Main.height*12/20, new Integer(cursor.getSelection().getPO()).toString());
+			ttf1.drawString(Main.width*19/24, Main.height*12/20, new Integer(cursor.getSelection().getPM()).toString());
+			g.drawImage(image_pv, Main.width*16/24, Main.height*10/20);
+			g.drawImage(image_att, Main.width*18/24, Main.height*10/20);
+			g.drawImage(image_po, Main.width*16/24, Main.height*12/20);
+			g.drawImage(image_pm, Main.width*18/24, Main.height*12/20);
+		}
+		
+//		if(cursor.isSelected()) {
+//			switch(cursor.getSelection().getStrategie().toString()) {
+//			case "offensive":
+//				g.drawImage(offensiveButton, widthButton *4, heightButton *7);
+//				break;
+//			case "defensive":
+//				g.drawImage(defensiveButton, widthButton *4, heightButton *7);
+//				break;
+//			case "balanced":
+//				g.drawImage(balancedButton, widthButton *4, heightButton *7);
+//				break;
+//			}
+//		}
+		
 		Play.cursor.render(gc, g);
-
-		g.drawString(Play.cursor.getPos().toString(), 900, 500);
+		if(state == stratSelect) {
+			g.drawImage(offensiveButton, widthButton *4, heightButton *5);
+			g.drawImage(balancedButton, widthButton *4, heightButton *6);
+			g.drawImage(defensiveButton, widthButton *4, heightButton *7);
+			g.drawImage(stratCursor, widthButton *4, (selectedStrat + 5) * heightButton);
+		}
+		
 	}
+
 	
 	
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int delta) throws SlickException {
-		for (int i = 0; i < Play.chara.size(); i++) {
-			Play.chara.get(i).update(gc, delta);
+		for( int i=0; i< chara.size(); i++) {
+			Play.chara.get(i).update(gc, delta);			
 		}
+		for( int i=0; i< enemyTeam.size(); i++) {
+			Play.enemyTeam.get(i).update(gc, delta);
+		}
+		
 		this.strat.update();
 	}
-
+	
 	@Override
 	public int getID() {
 		return Main.play;
-	}
+	}	
 	
 	
 	public void initCharacter() throws SlickException {
 		File f = new File("../ProjetJeu/res/character.txt");
-
+		
 		try {
 			Scanner sc = new Scanner(f);
-
+			
 			int stat[] = new int[6];
-			for (int i = 0; i < 3; i++) {
+			int i = 0;
+			while(!sc.hasNext("&")) {
 				for (int j = 0; j < 6; j++) {
 					stat[j] = sc.nextInt();
 					sc.next(";");
 				}
-				switch (stat[0]) {
+				switch(stat[0]) {
 					case 0:
-						Play.chara
-								.add(new Mage(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						Play.chara.add(new Mage(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
-					
+				
 					case 1:
-						Play.chara.add(
-								new Warrior(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						Play.chara.add(new Warrior(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
-					
+				
 					case 2:
-						Play.chara.add(
-								new Archer(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5]));
+						Play.chara.add(new Archer(Play.gameGrid.getCell(i, i), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
 						break;
-				}
-				Play.chara.get(Play.chara.size() - 1).init();
+					}
+					Play.chara.get(Play.chara.size()-1).init();
+					i++;
 			}
-
+			
+			
 			sc.close();
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		
 	}
-
-
-	public void initGridDB(GameContainer gc) throws SlickException {
-		File f = new File("../ProjetJeu/res/map.txt");
+	
+	public void initEnemy() throws SlickException {
+		File f = new File("../ProjetJeu/res/enemy.txt");
 		
 		try {
 			Scanner sc = new Scanner(f);
-			int type, dim, selectedMap = 1; // selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..
+	
+			int nbStat = 8;
+			int stat[] = new int[nbStat];
+			
 			int countMap = 0;
-
-			while (countMap != selectedMap) {
+			
+			while(countMap != mapLevel /*mapLevel*/) {
 				sc.next();
-				if (sc.hasNext("&")) {
+				if(sc.hasNext("&")) {
 					countMap++;
 					sc.next();
 					sc.next();
 				}
 			}
 			
-			dim = sc.nextInt();
+			while(!sc.hasNext("&")) {
+				
+				for (int j = 0; j < nbStat; j++) {
+					stat[j] = sc.nextInt();
+					sc.next(";");
+				}
+				switch(stat[0]) {
+				case 0:
+					Play.enemyTeam.add(new Mage(Play.gameGrid.getCell(stat[6], stat[7]), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.enemy));
+					break;
+				
+				case 1:
+					Play.enemyTeam.add(new Warrior(Play.gameGrid.getCell(stat[6], stat[7]), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.enemy));
+					break;
+				
+				case 2:
+					Play.enemyTeam.add(new Archer(Play.gameGrid.getCell(stat[6], stat[7]), stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.enemy));
+					break;
+				}
+				Play.enemyTeam.get(Play.enemyTeam.size()-1).setTeam(Character.enemy);
+				Play.enemyTeam.get(Play.enemyTeam.size()-1).init();
+			}
+			
+			
+			sc.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	public void initGridDB (GameContainer gc) throws SlickException {
+		File f = new File("../ProjetJeu/res/map.txt");
+			
+		try {	    	
+			Scanner sc = new Scanner(f);
+			int type, dim;//selectedMap = choix de map, 0 pour map 1, 1 pour map 2 etc..			
+			int countMap = 0;
+			
+			while(countMap!=mapLevel) {
+				sc.next();
+				if(sc.hasNext("&")) {
+					countMap++;
+					sc.next();
+					sc.next();
+				}
+			}
+						
+			dim=sc.nextInt();
 			Play.gameGrid = new Grid(dim, dim);
 			Play.gameGrid.init(gc);
 			sc.next(";");
-
-			for (int i = 0; i < dim; i++) {
-				for (int j = 0; j < dim; j++) {
-					type = sc.nextInt();
-					Grid.grid[i][j].setCellType(type);
+			
+			for(int i = 0; i < dim; i++) {
+				for(int j = 0; j < dim; j++) {
+					type = sc.nextInt();					
+					Grid.grid[i][j].setCellType(type);	
+					Grid.grid[i][j].init();
 					sc.next(";");
-				}
+				}				
 			}
-			sc.close();
+			sc.close();			
 		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 	}
-
-
+	
+	
 	@Override
 	public void keyPressed(int key, char c) {
 		int currentI = Play.cursor.getPos().getI();
 		int currentJ = Play.cursor.getPos().getJ();
-		
+
 		switch (key) {
 			case Input.KEY_LEFT:
-				if (currentJ > 0) {
-					Play.cursor.setPosFromIndex(currentI, currentJ - 1);
+				switch(state) {
+					case placement:
+						if (currentJ > 0) {
+							Play.cursor.setPosFromIndex(currentI, currentJ - 1);
+						}
+						break;
+				
+					case stratSelect:
+						
+						break;
+				
+					case playing:
+						
+						break;
 				}
 				break;
-
+			
 			case Input.KEY_RIGHT:
-				if (currentJ < Play.gameGrid.getCols() - 1) {
-					Play.cursor.setPosFromIndex(currentI, currentJ + 1);
+				switch(state) {
+					case placement:
+						if (currentJ < Play.gameGrid.getCols() - 1) {
+							Play.cursor.setPosFromIndex(currentI, currentJ + 1);
+						}
+						break;
+			
+					case stratSelect:
+						
+						break;
+			
+					case playing:
+						
+						break;
 				}
 				break;
-
+			
 			case Input.KEY_UP:
-				if (currentI > 0) {
-					Play.cursor.setPosFromIndex(currentI - 1, currentJ);
+				switch(state) {
+					case placement:
+						if (currentI > 0) {
+							Play.cursor.setPosFromIndex(currentI - 1, currentJ);
+						}
+						break;
+						
+					case stratSelect:
+						if (selectedStrat != offensive) {
+							selectedStrat -= 1;
+						}
+						break;
+						
+					case playing:
+						
+						break;
 				}
 				break;
-
+			
 			case Input.KEY_DOWN:
-				if (currentI < Play.gameGrid.getRows() - 1) {
-					Play.cursor.setPosFromIndex(currentI + 1, currentJ);
+				switch(state) {
+					case placement:
+						if (currentI < Play.gameGrid.getRows() - 1) {
+							Play.cursor.setPosFromIndex(currentI + 1, currentJ);
+						}
+						break;
+						
+					case stratSelect:
+						if (selectedStrat != defensive) {
+							selectedStrat += 1;
+						}
+						break;
+						
+					case playing:
+						
+						break;
 				}
 				break;
 
-			case Input.KEY_ESCAPE:
-				if (Play.cursor.hasCharacter()) {
-					Play.cursor.deselect();
-				} else {
-					this.sbg.enterState(Main.menu);
-				}
+			case Input.KEY_SPACE:
+				Play.cursor.testSelectMove();
 				break;
-			
-			case Input.KEY_DELETE:
-				if (Play.cursor.hasCharacter()) {
-					Play.cursor.supr();
-				}
-				break;
-			
-			case Input.KEY_ENTER:
-				if (Play.cursor.hasCharacter()) {
-					Play.cursor.placeCharacter();
-				} else if (Play.cursor.onCharacter()) {
-					Play.cursor.selectMove();
-				} else {
-					this.sbg.enterState(Main.selectCharaScreen);
-				}
-				break;
-			
-			
+				
 			case Input.KEY_A:
+				Play.cursor.testSelectAttack();
+				break;
+				
+			case Input.KEY_Z:
+				Play.chara.get(1).moveUp();
+				break;
+				
+			case Input.KEY_Q:
+				Play.chara.get(1).moveLeft();
+				break;
+				
+			case Input.KEY_S:
+				Play.chara.get(1).moveDown();
+				break;
+				
+			case Input.KEY_D:
+				Play.chara.get(1).moveRight();
+				break;
+				
+			case Input.KEY_I:
 				this.strat.gameTurn();
 				break;
-
-			case Input.KEY_Z:
-				ArrayList<Cell> path = this.strat.evaluatePath(Play.chara.get(0).getPos(), Play.chara.get(1).getPos());
-				System.out.println(path);
+			
+			case Input.KEY_ESCAPE:
+				switch(state) {
+				case placement:
+					if(cursor.hasCharacter()) {
+						cursor.deselect();
+					}
+					else {
+						sbg.enterState(Main.menu);
+					}
+					break;
+				
+				case stratSelect:
+					state = placement;
+					break;
+				
+				case playing:
+					
+					break;
+				}
+				break;
+				
+			case Input.KEY_DELETE:
+				if(cursor.hasCharacter()) {
+					cursor.supr();
+				}
+				break;
+				
+			case Input.KEY_ENTER:
+				switch(state) {
+					case placement:
+						if(cursor.isSelected()) {
+							if(cursor.getSelection().getTeam()==Character.ally) {
+								cursor.selectMove();
+							}
+						}
+						else if(cursor.hasCharacter()) {
+							if (cursor.isPlacable()) {
+								state = stratSelect;
+							}
+						}
+						else if(cursor.onCharacter()){
+							cursor.select();
+						}
+						else {
+							sbg.enterState(Main.selectCharaScreen);
+						}
+						break;
+					
+					case stratSelect:
+						switch (selectedStrat) {
+						case offensive:
+							cursor.getSelection().setStrategie(new OffensiveStrategy(cursor.getSelection()));
+							cursor.placeCharacter();
+							selectedStrat = offensive;
+							break;
+						case defensive:
+//							cursor.getSelection().setStrategie(new BalancedStrategy(cursor.getSelection()));
+							cursor.placeCharacter();
+							selectedStrat = offensive;
+							break;
+						case balanced:
+//							cursor.getSelection().setStrategie(new DefensiveStrategy(cursor.getSelection()));
+							cursor.placeCharacter();
+							selectedStrat = offensive;
+							break;
+						}
+						state = placement;
+						break;
+					
+					case playing:
+						
+						break;
+				}
 				break;
 		}
-
+		
 	}
 	
-	
+
 }

@@ -37,8 +37,6 @@ public class SelectCharaScreen extends BasicGameState {
 		
 		//creation curseur
 		SelectCharaScreen.cursor = new selectScreen.SelectCursor(SelectCharaScreen.choiceGrid.getCell(0, 0));
-		
-		System.out.println("SelectCell size : " + SelectGrid.cellSizeX + "  " + SelectGrid.cellSizeY);
 	}
 
 	@Override

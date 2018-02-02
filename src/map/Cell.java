@@ -19,9 +19,9 @@ public class Cell {
 	private int j;
 	private Character chara;
 	private int cellType;
-	private int cellBonus;
 
 	private Image texture;
+	private Image textureBonus;
 
 	private double PathFScore;
 	private double PathGScore;
@@ -29,6 +29,12 @@ public class Cell {
 
 	private ArrayList<Cell> neighbors;
 	private Cell previous;
+
+	public static final int grassCell = 0;
+	public static final int wallCell = 1;
+	public static final int waterCell = 2;
+	public static final int moveBonusCell = 3;
+	public static final int attackBonusCell = 4;
 
 
 	public Cell(int i, int j) {
@@ -39,7 +45,7 @@ public class Cell {
 		this.PathFScore = 0;
 		this.PathGScore = 0;
 		this.PathHScore = 0;
-		
+
 		this.neighbors = new ArrayList<>();
 		this.previous = null;
 	}
@@ -62,93 +68,93 @@ public class Cell {
 	}
 
 	public double getPathFScore() {
-		return this.PathFScore;
+		return PathFScore;
 	}
-	
-	
+
+
 	public void setPathFScore(double pathFScore) {
-		this.PathFScore = pathFScore;
+		PathFScore = pathFScore;
 	}
-	
-	
+
+
 	public double getPathGScore() {
-		return this.PathGScore;
+		return PathGScore;
 	}
-	
-	
+
+
 	public void setPathGScore(double pathGScore) {
-		this.PathGScore = pathGScore;
+		PathGScore = pathGScore;
 	}
-	
-	
+
+
 	public double getPathHScore() {
-		return this.PathHScore;
+		return PathHScore;
 	}
-	
-	
+
+
 	public void setPathHScore(double pathHScore) {
-		this.PathHScore = pathHScore;
+		PathHScore = pathHScore;
 	}
-	
-	
+
+
 	public ArrayList<Cell> getNeighbors() {
-		return this.neighbors;
+		return neighbors;
 	}
-	
-	
+
+
 	public void setNeighbors(ArrayList<Cell> neighbors) {
 		this.neighbors = neighbors;
 	}
-	
-	
+
+
 	public Cell getPrevious() {
-		return this.previous;
+		return previous;
 	}
-	
-	
+
+
 	public void setPrevious(Cell previous) {
 		this.previous = previous;
 	}
-	
-	
+
+
 	public Character getChara() {
 		return this.chara;
 	}
-	
+
 	public void setChara(Character character) {
 		this.chara = character;
 	}
-	
-	
+
+
 	public int getCellType() {
-		return this.cellType;
+		return cellType;
 	}
-	
-	
-	public void setCellType(int cellType) throws SlickException {
+
+
+	public void setCellType(int cellType) {
 		this.cellType = cellType;
-		switch (this.cellType) {
-			case 0:
-				this.texture = new Image("res/grass.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 1:
-				this.texture = new Image("res/wall.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 2:
-				this.texture = new Image("res/water.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 3:
-				this.texture = new Image("res/grass_bonus_attack.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-			case 4:
-				this.texture = new Image("res/grass_bonus_move.png");
-				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
-				break;
-		}
+//		switch (this.cellType) {
+//			case 0:
+//				this.texture = new Image("res/grass.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 1:
+//				this.texture = new Image("res/wall.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 2:
+//				this.texture = new Image("res/water.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 3:
+//				this.texture = new Image("res/grass_bonus_attack.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//			case 4:
+//				this.texture = new Image("res/grass_bonus_move.png");
+//				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+//				break;
+//		}
 	}
 
 
@@ -158,14 +164,6 @@ public class Cell {
 		} else {
 			return false;
 		}
-	}
-	
-	public int getCellBonus() {
-		return this.cellBonus;
-	}
-	
-	public void setCellBonus(int cellBonus) {
-		this.cellBonus = cellBonus;
 	}
 
 
@@ -190,53 +188,86 @@ public class Cell {
 			this.neighbors.add(grid.getCell(i - 1, j));
 		}
 	}
-	
-	
+
+
 	public void printNeighbors() {
 		for (Cell cell : this.neighbors) {
 			System.out.println(cell);
 		}
+}
+
+public ArrayList<Cell> getAllNeighbors(Grid grid) {
+	int i = this.i;
+	int j = this.j;
+	ArrayList<Cell> res = new ArrayList<>();
+	if (j < grid.getCols() - 1) {
+		res.add(grid.getCell(i, j + 1));
+	}
+	if (j > 0) {
+		res.add(grid.getCell(i, j - 1));
 	}
 
-	public ArrayList<Cell> getAllNeighbors(Grid grid) {
-		int i = this.i;
-		int j = this.j;
-		ArrayList<Cell> res = new ArrayList<>();
-		if (j < grid.getCols() - 1) {
-			res.add(grid.getCell(i, j + 1));
-		}
-		if (j > 0) {
-			res.add(grid.getCell(i, j - 1));
-		}
+	if (i < grid.getRows() - 1) {
+		res.add(grid.getCell(i + 1, j));
+	}
+	if (i > 0) {
+		res.add(grid.getCell(i - 1, j));
+	}
+	if (j < grid.getCols() - 1 && i < grid.getRows() - 1) {
+		res.add(grid.getCell(i + 1, j + 1));
+	}
+	if (j < grid.getCols() - 1 && i > 0) {
+		res.add(grid.getCell(i - 1, j + 1));
+	}
+	if (j > 0 && i < grid.getRows() - 1) {
+		res.add(grid.getCell(i + 1, j - 1));
+	}
+	if (j > 0 && i > 0) {
+		res.add(grid.getCell(i - 1, j - 1));
+	}
 
-		if (i < grid.getRows() - 1) {
-			res.add(grid.getCell(i + 1, j));
-		}
-		if (i > 0) {
-			res.add(grid.getCell(i - 1, j));
-		}
-		if (j < grid.getCols() - 1 && i < grid.getRows() - 1) {
-			res.add(grid.getCell(i + 1, j + 1));
-		}
-		if (j < grid.getCols() - 1 && i > 0) {
-			res.add(grid.getCell(i - 1, j + 1));
-		}
-		if (j > 0 && i < grid.getRows() - 1) {
-			res.add(grid.getCell(i + 1, j - 1));
-		}
-		if (j > 0 && i > 0) {
-			res.add(grid.getCell(i - 1, j - 1));
-		}
+	return res;
+}
 
-		return res;
+	public void init() throws SlickException {
+		switch (this.cellType) {
+		case 0:
+			this.texture = new Image("res/grass.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 1:
+			this.texture = new Image("res/wall.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 2:
+			this.texture = new Image("res/water.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 3:
+			this.texture = new Image("res/grass.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			this.textureBonus = new Image("res/moveBonus.png");
+			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		case 4:
+			this.texture = new Image("res/grass.png");
+			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			this.textureBonus = new Image("res/attackBonus.png");
+			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			break;
+		}
 	}
 
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.j * Grid.cellSize;
 		int y = this.i * Grid.cellSize;
-		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
-		g.draw(rect);
 		g.drawImage(this.texture, x, y);
+		if(this.cellType == 3) {
+			g.drawImage(this.textureBonus, x, y);
+		}
+		if(this.cellType == 4) {
+			g.drawImage(this.textureBonus, x, y);
+		}
 	}
 
 
@@ -247,14 +278,14 @@ public class Cell {
 		int y = this.i * Grid.cellSize;
 		Rectangle rect = new Rectangle(x + 1, y + 1, Grid.cellSize - 1, Grid.cellSize - 1);
 		g.fill(rect);
-	}
-	
-	
+}
+
+
 	@Override
 	public String toString() {
 		return "(" + this.i + ", " + this.j + ")";
-		
+
 	}
-	
-	
+
+
 }
