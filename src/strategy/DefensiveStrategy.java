@@ -16,6 +16,8 @@ public class DefensiveStrategy extends Strategy {
 
 	@Override
 	public void gameTurn() {
+		isPlaying = true;
+		
 		this.enemies = new ArrayList<>();
 		this.bonuses = new ArrayList<>();
 		this.rangeOfActionEnemies = new ArrayList<>();
@@ -72,15 +74,23 @@ public class DefensiveStrategy extends Strategy {
 		}
 		
 		// si il n'y a pas d'ennemi dans la zone, avancé vers le plus proche
+		System.out.println(1);
 		if (this.enemiesInRange.isEmpty()) {
+			tempPM=PM;
+			if(chara.getBonus()==0 && !bonusesInRange.isEmpty()) {
+				Cell closestBonus=getClosest(chara.getPos(), bonusesInRange);
+				tempPM-=evaluatePath(chara.getPos(), closestBonus).size();
+				this.applyPath(this.evaluatePath(this.chara.getPos(), closestBonus), PM);
+			}
 			Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
-			this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), PM);
+			this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
 		}
 		
 		// sinon
 
 		else {
 			// si on peut achever un ennemi, aller chercher un bonus et atteindre la meilleur case
+			System.out.println(2);
 			if(chara.getBonus()==0) {
 				i = 0;
 				while (!play && i <= this.enemiesInRange.size() - 1) {
@@ -118,6 +128,7 @@ public class DefensiveStrategy extends Strategy {
 			// sinon si on peut aller chercher un bonus,attaquer un ennemi, et atteindre la meilleur case
 
 			else {
+				System.out.println(3);
 				if(chara.getBonus()==0) {
 					j = 0;
 					while (!play && j <= this.bonusesInRange.size() - 1) {
@@ -156,6 +167,7 @@ public class DefensiveStrategy extends Strategy {
 				
 				// sinon si on peut aller chercher un bonus et aller à la meilleur case
 				else {
+					System.out.println(4);
 					if(chara.getBonus()==0) {
 						j = 0;
 						while (!play && j <= this.bonusesInRange.size() - 1) {
@@ -182,6 +194,7 @@ public class DefensiveStrategy extends Strategy {
 					
 					// sinon si on peut achever un ennemi et aller à la meilleur case
 					else {
+						System.out.println(5);
 						i = 0;
 						while (!play && i <= this.enemiesInRange.size() - 1) {
 							rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
@@ -210,15 +223,16 @@ public class DefensiveStrategy extends Strategy {
 						
 						// sinon si on peut attaquer un ennemi et aller à la meilleur case
 						else {
+							System.out.println(6);
 							i = 0;
 							while (!play && i <= this.enemiesInRange.size() - 1) {
-								rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
+								rangenemy = this.enemiesInRange.get(i);
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
 								if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
 									tempPM -= pathsave1.size() - 1;
 									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-									if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
+									if ((pathsave2!=null) && tempPM >= pathsave2.size() - 1) {
 										play = true;
 										cellsave = rangenemy;
 						
@@ -235,7 +249,9 @@ public class DefensiveStrategy extends Strategy {
 							}
 							
 							// sinon Attaquer et aller à la meilleur case atteignable
+							
 							else {
+								System.out.println(7);
 								tempPM = PM;
 								cellsave = this.getClosest(this.chara.getPos(), this.enemiesInRange);
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), cellsave);

@@ -35,6 +35,7 @@ public abstract class Character extends Entity {
 	protected int action;
 	protected int animationCount;
 	protected int team;
+	protected int price;
 
 	protected int x;
 	protected int y;
@@ -45,6 +46,7 @@ public abstract class Character extends Entity {
 
 	protected boolean alive;
 	protected boolean moving;
+	protected boolean attacking;
 	protected boolean underAttack;
 	protected boolean animationChange;
 
@@ -75,6 +77,7 @@ public abstract class Character extends Entity {
 		this.action = 6;
 		this.alive = true;
 		this.moving = false;
+		this.attacking = false;
 		this.underAttack = false;
 
 		this.team = team;
@@ -86,7 +89,7 @@ public abstract class Character extends Entity {
 
 	}
 
-	public Character(int job, int lvl, int pv_max, int att, int PO, int PM, int team) {
+	public Character(int job, int lvl, int pv_max, int att, int PO, int PM, int price, int team) {
 		super();
 		this.job = job;
 		this.level = lvl;
@@ -95,11 +98,13 @@ public abstract class Character extends Entity {
 		this.att = att;
 		this.PO = PO;
 		this.PM = PM;
+		this.price = price;
 		this.team = team;
 		this.bonus = 0;
 		this.action = 6;
 		this.alive = true;
 		this.moving = false;
+		this.attacking = false;
 		this.underAttack = false;
 
 		this.team = team;
@@ -167,6 +172,14 @@ public abstract class Character extends Entity {
 		this.bonus = bonus;
 	}
 
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
 	public int getTeam() {
 		return team;
 	}
@@ -191,8 +204,24 @@ public abstract class Character extends Entity {
 		return textureSimple;
 	}
 
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+
 	public boolean isMoving() {
 		return this.moving;
+	}
+	
+	public boolean isAttacking() {
+		return attacking;
+	}
+
+	public void setAttacking(boolean attacking) {
+		this.attacking = attacking;
 	}
 
 
@@ -204,27 +233,31 @@ public abstract class Character extends Entity {
 	}
 
 	public void moveUp() {
-		if(this.moving == false) {
+		if(this.attacking == false) {
+			this.moving = true;
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
 			this.action = 4;
 			this.endMoveY = (rows - 1) * Grid.cellSize;
-			this.moving = true;
+			
 			this.setPosFromIndex(rows - 1, cols);
 			this.pos.setChara(this);
 			this.testBonusCell();
 		}
 	}
 
+	
+
 	public void moveLeft() {
-		if(this.moving == false) {
+		if(this.attacking == false) {
+			this.moving = true;
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
 			this.action = 5;
 			this.endMoveX = (cols - 1) * Grid.cellSize;
-			this.moving = true;
+			
 			this.setPosFromIndex(rows, cols - 1);
 			this.pos.setChara(this);
 			this.testBonusCell();
@@ -232,13 +265,14 @@ public abstract class Character extends Entity {
 	}
 
 	public void moveDown() {
-		if(this.moving == false) {
+		if(this.attacking == false) {
+			this.moving = true;
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
 			this.action = 6;
 			this.endMoveY = (rows + 1) * Grid.cellSize;
-			this.moving = true;
+			
 			this.setPosFromIndex(rows+1, cols);
 			this.pos.setChara(this);
 			this.testBonusCell();
@@ -246,13 +280,14 @@ public abstract class Character extends Entity {
 	}
 
 	public void moveRight() {
-		if(this.moving == false) {
+		if(this.attacking == false) {
+			this.moving = true;
 			int rows = this.pos.getI();
 			int cols = this.pos.getJ();
 			this.pos.setChara(null);
 			this.action = 7;
 			this.endMoveX = (cols + 1) * Grid.cellSize;
-			this.moving = true;
+			
 			this.setPosFromIndex(rows, cols + 1);
 			this.pos.setChara(this);
 			this.testBonusCell();
@@ -273,28 +308,33 @@ public abstract class Character extends Entity {
 	public void attack(Cell pos) {
 		//if Port�e
 		//if ! deja attack
-		if(verifPosChara()) {
-			System.out.println("Atatatataa");
+		this.attacking = true;
+		if(this.moving == false) {
+			
+			if(verifPosChara()) {
+				System.out.println("Atatatataa");
 
 
-			if(this.getPos().getJ() > pos.getJ()) {
-				action = 1;
-			}
-			if(this.getPos().getJ() < pos.getJ()) {
-				action = 3;
-			}
-			if(this.getPos().getI() > pos.getI()) {
-				action = 0 ;
-			}
-			if(this.getPos().getI() < pos.getI()) {
-				action = 2;
-			}
-			this.endMoveX = pos.getI() * Grid.cellSize;
-			this.endMoveY = pos.getJ() * Grid.cellSize;
+				if(this.getPos().getJ() > pos.getJ()) {
+					action = 1;
+				}
+				if(this.getPos().getJ() < pos.getJ()) {
+					action = 3;
+				}
+				if(this.getPos().getI() > pos.getI()) {
+					action = 0 ;
+				}
+				if(this.getPos().getI() < pos.getI()) {
+					action = 2;
+				}
+				this.endMoveX = pos.getI() * Grid.cellSize;
+				this.endMoveY = pos.getJ() * Grid.cellSize;
 
-
-			pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
+				
+				pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
+			}
 		}
+		
 
 	}
 
@@ -403,7 +443,7 @@ public abstract class Character extends Entity {
 		        		this.y = this.pos.getI() * Grid.cellSize;
 		        	}
 					break;
-
+ 
 			}
 		}
 	}

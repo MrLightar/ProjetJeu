@@ -16,6 +16,8 @@ public class OffensiveStrategy extends Strategy {
 
 	@Override
 	public void gameTurn() {
+		isPlaying = true;
+		
 		System.out.println("\n\n========== OFFENSIVE ==========\n\n");
 
 		Cell mainTarget = null;
@@ -26,7 +28,7 @@ public class OffensiveStrategy extends Strategy {
 		boolean bestMove = false;
 
 		int PM = this.chara.getPM();
-		int Att =  this.chara.getAtt();
+		int Att = this.chara.getAtt();
 		if (this.chara.getBonus() == 1) {
 			PM += 3;
 		}
@@ -53,7 +55,7 @@ public class OffensiveStrategy extends Strategy {
 				Character enemy = enemyPos.getChara();
 				// S'il est achevable
 				if (enemy.isKillable(Att)) {
-					System.out.println("\tEnnemi achevable");
+					System.out.println("\tEnnemi achevable : " + Att);
 					bestMove = true;
 					mainTarget = enemyPos;
 					mainPath = this.evaluatePathAttack(this.chara.getPos(), mainTarget);
@@ -61,7 +63,6 @@ public class OffensiveStrategy extends Strategy {
 
 					this.applyPath(mainPath, PM);
 					this.attack(enemyPos);
-					this.enemies.remove(enemyPos);
 
 					// S'il reste des PM apres s'etre deplace
 					int mTargetDist = mainPath.size() - 1;
@@ -69,19 +70,22 @@ public class OffensiveStrategy extends Strategy {
 					if (remainingPM > 0) {
 						System.out.println("\t\tIl reste des PM");
 						PM = remainingPM;
-						if (this.bonuses.size() > 0) {
+						if (this.bonusesInRange.size() > 0) {
 							// S'il reste des bonus
-							System.out.println("\t\t\tIl reste des bonus, on se rapproche d'un bonus");
-							secondPath = this.getPathToClosest(mainTarget, this.bonuses);
+							System.out.println("\t\t\tIl reste des bonus proches");
+							secondPath = this.getPathToClosest(mainTarget, this.bonusesInRange);
 							this.applyPath(secondPath, PM);
 						} else {
 							// Se rapprocher de l'ennemi le plus proche
 							System.out.println("\t\t\tPlus de bonus, on se rapproche d'un ennemi");
 							secondPath = this.getPathToClosest(mainTarget, this.enemies);
+							secondTarget = secondPath.get(0);
+							secondPath = this.evaluatePathAttack(mainTarget, secondTarget);
 							this.applyPath(secondPath, PM);
 						}
 					}
 
+					this.enemies.remove(enemyPos);
 				}
 			}
 			// Sinon pas achevable
@@ -127,6 +131,8 @@ public class OffensiveStrategy extends Strategy {
 			if (this.bonusesInRange.size() > 0) {
 				System.out.println("\tBonus accessible");
 				mainPath = this.getPathToClosest(this.chara.getPos(), this.bonusesInRange);
+				mainTarget = mainPath.get(0);
+				this.applyPath(mainPath, PM);
 				// S'il reste des PM
 				int mTargetDist = mainPath.size() - 1;
 				int remainingPM = PM - mTargetDist;
@@ -135,11 +141,13 @@ public class OffensiveStrategy extends Strategy {
 					// Se rapprocher de l'ennemi le plus proche
 					PM = remainingPM;
 					secondPath = this.getPathToClosest(mainTarget, this.enemies);
+					this.applyPath(secondPath, PM);
 				}
 			} else {
 				// Se rapprocher de l'ennemi le plus proche
 				System.out.println("\tPas de bonus accessible, on se rapproche");
 				mainPath = this.getPathToClosest(this.chara.getPos(), this.enemies);
+				this.applyPath(mainPath, PM);
 			}
 		}
 
@@ -147,6 +155,6 @@ public class OffensiveStrategy extends Strategy {
 
 		System.out.println("\n\n===== PATHS =====\n");
 		System.out.println(mainPath + "\n");
-		System.out.println(secondPath);
+		System.out.println(secondPath + "\n");
 	}
 }

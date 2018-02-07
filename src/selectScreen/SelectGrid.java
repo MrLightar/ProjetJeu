@@ -89,24 +89,24 @@ public class SelectGrid {
 			
 			int i = 0;
 			int j = 0;
-			int stat[] = new int[6];
+			int stat[] = new int[7];
 			while (!sc.hasNext("&")) {
-				for (int k = 0; k < 6; k++) {
+				for (int k = 0; k < 7; k++) {
 					stat[k] = sc.nextInt();
 					sc.next(";");
 				}
 				
 				switch(stat[0]) {
 					case 0:
-						SelectGrid.grid[i][j].setChara(new Mage(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
+						SelectGrid.grid[i][j].setChara(new Mage(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], stat[6], Character.ally));
 						break;
 				
 					case 1:
-						SelectGrid.grid[i][j].setChara(new Warrior(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
+						SelectGrid.grid[i][j].setChara(new Warrior(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], stat[6], Character.ally));
 						break;
 				
 					case 2:
-						SelectGrid.grid[i][j].setChara(new Archer(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
+						SelectGrid.grid[i][j].setChara(new Archer(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], stat[6], Character.ally));
 						break;
 					}
 				

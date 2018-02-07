@@ -12,7 +12,7 @@ public abstract class Strategy {
 	
 	protected Character chara;
 	
-	protected ArrayList<Cell> enemies;
+	public ArrayList<Cell> enemies;
 	protected ArrayList<Cell> bonuses;
 	
 	protected ArrayList<Cell> rangeOfActionEnemies;
@@ -20,8 +20,10 @@ public abstract class Strategy {
 	protected ArrayList<Cell> enemiesInRange;
 	protected ArrayList<Cell> bonusesInRange;
 
-	protected ArrayList<Integer> actions;
+	public ArrayList<Integer> actions;
 	protected Cell target;
+	
+	protected static boolean isPlaying;
 	
 	
 	public Strategy(Character chara) {
@@ -40,8 +42,9 @@ public abstract class Strategy {
 	/* ========================================================================================== */
 
 	public void update() {
-		if (!this.actions.isEmpty() && !this.chara.isMoving()) {
-			switch (this.actions.get(0)) {
+		if (!this.actions.isEmpty()) {
+			if (!this.chara.isMoving()/* && !this.chara.isAttacking()*/) {
+				switch (this.actions.get(0)) {
 				case 0:
 					this.chara.moveUp();
 					this.actions.remove(0);
@@ -62,8 +65,15 @@ public abstract class Strategy {
 					this.chara.attack(this.target);
 					this.actions.remove(0);
 					break;
+				}
+				System.out.println("Action faite");
+			} else {
+				System.out.println("Pile tj remplie attente fin de mvt " + this.chara.isMoving() + "   |  " + this.chara.isAttacking());
 			}
+		}else {
+			isPlaying = false;
 		}
+		System.out.println("FIN");
 	}
 
 	/* ========================================================================================== */
@@ -104,7 +114,7 @@ public abstract class Strategy {
 		ArrayList<Cell> openSet = new ArrayList<>();
 		ArrayList<Cell> closedSet = new ArrayList<>();
 		ArrayList<Cell> path = new ArrayList<>();
-		if (start == end || (end.hasChara() && end.getChara()!=chara) && start.distanceFrom(end) == 1) {
+		if (start == end || end.hasChara() && end.getChara() != this.chara && start.distanceFrom(end) == 1) {
 //			System.out.println("Path Finding : Already at destination\n");
 			path.add(start);
 			return path;
@@ -117,7 +127,7 @@ public abstract class Strategy {
 		}
 
 		openSet.add(start);
-
+		
 		while (openSet.size() > 0) {
 			// keep going
 			int winner = 0;
@@ -127,15 +137,14 @@ public abstract class Strategy {
 				}
 			}
 			Cell current = openSet.get(winner);
-
 			if (current == end) {
 				// Find the path
 				Cell temp = current;
-				if (end.hasChara() && end.getChara()!=chara) {
+				if (end.hasChara() && end.getChara() != this.chara) {
 					temp = temp.getPrevious();
 				}
 				path.add(temp);
-				while (temp.getPrevious() != null) {
+				while (temp != start/* temp.getPrevious() != null */) {
 					path.add(temp.getPrevious());
 					temp = temp.getPrevious();
 				}
@@ -146,13 +155,15 @@ public abstract class Strategy {
 						Play.gameGrid.getCell(i, j).setPrevious(null);
 					}
 				}
-
+				openSet.clear();
+				closedSet.clear();
 //				System.out.println("Path Finding : DONE !\n");
 				return path;
 			}
 
 			openSet.remove(current);
 			closedSet.add(current);
+
 
 			ArrayList<Cell> neighbors = current.getNeighbors();
 			for (Cell neighbor : neighbors) {
@@ -184,7 +195,7 @@ public abstract class Strategy {
 			}
 		}
 		if (openSet.size() == 0) {
-			System.out.println("Path Finding : No solution\n");
+//			System.out.println("Path Finding : No solution\n");
 		}
 
 		return null;
@@ -391,7 +402,6 @@ public abstract class Strategy {
 		Cell closest = null;
 		int minDist = Play.gameGrid.getRows() + Play.gameGrid.getCols();
 		for (Cell cell : collection) {
-			// System.out.println(pos+" "+cell+" "+minDist);
 			if (pos.distanceFrom(cell) < minDist) {
 				minDist = pos.distanceFrom(cell);
 				closest = cell;
@@ -417,7 +427,7 @@ public abstract class Strategy {
 
 	public void applyPath(ArrayList<Cell> path, int nummove) {
 		int end = Math.min(nummove - 1, path.size() - 2);
-		for (int i = path.size() - 2; i >= path.size() - 2-end; i--) {
+		for (int i = path.size() - 2; i >= path.size() - 2 - end; i--) {
 			// si la cellule suivante est vers le haut
 			if (path.get(i).getI() < path.get(i + 1).getI()) {
 				this.actions.add(0);
@@ -475,7 +485,8 @@ public abstract class Strategy {
 				}
 			}
 
-			if ((cell.getCellType() == 3 || cell.getCellType() == 4) && chara.getBonus()==0 ) { // si il y a un bonus sur la case
+			if ((cell.getCellType() == 3 || cell.getCellType() == 4) && this.chara.getBonus() == 0) { // si il y a un bonus sur la
+																										// case
 				res += 3;
 			}
 
@@ -531,10 +542,13 @@ public abstract class Strategy {
 			}
 			i--;
 		}
-		for (int k = 0; k < rangegrid.size(); k++) {
-			//System.out.println("i= " + rangegrid.get(k).getI() + " j= " + rangegrid.get(k).getJ() + " value= " + tab[k]);
-		}
+//		for (int k = 0; k < rangegrid.size(); k++) {
+//			System.out.println("i= " + rangegrid.get(k).getI() + " j= " + rangegrid.get(k).getJ() + " value= " + tab[k]);
+//		}
 	}
 	
+	public static boolean isPlaying() {
+		return isPlaying;
+	}
 	
 }

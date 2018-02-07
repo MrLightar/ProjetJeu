@@ -231,30 +231,62 @@ public ArrayList<Cell> getAllNeighbors(Grid grid) {
 
 	public void init() throws SlickException {
 		switch (this.cellType) {
-		case 0:
-			this.texture = new Image("res/grass.png");
-			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+		case (0):
+			double temp = (Math.random());
+			if(temp > 0.9) {
+				this.texture = new Image("res/grass3.png");
+				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			} else {
+				if(temp < 0.9 && temp >0.7) {
+					this.texture = new Image("res/grass2.png");
+					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+				} else {
+					if(temp < 0.6 && temp >0.4) {
+						this.texture = new Image("res/grass1.png");
+						this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+					} else {
+						this.texture = new Image("res/grass0.png");
+						this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+
+					}
+				}
+			}
+//			this.texture = new Image("res/grass.png");
+//			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			break;
 		case 1:
 			this.texture = new Image("res/wall.png");
 			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			break;
 		case 2:
-			this.texture = new Image("res/water.png");
-			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			temp = (Math.random());
+			if(temp > 0.9) {
+				this.texture = new Image("res/water2.png");
+				this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			} else {
+				if(temp < 0.9 && temp >0.5) {
+					this.texture = new Image("res/water1.png");
+					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+				} else {
+					this.texture = new Image("res/water0.png");
+					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
+				}
+			}
+//			this.texture = new Image("res/water.png");
+//			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			break;
 		case 3:
-			this.texture = new Image("res/grass.png");
+			this.texture = new Image("res/grass1.png");
 			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			this.textureBonus = new Image("res/moveBonus.png");
 			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			break;
 		case 4:
-			this.texture = new Image("res/grass.png");
+			this.texture = new Image("res/grass1.png");
 			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			this.textureBonus = new Image("res/attackBonus.png");
 			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
-			break;
+			break;		
 		}
 	}
 

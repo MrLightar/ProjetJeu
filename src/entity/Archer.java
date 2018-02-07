@@ -18,8 +18,8 @@ public class Archer extends Character {
 		this.textureSimple = new Image("res/archer.png");
 	}
 	
-	public Archer(int job, int lvl, int pv_max, int att, int PO, int PM, int team) throws SlickException {
-		super(job, lvl, pv_max, att, PO, PM, team);
+	public Archer(int job, int lvl, int pv_max, int att, int PO, int PM, int price, int team) throws SlickException {
+		super(job, lvl, pv_max, att, PO, PM, price, team);
 		// TODO Auto-generated constructor stub
 		this.textureSimple = new Image("res/archer.png");
 	}
@@ -66,6 +66,7 @@ public class Archer extends Character {
 				if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
 					animations[action].setCurrentFrame(0);
 					animations[action].restart();
+					this.attacking = false;
 					this.action = this.action + 4;
 				}
 			} else {
@@ -113,7 +114,9 @@ public class Archer extends Character {
 				if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
 					animations[action].setCurrentFrame(0);
 					animations[action].restart();
+					this.attacking = false;
 					this.action = this.action + 4;
+					
 				}
 			} else {
 				if(action == 8) {
