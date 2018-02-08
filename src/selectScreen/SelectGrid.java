@@ -3,6 +3,11 @@ package selectScreen;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 
 import org.newdawn.slick.GameContainer;
@@ -110,7 +115,7 @@ public class SelectGrid {
 						break;
 					}
 				
-				if(j<cols) {
+				if(j<cols-1) {
 					j++;
 				}
 				else {
@@ -132,5 +137,38 @@ public class SelectGrid {
 				SelectGrid.grid[i][j].render(gc, g);
 			}
 		}
+	}
+	
+	public void writeNewCharaDB() {
+		File f = new File("../ProjetJeu/res/temporary.txt");
+		File ff = new File("../ProjetJeu/res/character.txt");
+		
+		
+		
+		try {
+			Scanner sc = new Scanner(ff);
+			FileWriter fw=new FileWriter(f);
+			for (int i = 0; i < this.rows; i++) {
+				for (int j = 0; j < this.cols; j++) {
+					if(SelectGrid.grid[i][j].hasChara()) {
+						if(!SelectGrid.grid[i][j].isPlaced()) {
+							fw.write(sc.nextLine());
+							fw.write("\n");
+						}else {
+							sc.nextLine();
+						}
+					}
+				}
+			}
+		
+			fw.close();
+			sc.close();
+			
+			Files.copy(Paths.get("../ProjetJeu/res/temporary.txt"), Paths.get("../ProjetJeu/res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

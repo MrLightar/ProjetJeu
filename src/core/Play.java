@@ -235,15 +235,29 @@ public class Play extends BasicGameState {
 		g.drawImage(titre, Main.height, 0);
 		
 		
+		ttf1.drawString(Main.width*40/50, Main.height*10/50, "Commandes :");
+		ttf2.drawString(Main.width*40/50, Main.height*14/50, "ESPACE :");
+		ttf2.drawString(Main.width*40/50, Main.height*16/50, "-lancer le niveau");
+		ttf2.drawString(Main.width*40/50, Main.height*20/50, "TOUCHES FLECHEES :");
+		ttf2.drawString(Main.width*40/50, Main.height*22/50, "-deplacer le curseur");
+		ttf2.drawString(Main.width*40/50, Main.height*26/50, "ENTREE :");
+		ttf2.drawString(Main.width*40/50, Main.height*28/50, "-selectionner un personnage");
+		ttf2.drawString(Main.width*40/50, Main.height*29/50, "-passer à l'écran de selection");
+		ttf2.drawString(Main.width*40/50, Main.height*30/50, "-placer un personnage");
+		ttf2.drawString(Main.width*40/50, Main.height*34/50, "SUPPR :");
+		ttf2.drawString(Main.width*40/50, Main.height*36/50, "-supprimer un personnage");
+		ttf2.drawString(Main.width*40/50, Main.height*40/50, "ECHAP :");
+		ttf2.drawString(Main.width*40/50, Main.height*42/50, "-retour/annuler");
+		ttf2.drawString(Main.width*40/50, Main.height*43/50, "-pause");
 		
 		
 		
 		
 		String[] words = baos.toString().split("\n");
 		for (int i=1; i<5; i++) {
-			ttf2.drawString(Main.width*15/24, Main.height*15/20, words[words.length-1]);
+			ttf2.drawString(Main.width*14/24, Main.height*15/20, words[words.length-1]);
 			if(words.length>5) {
-				ttf2.drawString(Main.width*15/24, Main.height*(15+i)/20, words[words.length-1 -i], Color.lightGray);
+				ttf2.drawString(Main.width*14/24, Main.height*(15+i)/20, words[words.length-1 -i], Color.lightGray);
 			}
 		}
 		
@@ -254,45 +268,45 @@ public class Play extends BasicGameState {
 			
 			Play.cursor.render(gc, g);
 			
-			g.drawRect(Main.width*15/24, Main.height*4/20, Main.width*4/24, Main.height*1/20);
-			g.fillRect(Main.width*15/24, Main.height*4/20, Main.width*4/24 * (Play.currentPrice/(float)Play.maxPrice), Main.height*1/20);
-			ttf1.drawString(Main.width*15/24, Main.height*5/20, new Integer(Play.currentPrice).toString() + " / " + new Integer(Play.maxPrice).toString() + " $");
+			g.drawRect(Main.width*14/24, Main.height*4/20, Main.width*4/24, Main.height*1/20);
+			g.fillRect(Main.width*14/24, Main.height*4/20, Main.width*4/24 * (Play.currentPrice/(float)Play.maxPrice), Main.height*1/20);
+			ttf1.drawString(Main.width*14/24, Main.height*5/20, new Integer(Play.currentPrice).toString() + " / " + new Integer(Play.maxPrice).toString() + " $");
 		}
 		
 		if(cursor.hasCharacter()) {
-			g.drawImage(image_pv, Main.width*15/24, Main.height*10/20);
-			g.drawImage(image_att, Main.width*17/24, Main.height*10/20);
-			g.drawImage(image_po, Main.width*15/24, Main.height*12/20);
-			g.drawImage(image_pm, Main.width*17/24, Main.height*12/20);
-			ttf1.drawString(Main.width*16/24, Main.height*10/20, new Integer(cursor.getSelection().getPv_max()).toString());
-			ttf1.drawString(Main.width*18/24, Main.height*10/20, new Integer(cursor.getSelection().getAtt()).toString());
-			ttf1.drawString(Main.width*16/24, Main.height*12/20, new Integer(cursor.getSelection().getPO()).toString());
-			ttf1.drawString(Main.width*18/24, Main.height*12/20, new Integer(cursor.getSelection().getPM()).toString());
-			ttf1.drawString(Main.width*15/24, Main.height*13/20, "Lvl." + new Integer(cursor.getSelection().getLevel()).toString());
-			ttf1.drawString(Main.width*17/24, Main.height*13/20, new Integer(cursor.getSelection().getPrice()).toString() + "$");
+			g.drawImage(image_pv, Main.width*14/24, Main.height*10/20);
+			g.drawImage(image_att, Main.width*16/24, Main.height*10/20);
+			g.drawImage(image_po, Main.width*14/24, Main.height*12/20);
+			g.drawImage(image_pm, Main.width*16/24, Main.height*12/20);
+			ttf1.drawString(Main.width*15/24, Main.height*10/20, new Integer(cursor.getSelection().getPv_max()).toString());
+			ttf1.drawString(Main.width*17/24, Main.height*10/20, new Integer(cursor.getSelection().getAtt()).toString());
+			ttf1.drawString(Main.width*15/24, Main.height*12/20, new Integer(cursor.getSelection().getPO()).toString());
+			ttf1.drawString(Main.width*17/24, Main.height*12/20, new Integer(cursor.getSelection().getPM()).toString());
+			ttf1.drawString(Main.width*14/24, Main.height*13/20, "Lvl." + new Integer(cursor.getSelection().getLevel()).toString());
+			ttf1.drawString(Main.width*16/24, Main.height*13/20, new Integer(cursor.getSelection().getPrice()).toString() + "$");
 		}
 		
 		if(cursor.isSelected()) {
 			
 			switch(cursor.getSelection().getStrategy().getClass().getSimpleName()) {
 			case "OffensiveStrategy":
-				g.drawImage(offensiveButton, Main.width*15/24, Main.height/16*7);
+				g.drawImage(offensiveButton, Main.width*14/24, Main.height/16*7);
 				break;
 			case "DefensiveStrategy":
-				g.drawImage(defensiveButton, Main.width*15/24, Main.height/16*7);
+				g.drawImage(defensiveButton, Main.width*14/24, Main.height/16*7);
 				break;
 			case "BalancedStrategy":
-				g.drawImage(balancedButton, Main.width*15/24, Main.height/16*7);
+				g.drawImage(balancedButton, Main.width*14/24, Main.height/16*7);
 				break;
 			}
 		}
 		
 		
 		if(state == stratSelect) {
-			g.drawImage(offensiveButton, Main.width*15/24, Main.height/16*5);
-			g.drawImage(balancedButton, Main.width*15/24, Main.height/16*6);
-			g.drawImage(defensiveButton, Main.width*15/24, Main.height/16*7);
-			g.drawImage(stratCursor, Main.width*15/24, Main.height/16 * (selectedStrat + 5));
+			g.drawImage(offensiveButton, Main.width*14/24, Main.height/16*5);
+			g.drawImage(balancedButton, Main.width*14/24, Main.height/16*6);
+			g.drawImage(defensiveButton, Main.width*14/24, Main.height/16*7);
+			g.drawImage(stratCursor, Main.width*14/24, Main.height/16 * (selectedStrat + 5));
 		}
 		
 		if(state == win) {
@@ -417,34 +431,31 @@ public class Play extends BasicGameState {
 	
 	
 	public void writeNewCharaDB() {
+		SelectCharaScreen.choiceGrid.writeNewCharaDB();
 		File f = new File("../ProjetJeu/res/character.txt");
-		if(f.exists()) {
-			f.delete();
-		}
-		f = new File("../ProjetJeu/res/character.txt");
 		try {
 			f.createNewFile();
-			FileWriter fw=new FileWriter(f);
+			FileWriter fw=new FileWriter(f, true);
 			
 			for(int i=0; i<chara.size(); i++) {
 				if(chara.get(i).isAlive()) {
 					switch(chara.get(i).getJob()) {
 					case Character.mage:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+4) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");  // \E9crire une ligne dans le fichier resultat.txt
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+4) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; "); 
 						break;
 					case Character.warrior:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+10) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");  // \E9crire une ligne dans le fichier resultat.txt
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+10) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
 						break;
 					case Character.archer:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+7) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");  // \E9crire une ligne dans le fichier resultat.txt
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+7) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
 						break;
 					}
-					fw.write("\n"); // forcer le passage \E0 la ligne
+					fw.write("\n");
 				}
 			}
 			fw.write("&");
 			
-			fw.close(); // fermer le fichier ï¿½ la fin des traitements
+			fw.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -470,7 +481,7 @@ public class Play extends BasicGameState {
 			
 			int stat[] = new int[7];
 			int i = 0;
-			while(!sc.hasNext("&")) {
+			while(!sc.hasNext("&") && i<20) {
 				for (int j = 0; j < 7; j++) {
 					stat[j] = sc.nextInt();
 					sc.next(";");
@@ -495,11 +506,11 @@ public class Play extends BasicGameState {
 					break;
 				
 				case balanced:
-					Play.chara.get(Play.chara.size()-1).setStrategie(new OffensiveStrategy(chara.get(Play.chara.size()-1)));//A CHANGER EN BALANCED QUAND PRET
+					Play.chara.get(Play.chara.size()-1).setStrategie(new BalancedStrategy(chara.get(Play.chara.size()-1)));//A CHANGER EN BALANCED QUAND PRET
 					break;
 				
 				case defensive:
-					Play.chara.get(Play.chara.size()-1).setStrategie(new OffensiveStrategy(chara.get(Play.chara.size()-1)));
+					Play.chara.get(Play.chara.size()-1).setStrategie(new DefensiveStrategy(chara.get(Play.chara.size()-1)));
 					break;
 				}
 				
@@ -563,7 +574,7 @@ public class Play extends BasicGameState {
 					break;
 				
 				case balanced:
-					Play.enemyTeam.get(Play.enemyTeam.size()-1).setStrategie(new DefensiveStrategy(Play.enemyTeam.get(Play.enemyTeam.size()-1)));//A CHANGER EN BALANCED QUAND PRET
+					Play.enemyTeam.get(Play.enemyTeam.size()-1).setStrategie(new BalancedStrategy(Play.enemyTeam.get(Play.enemyTeam.size()-1)));//A CHANGER EN BALANCED QUAND PRET
 					break;
 				
 				case defensive:
@@ -809,7 +820,7 @@ public class Play extends BasicGameState {
 							cursor.placeCharacter();
 							break;
 						case balanced:
-							cursor.getSelection().setStrategie(new DefensiveStrategy(cursor.getSelection()));//A CHANGER EN BALANCED QUAND PRET
+							cursor.getSelection().setStrategie(new BalancedStrategy(cursor.getSelection()));//A CHANGER EN BALANCED QUAND PRET
 							cursor.placeCharacter();
 							break;
 						case defensive:

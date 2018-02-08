@@ -55,7 +55,7 @@ public class DefensiveStrategy extends Strategy {
 		// déterminer sa zone d'action
 		// + chercher tous les adversaires
 		// chercher les bonus
-		this.analyseMap();
+		this.analyseMap(PM);
 
 
 		// trier les cases par niveau de défense (nombre d’allié adjacent, nombre de mur adjacent, eau adjacente, nombre
@@ -79,11 +79,15 @@ public class DefensiveStrategy extends Strategy {
 			tempPM=PM;
 			if(chara.getBonus()==0 && !bonusesInRange.isEmpty()) {
 				Cell closestBonus=getClosest(chara.getPos(), bonusesInRange);
-				tempPM-=evaluatePath(chara.getPos(), closestBonus).size();
-				this.applyPath(this.evaluatePath(this.chara.getPos(), closestBonus), PM);
+				if(this.evaluatePath(this.chara.getPos(), closestBonus)!=null) {
+					tempPM-=evaluatePath(chara.getPos(), closestBonus).size()-1;
+					this.applyPath(this.evaluatePath(this.chara.getPos(), closestBonus), PM);
+				}	
 			}
 			Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
-			this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
+			if(this.evaluatePath(this.chara.getPos(), closestEnemy)!=null){
+				this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
+			}	
 		}
 		
 		// sinon
@@ -98,19 +102,21 @@ public class DefensiveStrategy extends Strategy {
 					tempPM = PM;
 					if (rangenemy.getChara().isKillable(Att)) {
 						pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-						tempPM -= pathsave1.size() - 1;
-						j = 0;
-						while (!play && j <= this.bonusesInRange.size() - 1) {
-							rangebonus = this.bonusesInRange.get(j);
-							pathsave2 = this.evaluatePath(pathsave1.get(0), rangebonus);
-							pathsave3 = this.evaluatePath(rangebonus, celldef);
+						if(pathsave1!=null && attackable(pathsave1.get(0), rangenemy) ) {
+							tempPM -= pathsave1.size() - 1;
+							j = 0;
+							while (!play && j <= this.bonusesInRange.size() - 1) {
+								rangebonus = this.bonusesInRange.get(j);
+								pathsave2 = this.evaluatePath(pathsave1.get(0), rangebonus);
+								pathsave3 = this.evaluatePath(rangebonus, celldef);
 
-							if (pathsave1!=null && pathsave2!=null && pathsave3!=null && pathsave2.size() - 1 <= tempPM && pathsave3.size() - 1 <= tempPM - pathsave2.size() + 1) {
-								play = true;
-								cellsave = rangenemy;
+								if ( pathsave2!=null && pathsave3!=null && pathsave2.size() - 1 <= tempPM && pathsave3.size() - 1 <= tempPM - pathsave2.size() + 1) {
+									play = true;
+									cellsave = rangenemy;
 
+								}
+								j++;
 							}
-							j++;
 						}
 					}
 					i++;
@@ -141,15 +147,15 @@ public class DefensiveStrategy extends Strategy {
 							while (!play && i <= this.enemiesInRange.size() - 1) {
 								rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
 								pathsave2 = this.evaluatePathAttack(rangebonus, rangenemy);
-								if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
-									tempPM -= pathsave2.size() - 1;
-									pathsave3 = this.evaluatePath(pathsave2.get(0), celldef);
-									if (pathsave3!=null && tempPM >= pathsave3.size() - 1) {
-										play = true;
-										cellsave = rangenemy;
+									if (pathsave2!=null && tempPM >= pathsave2.size() - 1 && attackable(pathsave2.get(0), rangenemy)) {
+										tempPM -= pathsave2.size() - 1;
+										pathsave3 = this.evaluatePath(pathsave2.get(0), celldef);
+										if (pathsave3!=null && tempPM >= pathsave3.size() - 1) {
+											play = true;
+											cellsave = rangenemy;
 
+										}
 									}
-								}
 								i++;
 							}
 						}
@@ -201,16 +207,15 @@ public class DefensiveStrategy extends Strategy {
 							if (rangenemy.getChara().isKillable(Att)) {
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-								
-								if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
-									tempPM -= pathsave1.size() - 1;
-									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-									if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
-										play = true;
-										cellsave = rangenemy;
-								
+									if (pathsave1!=null && pathsave1.size() - 1 <= tempPM && attackable(pathsave1.get(0), rangenemy)) {
+										tempPM -= pathsave1.size() - 1;
+										pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
+										if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
+											play = true;
+											cellsave = rangenemy;
+									
+										}
 									}
-								}
 							}
 							i++;
 						}
@@ -229,15 +234,15 @@ public class DefensiveStrategy extends Strategy {
 								rangenemy = this.enemiesInRange.get(i);
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-								if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
-									tempPM -= pathsave1.size() - 1;
-									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-									if ((pathsave2!=null) && tempPM >= pathsave2.size() - 1) {
-										play = true;
-										cellsave = rangenemy;
-						
+									if (pathsave1!=null && pathsave1.size() - 1 <= tempPM && attackable(pathsave1.get(0), rangenemy)) {
+										tempPM -= pathsave1.size() - 1;
+										pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
+										if ((pathsave2!=null) && tempPM >= pathsave2.size() - 1) {
+											play = true;
+											cellsave = rangenemy;
+							
+										}
 									}
-								}
 								i++;
 							}
 							
@@ -255,18 +260,25 @@ public class DefensiveStrategy extends Strategy {
 								tempPM = PM;
 								cellsave = this.getClosest(this.chara.getPos(), this.enemiesInRange);
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), cellsave);
-								tempPM -= pathsave1.size() - 1;
-								this.applyPath(pathsave1, PM);
-								if(!evaluatePathAttack(this.chara.getPos(), cellsave).isEmpty()) {
-									this.attack(cellsave);
+								if(pathsave1!=null) {
+									this.applyPath(pathsave1, tempPM);
 									
+									int min=Math.min(pathsave1.size()-1, tempPM);
+									if(attackable(pathsave1.get(pathsave1.size()-1-min), cellsave)) {
+										attack(cellsave);
+									}
+									tempPM -= pathsave1.size() - 1;
+									play=true;
+								}
+								if(play) {		
 									i = 0;
-							
+									play=false;
 									while (!play && i < 100) {
 										
-										if (this.chara.getPos().distanceFrom(celldef) <= tempPM) {
+										if (this.chara.getPos().distanceFrom(celldef) <= tempPM && celldef.getCellType() != 1 && celldef.getCellType() != 2
+												&& (celldef.getChara() == this.chara || !celldef.hasChara())) {
 											pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-											if (pathsave2 !=null && pathsave2.size() - 1 <= tempPM) {
+											if (pathsave2 !=null && pathsave2.size() - 1 <= tempPM ) {
 												this.applyPath(pathsave2, tempPM);
 												play = true;
 												
@@ -286,7 +298,12 @@ public class DefensiveStrategy extends Strategy {
 										i++;
 									}
 								}
-
+								else {
+									Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
+									if(this.evaluatePath(this.chara.getPos(), closestEnemy)!=null){
+										this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
+									}	
+								}
 							}
 						}
 					}
