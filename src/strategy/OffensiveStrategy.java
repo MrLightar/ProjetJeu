@@ -55,37 +55,39 @@ public class OffensiveStrategy extends Strategy {
 				Character enemy = enemyPos.getChara();
 				// S'il est achevable
 				if (enemy.isKillable(Att)) {
-					System.out.println("\tEnnemi achevable : " + Att + "   en : " + enemy.getPos());
-					bestMove = true;
-					mainTarget = enemyPos;
-					mainPath = this.evaluatePathAttack(this.chara.getPos(), mainTarget);
-					mainTarget = mainPath.get(0);
+					if (!bestMove) {
+						System.out.println("\tEnnemi achevable : " + Att + "   en : " + enemy.getPos());
+						bestMove = true;
+						mainTarget = enemyPos;
+						mainPath = this.evaluatePathAttack(this.chara.getPos(), mainTarget);
+						mainTarget = mainPath.get(0);
 
-					this.applyPath(mainPath, PM);
-					this.attack(enemyPos);
+						this.applyPath(mainPath, PM);
+						this.attack(enemyPos);
 
-					// S'il reste des PM apres s'etre deplace
-					int mTargetDist = mainPath.size() - 1;
-					int remainingPM = PM - mTargetDist;
-					if (remainingPM > 0) {
-						System.out.println("\t\tIl reste des PM");
-						PM = remainingPM;
-						if (this.bonusesInRange.size() > 0) {
-							// S'il reste des bonus
-							System.out.println("\t\t\tIl reste des bonus proches");
-							secondPath = this.getPathToClosest(mainTarget, this.bonusesInRange);
-							this.applyPath(secondPath, PM);
-						} else {
-							// Se rapprocher de l'ennemi le plus proche
-							System.out.println("\t\t\tPlus de bonus, on se rapproche d'un ennemi");
-							secondPath = this.getPathToClosest(mainTarget, this.enemies);
-							secondTarget = secondPath.get(0);
-							secondPath = this.evaluatePathAttack(mainTarget, secondTarget);
-							this.applyPath(secondPath, PM);
+						// S'il reste des PM apres s'etre deplace
+						int mTargetDist = mainPath.size() - 1;
+						int remainingPM = PM - mTargetDist;
+						if (remainingPM > 0) {
+							System.out.println("\t\tIl reste des PM");
+							PM = remainingPM;
+							if (this.bonusesInRange.size() > 0) {
+								// S'il reste des bonus
+								System.out.println("\t\t\tIl reste des bonus proches");
+								secondPath = this.getPathToClosest(mainTarget, this.bonusesInRange);
+								this.applyPath(secondPath, PM);
+							} else {
+								// Se rapprocher de l'ennemi le plus proche
+								System.out.println("\t\t\tPlus de bonus, on se rapproche d'un ennemi");
+								secondPath = this.getPathToClosest(mainTarget, this.enemies);
+								secondTarget = secondPath.get(0);
+								secondPath = this.evaluatePathAttack(mainTarget, secondTarget);
+								this.applyPath(secondPath, PM);
+							}
 						}
-					}
 
-					this.enemies.remove(enemyPos);
+						this.enemies.remove(enemyPos);
+					}
 				}
 			}
 			// Sinon pas achevable

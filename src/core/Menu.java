@@ -79,10 +79,10 @@ public class Menu extends BasicGameState {
 		this.menuCursor = this.menuCursor.getScaledCopy(widthButton, heightButton);
 		
 		this.texture = new Image("res/AnimationWallpaper.png");
-		this.texture = this.texture.getScaledCopy(Main.width*6, Main.height);	
+		this.texture = this.texture.getScaledCopy(Main.width*8, Main.height);	
 		SpriteSheet spriteSheetMenu = new SpriteSheet(this.texture, Main.width, Main.height);
 
-		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 6, 0, 100);
+		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 8, 0, 100);
 		
 //		Music background = new Music("res/MainMenu.ogg");
 //		background.loop();
@@ -96,7 +96,7 @@ public class Menu extends BasicGameState {
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
 		
-//		animationMenu.draw(0, 0);
+		animationMenu.draw(0, 0);
 		
 		if(inGame) {
 			g.drawImage(resumeButton, widthButton *1, heightButton *2);

@@ -43,7 +43,7 @@ public abstract class Strategy {
 
 	public void update() {
 		if (!this.actions.isEmpty()) {
-			if (!this.chara.isMoving()/* && !this.chara.isAttacking()*/) {
+			if (!this.chara.isMoving() && !this.chara.isAttacking()) {
 				switch (this.actions.get(0)) {
 				case 0:
 					this.chara.moveUp();

@@ -48,7 +48,7 @@ public abstract class Character extends Entity {
 	protected boolean moving;
 	protected boolean attacking;
 	protected boolean underAttack;
-	protected boolean animationChange;
+	protected boolean aliveAnim;
 
 
 	public static final int mage = 0;
@@ -79,6 +79,7 @@ public abstract class Character extends Entity {
 		this.moving = false;
 		this.attacking = false;
 		this.underAttack = false;
+		this.aliveAnim = true;
 
 		this.team = team;
 
@@ -106,7 +107,8 @@ public abstract class Character extends Entity {
 		this.moving = false;
 		this.attacking = false;
 		this.underAttack = false;
-
+		this.aliveAnim = true;
+		
 		this.team = team;
 
 		this.animationCount = 0;
@@ -394,7 +396,7 @@ public abstract class Character extends Entity {
 
 
 	public void render(GameContainer gc, Graphics g) {
-		if(this.alive) {
+		if(this.aliveAnim) {
 			Color c = g.getColor();
 			g.setColor(new Color(0, 0, 255, .5f));
 			g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);
@@ -403,7 +405,7 @@ public abstract class Character extends Entity {
 	}
 
 	public void renderEnemy(GameContainer gc, Graphics g) {
-		if(this.alive) {
+		if(this.aliveAnim) {
 			Color c = g.getColor();
 			g.setColor(new Color(255, 0, 0, .5f));
 		    g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);

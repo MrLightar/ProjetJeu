@@ -55,11 +55,15 @@ public class Play extends BasicGameState {
 	public static TrueTypeFont ttf2;
 	public static TrueTypeFont ttf3;
 	
+	private Image titre;
 	private Image background;
 	private Image image_pv;
 	private Image image_att;
 	private Image image_po;
 	private Image image_pm;
+	
+	private Image image_youWin;
+	private Image image_gameOver;
 	
 	
 	private int state;
@@ -83,6 +87,8 @@ public class Play extends BasicGameState {
 	
 	private int heightButton;
 	private int widthButton;
+	
+	private int timerLevelStart;
 	
 	private Strategy strat;//POUR TEST
 	
@@ -143,6 +149,8 @@ public class Play extends BasicGameState {
 		this.sbg = sbg;
 		this.gc = gc;
 		
+		timerLevelStart = 100;
+		
 		chara = new ArrayList<>();
 		enemyTeam = new ArrayList<>();
 		
@@ -165,6 +173,8 @@ public class Play extends BasicGameState {
 		ttf2 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/50), true);
 		ttf3 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/11), true);
 		
+		titre = new Image("/res/titre.png");
+		titre = titre.getScaledCopy(Main.width-Main.height, (Main.width-Main.height)/5);
 		background = new Image("/res/right_background.png");
 		background = background.getScaledCopy(Main.width-Main.height, Main.height);
 		image_pv = new Image("res/pv.png");
@@ -176,6 +186,10 @@ public class Play extends BasicGameState {
 		image_pm = new Image("res/pm.png");
 		image_pm = image_pm.getScaledCopy(Main.height/20, Main.height/20);
 		
+		image_youWin = new Image("res/youWin.png");
+		image_youWin = image_youWin.getScaledCopy(Main.height/2, Main.height/2);
+		image_gameOver = new Image("res/gameOver.png");
+		image_gameOver = image_gameOver.getScaledCopy(Main.height/2, Main.height/2);
 		
 		heightButton = Main.height / 16;
 		widthButton = Main.width / 6;
@@ -218,6 +232,11 @@ public class Play extends BasicGameState {
 		
 		g.drawImage(background, Main.height, 0);
 		
+		g.drawImage(titre, Main.height, 0);
+		
+		
+		
+		
 		
 		
 		String[] words = baos.toString().split("\n");
@@ -228,7 +247,11 @@ public class Play extends BasicGameState {
 			}
 		}
 		
-		if(state == placement || state == stratSelect) {
+		if((state == placement || state == stratSelect) && timerLevelStart==0) {
+			g.setColor(Color.red);
+			g.drawRect(0, 0, (gameGrid.getCols()/5+1)*Grid.cellSize, Main.height-1);
+			g.setColor(Color.white);
+			
 			Play.cursor.render(gc, g);
 			
 			g.drawRect(Main.width*15/24, Main.height*4/20, Main.width*4/24, Main.height*1/20);
@@ -273,11 +296,17 @@ public class Play extends BasicGameState {
 		}
 		
 		if(state == win) {
-			ttf3.drawString(Main.width/8, Main.height/3, "YOU WIN", Color.red);
-		}
+			g.drawImage(image_youWin, Main.width/6, Main.height/4);		}
 		
 		if(state == gameOver) {
-			ttf3.drawString(Main.width/8, Main.height/3, "GAME OVER", Color.red);
+			g.drawImage(image_gameOver, Main.width/6, Main.height/4);
+		}
+		
+		if(timerLevelStart>0) {
+			g.setColor(Color.black);
+			g.fillRect(0, 0, Main.height, Main.height);
+			g.setColor(Color.white);
+			ttf1.drawString(Main.width/4, Main.height/2, "LEVEL " + (mapLevel+1), Color.red);
 		}
 		
 	}
@@ -296,6 +325,10 @@ public class Play extends BasicGameState {
 		//fonction de boucle de jeu du niveau	A METTRE DANS SA PROPRE METHODE
 		if(state == playing) {
 			levelPlay();
+		}
+		
+		if(timerLevelStart>0) {
+			timerLevelStart--;
 		}
 		
 		
@@ -395,13 +428,23 @@ public class Play extends BasicGameState {
 			
 			for(int i=0; i<chara.size(); i++) {
 				if(chara.get(i).isAlive()) {
-					fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+5) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+10) + " ; ");  // écrire une ligne dans le fichier resultat.txt
-					fw.write("\n"); // forcer le passage à la ligne
+					switch(chara.get(i).getJob()) {
+					case Character.mage:
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+4) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");  // \E9crire une ligne dans le fichier resultat.txt
+						break;
+					case Character.warrior:
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+10) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");  // \E9crire une ligne dans le fichier resultat.txt
+						break;
+					case Character.archer:
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+7) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");  // \E9crire une ligne dans le fichier resultat.txt
+						break;
+					}
+					fw.write("\n"); // forcer le passage \E0 la ligne
 				}
 			}
 			fw.write("&");
 			
-			fw.close(); // fermer le fichier à la fin des traitements
+			fw.close(); // fermer le fichier ï¿½ la fin des traitements
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -516,7 +559,7 @@ public class Play extends BasicGameState {
 				
 				switch(new Random().nextInt(3)) {
 				case offensive:
-					Play.enemyTeam.get(Play.enemyTeam.size()-1).setStrategie(new DefensiveStrategy(Play.enemyTeam.get(Play.enemyTeam.size()-1)));//A CHANGER
+					Play.enemyTeam.get(Play.enemyTeam.size()-1).setStrategie(new OffensiveStrategy(Play.enemyTeam.get(Play.enemyTeam.size()-1)));//A CHANGER
 					break;
 				
 				case balanced:
