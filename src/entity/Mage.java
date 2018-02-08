@@ -27,7 +27,7 @@ public class Mage extends Character {
 
 	
 	public void init() throws SlickException {
-		//super.init(gc);
+		super.init();
 		//animation de mouvement et d'attaque du personnage
 		this.texture = new Image("res/animationmage.png");
 		this.texture = this.texture.getScaledCopy(Grid.cellSize*9, Grid.cellSize*9);	

@@ -20,6 +20,8 @@ public abstract class Character extends Entity {
 	protected Image texture;
 	protected Image textureAttack;
 	protected Image textureSimple;
+	protected Image textureLifeBarEmpty;
+	protected Image textureLifeBarPV;
 
 	protected Animation[] animations = new Animation[10];
 	protected Animation[] attackAnimations = new Animation[3];
@@ -381,7 +383,21 @@ public abstract class Character extends Entity {
 		}
 	}
 
-	abstract public void init() throws SlickException;
+	
+	// -----------------------------PARTIE GRAPHISME ----------------------------------------------
+	
+	public void init() throws SlickException {
+		this.textureLifeBarEmpty = new Image("res/lifeBarEmpty.png");
+		this.textureLifeBarEmpty = this.textureLifeBarEmpty.getScaledCopy(Grid.cellSize/2, Grid.cellSize/6);
+		if(this.team == Character.ally) {
+			this.textureLifeBarPV = new Image("res/lifeBarPVAlly.png");
+		} else {
+			this.textureLifeBarPV = new Image("res/lifeBarPVEnemy.png");
+		}
+		
+		this.textureLifeBarPV = this.textureLifeBarPV.getScaledCopy(Grid.cellSize/2, Grid.cellSize/6);
+
+	}
 
 
 
@@ -401,6 +417,10 @@ public abstract class Character extends Entity {
 			g.setColor(new Color(0, 0, 255, .5f));
 			g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);
 			g.setColor(c);
+			if(this.alive) {
+				this.textureLifeBarEmpty.draw( x + Grid.cellSize/4, y);
+				this.textureLifeBarPV.draw(x + Grid.cellSize/4, y, x + Grid.cellSize/4 +  (((float)pv)/((float)pv_max)) *textureLifeBarEmpty.getWidth() , y + textureLifeBarEmpty.getHeight(), 0, 0,  (((float)pv)/((float)pv_max)) * textureLifeBarPV.getWidth(), textureLifeBarPV.getHeight());
+		    }
 		}
 	}
 
@@ -410,6 +430,12 @@ public abstract class Character extends Entity {
 			g.setColor(new Color(255, 0, 0, .5f));
 		    g.fillOval(x + Grid.cellSize/4, y + Grid.cellSize*27/32, Grid.cellSize/2, Grid.cellSize/4);
 		    g.setColor(c);
+		    if(this.alive) {
+		    	this.textureLifeBarEmpty.draw( x + Grid.cellSize/4, y);
+				this.textureLifeBarPV.draw(x + Grid.cellSize/4, y, x + Grid.cellSize/4 +  (((float)pv)/((float)pv_max)) *textureLifeBarEmpty.getWidth() , y + textureLifeBarEmpty.getHeight(), 0, 0,  (((float)pv)/((float)pv_max)) * textureLifeBarPV.getWidth(), textureLifeBarPV.getHeight());
+
+		    }
+			
 		}
 	}
 

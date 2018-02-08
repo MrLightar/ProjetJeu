@@ -27,7 +27,7 @@ public class Archer extends Character {
 	
 	public void init() throws SlickException {
 		
-		//super.init(gc);
+			super.init();
 		//animation de mouvement et d'attaque du personnage
 		this.texture = new Image("res/animationarcher.png");
 		this.texture = this.texture.getScaledCopy(Grid.cellSize*12, Grid.cellSize*9);	

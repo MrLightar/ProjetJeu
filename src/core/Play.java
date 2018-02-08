@@ -165,7 +165,7 @@ public class Play extends BasicGameState {
 		Play.cursor = new entity.Cursor(Play.gameGrid.getCell(1, 2));
 		
 		//initialisation personnage	
-		initCharacter();
+//		initCharacter();
 		initEnemy();
 		
 		
@@ -205,9 +205,6 @@ public class Play extends BasicGameState {
 		
 		selectedStrat = offensive;
 		state = placement;
-		
-		
-		this.strat = new DefensiveStrategy(Play.chara.get(0)); //POUR TEST
 		
 		System.out.println("\n");
 		System.out.println("\n");

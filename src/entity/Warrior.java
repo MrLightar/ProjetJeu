@@ -26,7 +26,7 @@ public class Warrior extends Character {
 
 	
 	public void init() throws SlickException {
-		//super.init(gc);
+		super.init();
 		//animation de mouvement et d'attaque du personnage
 		this.texture = new Image("res/animationguerrier.png");
 		this.texture = this.texture.getScaledCopy(Grid.cellSize*9, Grid.cellSize*9);	
