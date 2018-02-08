@@ -1,5 +1,11 @@
 package core;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -165,8 +171,17 @@ public class Menu extends BasicGameState {
 	}
 	
 	
-	void startGame (StateBasedGame sbg, GameContainer gc){
+	public void startGame (StateBasedGame sbg, GameContainer gc){
 		try {
+			try {
+				Files.copy(Paths.get("../ProjetJeu/res/character_default.txt"), Paths.get("../ProjetJeu/res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			
+			Play.setMapLevel(0);
 			sbg.getState(Main.menu).init(gc, sbg);
 			sbg.getState(Main.play).init(gc, sbg);
 			sbg.getState(Main.selectCharaScreen).init(gc, sbg);

@@ -116,6 +116,14 @@ public abstract class Character extends Entity {
 
 	}
 
+	public int getJob() {
+		return job;
+	}
+
+	public void setJob(int job) {
+		this.job = job;
+	}
+
 	public int getLevel() {
 		return level;
 	}
@@ -330,8 +338,8 @@ public abstract class Character extends Entity {
 				this.endMoveX = pos.getI() * Grid.cellSize;
 				this.endMoveY = pos.getJ() * Grid.cellSize;
 
-				
-				pos.getChara().dommage(att + (3*((bonus==3)?1:0)));
+				System.out.println(pos);
+				pos.getChara().dommage(att + (3*((bonus==2)?1:0)));
 			}
 		}
 		

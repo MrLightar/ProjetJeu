@@ -55,7 +55,7 @@ public class OffensiveStrategy extends Strategy {
 				Character enemy = enemyPos.getChara();
 				// S'il est achevable
 				if (enemy.isKillable(Att)) {
-					System.out.println("\tEnnemi achevable : " + Att);
+					System.out.println("\tEnnemi achevable : " + Att + "   en : " + enemy.getPos());
 					bestMove = true;
 					mainTarget = enemyPos;
 					mainPath = this.evaluatePathAttack(this.chara.getPos(), mainTarget);

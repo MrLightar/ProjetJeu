@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
@@ -51,6 +53,7 @@ public class Play extends BasicGameState {
 	
 	public static TrueTypeFont ttf1;
 	public static TrueTypeFont ttf2;
+	public static TrueTypeFont ttf3;
 	
 	private Image background;
 	private Image image_pv;
@@ -64,6 +67,8 @@ public class Play extends BasicGameState {
 	private static final int placement = 0;
 	private static final int stratSelect = 1;
 	private static final int playing = 2;
+	private static final int win = 3;
+	private static final int gameOver = 4;
 	
 	private int selectedStrat;
 	
@@ -85,7 +90,6 @@ public class Play extends BasicGameState {
 	
 	
 	public Play(int state) {
-		this.mapLevel = 0;//a suprimmer
 		
 		// Create a stream to hold the output
 	    baos = new ByteArrayOutputStream();
@@ -124,6 +128,13 @@ public class Play extends BasicGameState {
 	public static int getCurrentPrice() {
 		return currentPrice;
 	}
+	public static int getMapLevel() {
+		return mapLevel;
+	}
+
+	public static void setMapLevel(int mapLevel) {
+		Play.mapLevel = mapLevel;
+	}
 
 
 
@@ -152,6 +163,7 @@ public class Play extends BasicGameState {
 		
 		ttf1 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/30), true);
 		ttf2 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/50), true);
+		ttf3 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/11), true);
 		
 		background = new Image("/res/right_background.png");
 		background = background.getScaledCopy(Main.width-Main.height, Main.height);
@@ -216,10 +228,13 @@ public class Play extends BasicGameState {
 			}
 		}
 		
-		
-		g.drawRect(Main.width*15/24, Main.height*4/20, Main.width*4/24, Main.height*1/20);
-		g.fillRect(Main.width*15/24, Main.height*4/20, Main.width*4/24 * (Play.currentPrice/(float)Play.maxPrice), Main.height*1/20);
-		ttf1.drawString(Main.width*15/24, Main.height*5/20, new Integer(Play.currentPrice).toString() + " / " + new Integer(Play.maxPrice).toString() + " $");
+		if(state == placement || state == stratSelect) {
+			Play.cursor.render(gc, g);
+			
+			g.drawRect(Main.width*15/24, Main.height*4/20, Main.width*4/24, Main.height*1/20);
+			g.fillRect(Main.width*15/24, Main.height*4/20, Main.width*4/24 * (Play.currentPrice/(float)Play.maxPrice), Main.height*1/20);
+			ttf1.drawString(Main.width*15/24, Main.height*5/20, new Integer(Play.currentPrice).toString() + " / " + new Integer(Play.maxPrice).toString() + " $");
+		}
 		
 		if(cursor.hasCharacter()) {
 			g.drawImage(image_pv, Main.width*15/24, Main.height*10/20);
@@ -249,13 +264,20 @@ public class Play extends BasicGameState {
 			}
 		}
 		
-		Play.cursor.render(gc, g);
 		
 		if(state == stratSelect) {
 			g.drawImage(offensiveButton, Main.width*15/24, Main.height/16*5);
 			g.drawImage(balancedButton, Main.width*15/24, Main.height/16*6);
 			g.drawImage(defensiveButton, Main.width*15/24, Main.height/16*7);
 			g.drawImage(stratCursor, Main.width*15/24, Main.height/16 * (selectedStrat + 5));
+		}
+		
+		if(state == win) {
+			ttf3.drawString(Main.width/8, Main.height/3, "YOU WIN", Color.red);
+		}
+		
+		if(state == gameOver) {
+			ttf3.drawString(Main.width/8, Main.height/3, "GAME OVER", Color.red);
 		}
 		
 	}
@@ -271,49 +293,121 @@ public class Play extends BasicGameState {
 			Play.enemyTeam.get(i).update(gc, delta);
 		}
 		
-		//fonction de boucle de jeu du niveau	
+		//fonction de boucle de jeu du niveau	A METTRE DANS SA PROPRE METHODE
 		if(state == playing) {
-			if (!Strategy.isPlaying()) {
-				switch(checkLevelEnd()) {
-				case 0 :
-					switch(indexTeam%2) {
-					case 0 :
-						if(chara.get(indexAlly).isAlive()) {
-							strat = chara.get(indexAlly).getStrategy();
-							strat.gameTurn();
-							indexTeam++;
-						}
-						indexAlly = (indexAlly+1)%chara.size();
-						break;
-					case 1 :
-						if(enemyTeam.get(indexEnemy).isAlive()) {
-							strat = enemyTeam.get(indexEnemy).getStrategy();
-							strat.gameTurn();
-							indexTeam++;
-						}
-						indexEnemy = (indexEnemy+1)%enemyTeam.size();
-						break;
-					}
-					
-					break;
-				case 1 : 
-					
-					break;
-				case 2 :
-					
-					break;
-				}
-			}
-			this.strat.update();
+			levelPlay();
 		}
 		
 		
 	}
 	
+	public void levelPlay() {
+		if (!Strategy.isPlaying()) {
+			switch(checkLevelEnd()) {
+			case 0 :
+				switch(indexTeam%2) {
+				case 0 :
+					if(chara.get(indexAlly).isAlive()) {
+						strat = chara.get(indexAlly).getStrategy();
+						strat.gameTurn();
+						indexTeam++;
+					}
+					indexAlly = (indexAlly+1)%chara.size();
+					break;
+				case 1 :
+					if(enemyTeam.get(indexEnemy).isAlive()) {
+						strat = enemyTeam.get(indexEnemy).getStrategy();
+						strat.gameTurn();
+						indexTeam++;
+					}
+					indexEnemy = (indexEnemy+1)%enemyTeam.size();
+					break;
+				}
+				
+				break;
+			case 1 : 
+				nextLevel(sbg, gc);
+				break;
+			case 2 :
+				gameOver();
+				break;
+			}
+		}
+		this.strat.update();
+	}
 	
 	public int checkLevelEnd() {
+		boolean check = false;
+		for (int i=0; i<enemyTeam.size(); i++) {
+			if(enemyTeam.get(i).isAlive()) {
+				check = true;
+			}
+		}
+		if(check == false) {
+			return 1;
+		}
+		
+		check = false;
+		for (int i=0; i<chara.size(); i++) {
+			if(chara.get(i).isAlive()) {
+				check = true;
+			}
+		}
+		if(check == false) {
+			return 2;
+		}
 		return 0;
 	}
+	
+	public void nextLevel (StateBasedGame sbg, GameContainer gc){
+		if(mapLevel == 9) {
+			System.out.println("YOU WIN !!!");
+			state = win;
+		}
+		else {
+			writeNewCharaDB();
+			try {		
+				mapLevel++;
+				sbg.getState(Main.play).init(gc, sbg);
+				sbg.getState(Main.selectCharaScreen).init(gc, sbg);
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void gameOver (){
+		System.out.println("GAME OVER !!!");
+		state = gameOver;
+	}
+	
+	
+	public void writeNewCharaDB() {
+		File f = new File("../ProjetJeu/res/character.txt");
+		if(f.exists()) {
+			f.delete();
+		}
+		f = new File("../ProjetJeu/res/character.txt");
+		try {
+			f.createNewFile();
+			FileWriter fw=new FileWriter(f);
+			
+			for(int i=0; i<chara.size(); i++) {
+				if(chara.get(i).isAlive()) {
+					fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+5) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+10) + " ; ");  // écrire une ligne dans le fichier resultat.txt
+					fw.write("\n"); // forcer le passage à la ligne
+				}
+			}
+			fw.write("&");
+			
+			fw.close(); // fermer le fichier à la fin des traitements
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	@Override
 	public int getID() {
@@ -603,6 +697,10 @@ public class Play extends BasicGameState {
 			case Input.KEY_I:
 				this.strat.gameTurn();
 				break;
+				
+			case Input.KEY_P:
+				writeNewCharaDB();
+				break;
 			
 			case Input.KEY_ESCAPE:
 				switch(state) {
@@ -622,6 +720,14 @@ public class Play extends BasicGameState {
 				
 				case playing:
 					state = placement;//POUR TEST
+					break;
+				
+				case win:
+					sbg.enterState(Main.menu);
+					break;
+				
+				case gameOver:
+					sbg.enterState(Main.menu);
 					break;
 				}
 				break;

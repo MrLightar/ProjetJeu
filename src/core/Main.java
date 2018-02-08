@@ -48,7 +48,7 @@ public class Main extends StateBasedGame {
 			app.setDisplayMode(Main.width, Main.height, Main.fullscreen);
 			app.setTitle("Grid");
 			app.setForceExit(true);
-			app.setTargetFrameRate(120);
+			app.setTargetFrameRate(500);
 			app.setShowFPS(true);
 			app.start();
 		} catch (SlickException e) {
