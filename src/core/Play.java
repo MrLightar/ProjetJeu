@@ -260,7 +260,7 @@ public class Play extends BasicGameState {
 		
 		if((state == placement || state == stratSelect) && timerLevelStart==0) {
 			g.setColor(Color.red);
-			g.drawRect(0, 0, (gameGrid.getCols()/5+1)*Grid.cellSize, Main.height-1);
+			g.drawRect(0, 0, (3+1)*Grid.cellSize, Main.height-1);
 			g.setColor(Color.white);
 			
 			Play.cursor.render(gc, g);
@@ -357,6 +357,7 @@ public class Play extends BasicGameState {
 						indexTeam++;
 					}
 					indexAlly = (indexAlly+1)%chara.size();
+					this.strat.update();
 					break;
 				case 1 :
 					if(enemyTeam.get(indexEnemy).isAlive()) {
@@ -365,6 +366,7 @@ public class Play extends BasicGameState {
 						indexTeam++;
 					}
 					indexEnemy = (indexEnemy+1)%enemyTeam.size();
+					this.strat.update();
 					break;
 				}
 				
@@ -377,7 +379,6 @@ public class Play extends BasicGameState {
 				break;
 			}
 		}
-		this.strat.update();
 	}
 	
 	public int checkLevelEnd() {
@@ -422,8 +423,19 @@ public class Play extends BasicGameState {
 	}
 	
 	public void gameOver (){
-		System.out.println("GAME OVER !!!");
-		state = gameOver;
+		if(SelectCharaScreen.choiceGrid.verifPool()) {
+			lostWriteNewCharaDB();
+			try {
+				sbg.getState(Main.play).init(gc, sbg);
+				sbg.getState(Main.selectCharaScreen).init(gc, sbg);
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			System.out.println("GAME OVER !!!");
+			state = gameOver;
+		}
 	}
 	
 	
@@ -450,6 +462,22 @@ public class Play extends BasicGameState {
 					fw.write("\n");
 				}
 			}
+			fw.write("&");
+			
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void lostWriteNewCharaDB() {
+		SelectCharaScreen.choiceGrid.writeNewCharaDB();
+		File f = new File("../ProjetJeu/res/character.txt");
+		try {
+			f.createNewFile();
+			FileWriter fw=new FileWriter(f, true);
+			
 			fw.write("&");
 			
 			fw.close();
@@ -746,7 +774,15 @@ public class Play extends BasicGameState {
 				break;
 				
 			case Input.KEY_I:
-				this.strat.gameTurn();
+//				this.strat.gameTurn();
+			try {
+				initGridDB(gc);
+				initEnemy();
+			} catch (SlickException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+				
 				break;
 				
 			case Input.KEY_P:

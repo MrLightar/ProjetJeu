@@ -66,7 +66,7 @@ public class Cursor extends Entity {
 	
 	public boolean isPlacable() {
 		if (Play.getCurrentPrice() + this.selection.getPrice() <= Play.getMaxPrice()) {
-			if(this.pos.getJ() <= Play.gameGrid.getCols()/5) {
+			if(this.pos.getJ() <= 3) {
 				if(this.pos.getChara()==null) {
 					if(verifTypeCell()) {
 						return true;
@@ -135,7 +135,6 @@ public class Cursor extends Entity {
 	
 	public void supr() {
 		pos.setChara(null);
-		this.selection.alive = false;
 //		this.selection.action = 8;
 		Play.getChara().remove(selection);
 		SelectCharaScreen.choiceGrid.replacable(selection);
