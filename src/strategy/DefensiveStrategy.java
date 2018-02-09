@@ -77,16 +77,20 @@ public class DefensiveStrategy extends Strategy {
 		System.out.println(1);
 		if (this.enemiesInRange.isEmpty()) {
 			tempPM=PM;
+			Cell current=chara.getPos();
 			if(chara.getBonus()==0 && !bonusesInRange.isEmpty()) {
 				Cell closestBonus=getClosest(chara.getPos(), bonusesInRange);
-				if(this.evaluatePath(this.chara.getPos(), closestBonus)!=null) {
-					tempPM-=evaluatePath(chara.getPos(), closestBonus).size()-1;
-					this.applyPath(this.evaluatePath(this.chara.getPos(), closestBonus), PM);
+				pathsave1=evaluatePath(chara.getPos(), closestBonus);
+				if(pathsave1!=null) {		
+					int min=Math.min(pathsave1.size()-1, tempPM);
+					current=pathsave1.get(pathsave1.size()-1-min);
+					tempPM-=pathsave1.size()-1;
+					this.applyPath(pathsave1, PM);
 				}	
 			}
-			Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
-			if(this.evaluatePath(this.chara.getPos(), closestEnemy)!=null){
-				this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
+			Cell closestEnemy = this.getClosest(current, this.enemies);
+			if(this.evaluatePath(current, closestEnemy)!=null){
+				this.applyPath(this.evaluatePath(current, closestEnemy), tempPM);
 			}	
 		}
 		
