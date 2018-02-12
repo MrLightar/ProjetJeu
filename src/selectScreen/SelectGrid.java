@@ -87,7 +87,7 @@ public class SelectGrid {
 			}
 		}
 		
-		File f = new File("../ProjetJeu/res/character.txt");
+		File f = new File("res/character.txt");
 		
 		try {
 			Scanner sc = new Scanner(f);
@@ -140,8 +140,8 @@ public class SelectGrid {
 	}
 	
 	public void writeNewCharaDB() {
-		File f = new File("../ProjetJeu/res/temporary.txt");
-		File ff = new File("../ProjetJeu/res/character.txt");
+		File f = new File("res/temporary.txt");
+		File ff = new File("res/character.txt");
 		
 		
 		
@@ -164,7 +164,7 @@ public class SelectGrid {
 			fw.close();
 			sc.close();
 			
-			Files.copy(Paths.get("../ProjetJeu/res/temporary.txt"), Paths.get("../ProjetJeu/res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(Paths.get("res/temporary.txt"), Paths.get("res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

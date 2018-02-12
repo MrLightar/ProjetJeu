@@ -40,7 +40,7 @@ public class SelectCell {
 		
 		placed = false;
 		
-		background = new Image("/res/wood_wall.png");
+		background = new Image("res/wood_wall.png");
 		background = background.getScaledCopy(SelectGrid.cellSizeX, SelectGrid.cellSizeY);
 		image_pv = new Image("res/pv.png");
 		image_pv = image_pv.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8);
