@@ -19,6 +19,7 @@ import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import map.Grid;
+import strategy.Strategy;
 import core.Main;
 
 public class Menu extends BasicGameState {
@@ -174,7 +175,7 @@ public class Menu extends BasicGameState {
 	public void startGame (StateBasedGame sbg, GameContainer gc){
 		try {
 			try {
-				Files.copy(Paths.get("../ProjetJeu/res/character_default.txt"), Paths.get("../ProjetJeu/res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(Paths.get("res/character_default.txt"), Paths.get("res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -182,6 +183,7 @@ public class Menu extends BasicGameState {
 		
 			
 			Play.setMapLevel(0);
+			Strategy.setPlaying(false);
 			sbg.getState(Main.menu).init(gc, sbg);
 			sbg.getState(Main.play).init(gc, sbg);
 			sbg.getState(Main.selectCharaScreen).init(gc, sbg);

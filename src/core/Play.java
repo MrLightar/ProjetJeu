@@ -105,8 +105,8 @@ public class Play extends BasicGameState {
 	    // Tell Java to use your special stream
 	    System.setOut(ps);
 	    // Put things back
-	    System.out.flush();
-	    System.setOut(old);
+//	    System.out.flush();
+//	    System.setOut(old);
 	}
 	
 	
@@ -173,9 +173,9 @@ public class Play extends BasicGameState {
 		ttf2 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/50), true);
 		ttf3 = new TrueTypeFont(new java.awt.Font("Verdana", Font.BOLD, Main.height/11), true);
 		
-		titre = new Image("/res/titre.png");
+		titre = new Image("res/titre.png");
 		titre = titre.getScaledCopy(Main.width-Main.height, (Main.width-Main.height)/5);
-		background = new Image("/res/right_background.png");
+		background = new Image("res/right_background.png");
 		background = background.getScaledCopy(Main.width-Main.height, Main.height);
 		image_pv = new Image("res/pv.png");
 		image_pv = image_pv.getScaledCopy(Main.height/20, Main.height/20);
@@ -429,6 +429,7 @@ public class Play extends BasicGameState {
 			try {
 				sbg.getState(Main.play).init(gc, sbg);
 				sbg.getState(Main.selectCharaScreen).init(gc, sbg);
+				System.out.println("Niveau perdu ! \nRetour au niveau " + (mapLevel+1));
 			} catch (SlickException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -442,7 +443,7 @@ public class Play extends BasicGameState {
 	
 	public void writeNewCharaDB() {
 		SelectCharaScreen.choiceGrid.writeNewCharaDB();
-		File f = new File("../ProjetJeu/res/character.txt");
+		File f = new File("res/character.txt");
 		try {
 			f.createNewFile();
 			FileWriter fw=new FileWriter(f, true);
@@ -474,7 +475,7 @@ public class Play extends BasicGameState {
 	
 	public void lostWriteNewCharaDB() {
 		SelectCharaScreen.choiceGrid.writeNewCharaDB();
-		File f = new File("../ProjetJeu/res/character.txt");
+		File f = new File("res/character.txt");
 		try {
 			f.createNewFile();
 			FileWriter fw=new FileWriter(f, true);
@@ -500,7 +501,7 @@ public class Play extends BasicGameState {
 	
 	
 	public void initCharacter() throws SlickException {
-		File f = new File("../ProjetJeu/res/character.txt");
+		File f = new File("res/character.txt");
 		
 		try {
 			Scanner sc = new Scanner(f);
@@ -555,7 +556,7 @@ public class Play extends BasicGameState {
 	}
 	
 	public void initEnemy() throws SlickException {
-		File f = new File("../ProjetJeu/res/enemy.txt");
+		File f = new File("res/enemy.txt");
 		
 		try {
 			Scanner sc = new Scanner(f);
@@ -624,7 +625,7 @@ public class Play extends BasicGameState {
 	
 	
 	public void initGridDB (GameContainer gc) throws SlickException {
-		File f = new File("../ProjetJeu/res/map.txt");
+		File f = new File("res/map.txt");
 			
 		try {	    	
 			Scanner sc = new Scanner(f);
@@ -752,7 +753,7 @@ public class Play extends BasicGameState {
 			case Input.KEY_SPACE:
 				//Play.cursor.testSelectMove();
 				if(chara.isEmpty()) {
-					System.out.println("Aucune unité sur la carte !");
+					System.out.println("Aucune unitee sur la carte !");
 				} else {
 					state = playing;
 				}				
