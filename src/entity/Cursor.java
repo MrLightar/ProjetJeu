@@ -98,7 +98,7 @@ public class Cursor extends Entity {
 		}
 		Play.updatePrice(this.selection.getPrice());
 		this.selection = null;
-		System.out.println("Perso place !");
+		System.out.println("Unite place !");
 	}
 	
 	public void selectMove() {
@@ -108,7 +108,7 @@ public class Cursor extends Entity {
 					this.selection.moveCharacter(this.pos);
 					this.selection = null;
 					this.selected = false;
-					System.out.println("Perso deplace !");
+					System.out.println("Unite deplace !");
 				} else {
 					System.out.println("Case impraticable !");
 				}		
@@ -141,7 +141,7 @@ public class Cursor extends Entity {
 		Play.updatePrice(- this.selection.getPrice());
 		this.selection = null;
 		this.selected = false;
-		System.out.println("Perso suprimme !");
+		System.out.println("Personnage suprimme !");
 	}
 	
 	
@@ -179,13 +179,13 @@ public class Cursor extends Entity {
 								pos.setCellType(0);
 							}
 							this.selection = null;
-							System.out.println("Perso deplace !");
+							System.out.println("Personnage deplace !");
 						} else {
 							System.out.println("Case occupee !");
 						}
 					} else {
 						this.selection = null;
-						System.out.println("Perso deselectionne");
+						System.out.println("Personnage deselectionne");
 					}	
 				} else {
 					System.out.println("Case non praticable !");

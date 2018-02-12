@@ -342,7 +342,7 @@ public abstract class Character extends Entity {
 				this.endMoveX = pos.getI() * Grid.cellSize;
 				this.endMoveY = pos.getJ() * Grid.cellSize;
 
-				System.out.println(pos);
+				//System.out.println(pos);
 				pos.getChara().dommage(att + (3*((bonus==2)?1:0)));
 			}
 		}
