@@ -239,7 +239,7 @@ public class Play extends BasicGameState {
 		ttf2.drawString(Main.width*40/50, Main.height*22/50, "-deplacer le curseur");
 		ttf2.drawString(Main.width*40/50, Main.height*26/50, "ENTREE :");
 		ttf2.drawString(Main.width*40/50, Main.height*28/50, "-selectionner un personnage");
-		ttf2.drawString(Main.width*40/50, Main.height*29/50, "-passer � l'�cran de selection");
+		ttf2.drawString(Main.width*40/50, Main.height*29/50, "-passer a l'ecran de selection");
 		ttf2.drawString(Main.width*40/50, Main.height*30/50, "-placer un personnage");
 		ttf2.drawString(Main.width*40/50, Main.height*34/50, "SUPPR :");
 		ttf2.drawString(Main.width*40/50, Main.height*36/50, "-supprimer un personnage");
