@@ -811,7 +811,7 @@ public class Play extends BasicGameState {
 					break;
 				
 				case playing:
-					state = placement;//POUR TEST
+					sbg.enterState(Main.menu);
 					break;
 				
 				case win:
