@@ -452,13 +452,13 @@ public class Play extends BasicGameState {
 				if(chara.get(i).isAlive()) {
 					switch(chara.get(i).getJob()) {
 					case Character.mage:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+4) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; "); 
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+6) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; "); 
 						break;
 					case Character.warrior:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+10) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+12) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
 						break;
 					case Character.archer:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+7) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+8) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
 						break;
 					}
 					fw.write("\n");
