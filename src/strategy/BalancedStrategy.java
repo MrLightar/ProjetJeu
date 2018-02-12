@@ -142,7 +142,10 @@ public class BalancedStrategy extends Strategy {
 					Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
 					if (this.evaluatePath(this.chara.getPos(), closestEnemy) != null) {
 						this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
+						int min = Math.min(this.evaluatePath(this.chara.getPos(), closestEnemy).size() - 1, tempPM);
+						current = this.evaluatePath(this.chara.getPos(), closestEnemy).get(this.evaluatePath(this.chara.getPos(), closestEnemy).size() - 1 - min);
 						tempPM -= this.evaluatePath(this.chara.getPos(), closestEnemy).size() - 1;
+
 					}
 //					System.out.println(4);
 				}
@@ -156,9 +159,10 @@ public class BalancedStrategy extends Strategy {
 			// si il y a un bonus atteignable
 			distance = 1000;
 			for (Cell bonus : this.bonusesInRange) {
-				pathsave1 = this.evaluatePath(this.chara.getPos(), bonus);
+				pathsave1 = this.evaluatePath(current, bonus);
 				if (pathsave1 != null && pathsave1.size() < distance) {
 					cellsave = bonus;
+					System.out.println(cellsave);
 					pathsave2 = pathsave1;
 					distance = pathsave2.size();
 					play = true;
