@@ -38,16 +38,16 @@ public class Archer extends Character {
 //		SpriteSheet sS2 = new SpriteSheet(this.textureAttack, Grid.cellSize, Grid.cellSize);
 
 				
-		this.animations[0] = loadAnimation(spriteSheet, 0, 12, 0, 150);
-		this.animations[1] = loadAnimation(spriteSheet, 0, 12, 1, 150);
-		this.animations[2] = loadAnimation(spriteSheet, 0, 12, 2, 150);
-		this.animations[3] = loadAnimation(spriteSheet, 0, 12, 3, 150);
+		this.animations[0] = loadAnimation(spriteSheet, 0, 12, 0, 100);
+		this.animations[1] = loadAnimation(spriteSheet, 0, 12, 1, 100);
+		this.animations[2] = loadAnimation(spriteSheet, 0, 12, 2, 100);
+		this.animations[3] = loadAnimation(spriteSheet, 0, 12, 3, 100);
 		this.animations[4] = loadAnimation(spriteSheet, 1, 9, 4, 150);
 		this.animations[5] = loadAnimation(spriteSheet, 1, 9, 5, 150);
 		this.animations[6] = loadAnimation(spriteSheet, 1, 9, 6, 150);
 		this.animations[7] = loadAnimation(spriteSheet, 1, 9, 7, 150);
 		this.animations[8] = loadAnimation(spriteSheet, 1, 7, 8, 350);
-		//this.animations[9] = loadAnimation(sS2, 0, 16, 0, 50);
+
 	}
 	
 	public void render(GameContainer gc, Graphics g) {
