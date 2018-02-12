@@ -80,6 +80,10 @@ public abstract class Strategy {
 		return Strategy.isPlaying;
 	}
 	
+	public static void setPlaying(boolean isPlaying) {
+		Strategy.isPlaying = isPlaying;
+	}
+	
 	/* ========================================================================================== */
 
 	public abstract void gameTurn();
