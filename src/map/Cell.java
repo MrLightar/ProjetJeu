@@ -3,11 +3,13 @@ package map;
 
 import java.util.ArrayList;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;
 
 import entity.Character;
@@ -29,6 +31,8 @@ public class Cell {
 
 	private ArrayList<Cell> neighbors;
 	private Cell previous;
+	
+	protected Animation[] animMoveBonus = new Animation[1];
 
 	public static final int grassCell = 0;
 	public static final int wallCell = 1;
@@ -251,8 +255,6 @@ public ArrayList<Cell> getAllNeighbors(Grid grid) {
 					}
 				}
 			}
-//			this.texture = new Image("res/grass.png");
-//			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			break;
 		case 1:
 			this.texture = new Image("res/wall.png");
@@ -272,20 +274,23 @@ public ArrayList<Cell> getAllNeighbors(Grid grid) {
 					this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 				}
 			}
-//			this.texture = new Image("res/water.png");
-//			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			break;
 		case 3:
 			this.texture = new Image("res/grass1.png");
 			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			this.textureBonus = new Image("res/moveBonus.png");
-			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize*6, Grid.cellSize);
+			SpriteSheet spriteSheet = new SpriteSheet(this.textureBonus, Grid.cellSize, Grid.cellSize);
+			this.animMoveBonus[0] = loadAnimation(spriteSheet, 0, 6, 0, 150);
 			break;
 		case 4:
 			this.texture = new Image("res/grass1.png");
 			this.texture = this.texture.getScaledCopy(Grid.cellSize, Grid.cellSize);
 			this.textureBonus = new Image("res/attackBonus.png");
-			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize, Grid.cellSize);
+			this.textureBonus = this.textureBonus.getScaledCopy(Grid.cellSize*6, Grid.cellSize);
+			spriteSheet = new SpriteSheet(this.textureBonus, Grid.cellSize, Grid.cellSize);
+			this.animMoveBonus[0] = loadAnimation(spriteSheet, 0, 6, 0, 150);
+		
 			break;		
 		}
 	}
@@ -294,11 +299,10 @@ public ArrayList<Cell> getAllNeighbors(Grid grid) {
 		int x = this.j * Grid.cellSize;
 		int y = this.i * Grid.cellSize;
 		g.drawImage(this.texture, x, y);
-		if(this.cellType == 3) {
-			g.drawImage(this.textureBonus, x, y);
-		}
-		if(this.cellType == 4) {
-			g.drawImage(this.textureBonus, x, y);
+		if(this.cellType == 3 || this.cellType == 4) {
+			//g.drawImage(this.textureBonus, x, y);
+			animMoveBonus[0].draw(x, y);
+			
 		}
 	}
 
@@ -317,6 +321,15 @@ public ArrayList<Cell> getAllNeighbors(Grid grid) {
 	public String toString() {
 		return "(" + this.i + ", " + this.j + ")";
 
+	}
+
+	public Animation loadAnimation(SpriteSheet spriteSheet, int startX, int endX, int y, int animSpeed) {
+		Animation animation = new Animation();
+		for( int x = startX; x < endX; x++) {
+			animation.addFrame(spriteSheet.getSprite(x, y), animSpeed);
+		}
+
+		return animation;
 	}
 
 
