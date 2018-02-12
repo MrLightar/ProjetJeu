@@ -827,7 +827,9 @@ public class Play extends BasicGameState {
 				
 			case Input.KEY_DELETE:
 				if(cursor.hasCharacter()) {
-					cursor.supr();
+					if(cursor.getSelection().getTeam() == Character.ally) {
+						cursor.supr();
+					}
 				}
 				break;
 				
