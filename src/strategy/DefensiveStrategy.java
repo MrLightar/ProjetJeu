@@ -13,10 +13,11 @@ public class DefensiveStrategy extends Strategy {
 	public DefensiveStrategy(Character chara) {
 		super(chara);
 	}
-
+	
+	
 	@Override
 	public void gameTurn() {
-		isPlaying = true;
+		Strategy.isPlaying = true;
 		
 		this.enemies = new ArrayList<>();
 		this.bonuses = new ArrayList<>();
@@ -27,7 +28,7 @@ public class DefensiveStrategy extends Strategy {
 		
 		
 		int PM = this.chara.getPM();
-		int Att= this.chara.getAtt();
+		int Att = this.chara.getAtt();
 		Cell celldef;
 		int tempPM;
 		int i = 0;
@@ -41,11 +42,11 @@ public class DefensiveStrategy extends Strategy {
 		boolean play = false;
 		
 		// initialise PM
-		if (this.chara.getBonus() == 2) {
+		if (this.chara.getBonus() == Character.attackBonus) {
 			Att += 3;
 		}
 		
-		if (this.chara.getBonus() == 1) {
+		if (this.chara.getBonus() == Character.moveBonus) {
 			PM += 3;
 		}
 		tempPM = PM;
@@ -65,7 +66,7 @@ public class DefensiveStrategy extends Strategy {
 		
 		celldef = this.rangeOfActionBonuses.get(0);
 		i = 0;
-		while ((celldef.getCellType() == 1 || celldef.getCellType() == 2
+		while ((celldef.getCellType() == Cell.wallCell || celldef.getCellType() == Cell.waterCell
 				|| celldef.getChara() != this.chara && celldef.hasChara()) && i < 100) {
 			this.rangeOfActionBonuses.add(this.rangeOfActionBonuses.get(0));
 			this.rangeOfActionBonuses.remove(0);
@@ -74,39 +75,38 @@ public class DefensiveStrategy extends Strategy {
 		}
 		
 		// si il n'y a pas d'ennemi dans la zone, avancé vers le plus proche
-		System.out.println(1);
+//		System.out.println(1);
 		if (this.enemiesInRange.isEmpty()) {
-			tempPM=PM;
-			Cell current=chara.getPos();
-			if(chara.getBonus()==0 && !bonusesInRange.isEmpty()) {
-				Cell closestBonus=getClosest(chara.getPos(), bonusesInRange);
-				pathsave1=evaluatePath(chara.getPos(), closestBonus);
-				if(pathsave1!=null) {		
-					int min=Math.min(pathsave1.size()-1, tempPM);
-					current=pathsave1.get(pathsave1.size()-1-min);
-					tempPM-=pathsave1.size()-1;
+			tempPM = PM;
+			Cell current = this.chara.getPos();
+			if (this.chara.getBonus() == 0 && !this.bonusesInRange.isEmpty()) {
+				Cell closestBonus = this.getClosest(this.chara.getPos(), this.bonusesInRange);
+				pathsave1 = this.evaluatePath(this.chara.getPos(), closestBonus);
+				if (pathsave1 != null) {
+					int min = Math.min(pathsave1.size() - 1, tempPM);
+					current = pathsave1.get(pathsave1.size() - 1 - min);
+					tempPM -= pathsave1.size() - 1;
 					this.applyPath(pathsave1, PM);
-				}	
+				}
 			}
 			Cell closestEnemy = this.getClosest(current, this.enemies);
-			if(this.evaluatePath(current, closestEnemy)!=null){
+			if (this.evaluatePath(current, closestEnemy) != null) {
 				this.applyPath(this.evaluatePath(current, closestEnemy), tempPM);
-			}	
+			}
 		}
 		
 		// sinon
-
 		else {
 			// si on peut achever un ennemi, aller chercher un bonus et atteindre la meilleur case
-			System.out.println(2);
-			if(chara.getBonus()==0) {
+//			System.out.println(2);
+			if (this.chara.getBonus() == 0) {
 				i = 0;
 				while (!play && i <= this.enemiesInRange.size() - 1) {
 					rangenemy = this.enemiesInRange.get(i);
 					tempPM = PM;
 					if (rangenemy.getChara().isKillable(Att)) {
 						pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-						if(pathsave1!=null && attackable(pathsave1.get(0), rangenemy) ) {
+						if (pathsave1 != null && this.attackable(pathsave1.get(0), rangenemy)) {
 							tempPM -= pathsave1.size() - 1;
 							j = 0;
 							while (!play && j <= this.bonusesInRange.size() - 1) {
@@ -114,10 +114,10 @@ public class DefensiveStrategy extends Strategy {
 								pathsave2 = this.evaluatePath(pathsave1.get(0), rangebonus);
 								pathsave3 = this.evaluatePath(rangebonus, celldef);
 
-								if ( pathsave2!=null && pathsave3!=null && pathsave2.size() - 1 <= tempPM && pathsave3.size() - 1 <= tempPM - pathsave2.size() + 1) {
+								if (pathsave2 != null && pathsave3 != null && pathsave2.size() - 1 <= tempPM
+										&& pathsave3.size() - 1 <= tempPM - pathsave2.size() + 1) {
 									play = true;
 									cellsave = rangenemy;
-
 								}
 								j++;
 							}
@@ -136,30 +136,29 @@ public class DefensiveStrategy extends Strategy {
 			}
 			
 			// sinon si on peut aller chercher un bonus,attaquer un ennemi, et atteindre la meilleur case
-
 			else {
-				System.out.println(3);
-				if(chara.getBonus()==0) {
+//				System.out.println(3);
+				if (this.chara.getBonus() == 0) {
 					j = 0;
 					while (!play && j <= this.bonusesInRange.size() - 1) {
 						rangebonus = this.bonusesInRange.get(j); // for(Cell rangebonus: bonusesInRange) {
 						tempPM = PM;
 						pathsave1 = this.evaluatePath(this.chara.getPos(), rangebonus);
-						if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
+						if (pathsave1 != null && pathsave1.size() - 1 <= tempPM) {
 							tempPM -= pathsave1.size() - 1;
 							i = 0;
 							while (!play && i <= this.enemiesInRange.size() - 1) {
 								rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
 								pathsave2 = this.evaluatePathAttack(rangebonus, rangenemy);
-									if (pathsave2!=null && tempPM >= pathsave2.size() - 1 && attackable(pathsave2.get(0), rangenemy)) {
-										tempPM -= pathsave2.size() - 1;
-										pathsave3 = this.evaluatePath(pathsave2.get(0), celldef);
-										if (pathsave3!=null && tempPM >= pathsave3.size() - 1) {
-											play = true;
-											cellsave = rangenemy;
-
-										}
+								if (pathsave2 != null && tempPM >= pathsave2.size() - 1
+										&& this.attackable(pathsave2.get(0), rangenemy)) {
+									tempPM -= pathsave2.size() - 1;
+									pathsave3 = this.evaluatePath(pathsave2.get(0), celldef);
+									if (pathsave3 != null && tempPM >= pathsave3.size() - 1) {
+										play = true;
+										cellsave = rangenemy;
 									}
+								}
 								i++;
 							}
 						}
@@ -177,19 +176,19 @@ public class DefensiveStrategy extends Strategy {
 				
 				// sinon si on peut aller chercher un bonus et aller à la meilleur case
 				else {
-					System.out.println(4);
-					if(chara.getBonus()==0) {
+//					System.out.println(4);
+					if (this.chara.getBonus() == 0) {
 						j = 0;
 						while (!play && j <= this.bonusesInRange.size() - 1) {
-							rangebonus = this.bonusesInRange.get(j); // for(Cell rangebonus: bonusesInRange) {
+							rangebonus = this.bonusesInRange.get(j);
 							tempPM = PM;
 							pathsave1 = this.evaluatePath(this.chara.getPos(), rangebonus);
-							if (pathsave1!=null && pathsave1.size() - 1 <= tempPM) {
+							if (pathsave1 != null && pathsave1.size() - 1 <= tempPM) {
 								tempPM -= pathsave1.size() - 1;
 								pathsave2 = this.evaluatePath(rangebonus, celldef);
-								if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
+								if (pathsave2 != null && tempPM >= pathsave2.size() - 1) {
 									play = true;
-	
+
 								}
 							}
 							j++;
@@ -204,22 +203,22 @@ public class DefensiveStrategy extends Strategy {
 					
 					// sinon si on peut achever un ennemi et aller à la meilleur case
 					else {
-						System.out.println(5);
+//						System.out.println(5);
 						i = 0;
 						while (!play && i <= this.enemiesInRange.size() - 1) {
-							rangenemy = this.enemiesInRange.get(i); // for(Cell rangenemy: enemiesInRange) {
+							rangenemy = this.enemiesInRange.get(i);
 							if (rangenemy.getChara().isKillable(Att)) {
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-									if (pathsave1!=null && pathsave1.size() - 1 <= tempPM && attackable(pathsave1.get(0), rangenemy)) {
-										tempPM -= pathsave1.size() - 1;
-										pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-										if (pathsave2!=null && tempPM >= pathsave2.size() - 1) {
-											play = true;
-											cellsave = rangenemy;
-									
-										}
+								if (pathsave1 != null && pathsave1.size() - 1 <= tempPM
+										&& this.attackable(pathsave1.get(0), rangenemy)) {
+									tempPM -= pathsave1.size() - 1;
+									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
+									if (pathsave2 != null && tempPM >= pathsave2.size() - 1) {
+										play = true;
+										cellsave = rangenemy;
 									}
+								}
 							}
 							i++;
 						}
@@ -232,21 +231,21 @@ public class DefensiveStrategy extends Strategy {
 						
 						// sinon si on peut attaquer un ennemi et aller à la meilleur case
 						else {
-							System.out.println(6);
+//							System.out.println(6);
 							i = 0;
 							while (!play && i <= this.enemiesInRange.size() - 1) {
 								rangenemy = this.enemiesInRange.get(i);
 								tempPM = PM;
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), rangenemy);
-									if (pathsave1!=null && pathsave1.size() - 1 <= tempPM && attackable(pathsave1.get(0), rangenemy)) {
-										tempPM -= pathsave1.size() - 1;
-										pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-										if ((pathsave2!=null) && tempPM >= pathsave2.size() - 1) {
-											play = true;
-											cellsave = rangenemy;
-							
-										}
+								if (pathsave1 != null && pathsave1.size() - 1 <= tempPM
+										&& this.attackable(pathsave1.get(0), rangenemy)) {
+									tempPM -= pathsave1.size() - 1;
+									pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
+									if (pathsave2 != null && tempPM >= pathsave2.size() - 1) {
+										play = true;
+										cellsave = rangenemy;
 									}
+								}
 								i++;
 							}
 							
@@ -258,60 +257,54 @@ public class DefensiveStrategy extends Strategy {
 							}
 							
 							// sinon Attaquer et aller à la meilleur case atteignable
-							
 							else {
-								System.out.println(7);
+//								System.out.println(7);
 								tempPM = PM;
 								cellsave = this.getClosest(this.chara.getPos(), this.enemiesInRange);
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), cellsave);
-								if(pathsave1!=null) {
+								if (pathsave1 != null) {
 									this.applyPath(pathsave1, tempPM);
 									
-									int min=Math.min(pathsave1.size()-1, tempPM);
-									if(attackable(pathsave1.get(pathsave1.size()-1-min), cellsave)) {
-										attack(cellsave);
+									int min = Math.min(pathsave1.size() - 1, tempPM);
+									if (this.attackable(pathsave1.get(pathsave1.size() - 1 - min), cellsave)) {
+										this.attack(cellsave);
 									}
 									tempPM -= pathsave1.size() - 1;
-									play=true;
+									play = true;
 								}
-								if(play) {		
+								
+								if (play) {
 									i = 0;
-									play=false;
+									play = false;
 									while (!play && i < 100) {
-										
-										if (this.chara.getPos().distanceFrom(celldef) <= tempPM && celldef.getCellType() != 1 && celldef.getCellType() != 2
+										if (this.chara.getPos().distanceFrom(celldef) <= tempPM && celldef.getCellType() != 1
+												&& celldef.getCellType() != 2
 												&& (celldef.getChara() == this.chara || !celldef.hasChara())) {
 											pathsave2 = this.evaluatePath(pathsave1.get(0), celldef);
-											if (pathsave2 !=null && pathsave2.size() - 1 <= tempPM ) {
+											if (pathsave2 != null && pathsave2.size() - 1 <= tempPM) {
 												this.applyPath(pathsave2, tempPM);
 												play = true;
-												
 											} else {
 												this.rangeOfActionBonuses.add(this.rangeOfActionBonuses.get(0));
 												this.rangeOfActionBonuses.remove(0);
 												celldef = this.rangeOfActionBonuses.get(0);
 											}
-											
-										}
-										
-										else {
+										} else {
 											this.rangeOfActionBonuses.add(this.rangeOfActionBonuses.get(0));
 											this.rangeOfActionBonuses.remove(0);
 											celldef = this.rangeOfActionBonuses.get(0);
 										}
 										i++;
 									}
-								}
-								else {
+								} else {
 									Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
-									if(this.evaluatePath(this.chara.getPos(), closestEnemy)!=null){
+									if (this.evaluatePath(this.chara.getPos(), closestEnemy) != null) {
 										this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
-									}	
+									}
 								}
 							}
 						}
 					}
-
 				}
 			}
 		}
