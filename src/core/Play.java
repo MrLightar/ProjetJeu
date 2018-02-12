@@ -239,7 +239,7 @@ public class Play extends BasicGameState {
 		ttf2.drawString(Main.width*40/50, Main.height*22/50, "-deplacer le curseur");
 		ttf2.drawString(Main.width*40/50, Main.height*26/50, "ENTREE :");
 		ttf2.drawString(Main.width*40/50, Main.height*28/50, "-selectionner un personnage");
-		ttf2.drawString(Main.width*40/50, Main.height*29/50, "-passer à l'écran de selection");
+		ttf2.drawString(Main.width*40/50, Main.height*29/50, "-passer ï¿½ l'ï¿½cran de selection");
 		ttf2.drawString(Main.width*40/50, Main.height*30/50, "-placer un personnage");
 		ttf2.drawString(Main.width*40/50, Main.height*34/50, "SUPPR :");
 		ttf2.drawString(Main.width*40/50, Main.height*36/50, "-supprimer un personnage");
@@ -357,7 +357,7 @@ public class Play extends BasicGameState {
 						indexTeam++;
 					}
 					indexAlly = (indexAlly+1)%chara.size();
-					this.strat.update();
+					//this.strat.update();
 					break;
 				case 1 :
 					if(enemyTeam.get(indexEnemy).isAlive()) {
@@ -366,7 +366,7 @@ public class Play extends BasicGameState {
 						indexTeam++;
 					}
 					indexEnemy = (indexEnemy+1)%enemyTeam.size();
-					this.strat.update();
+					//this.strat.update();
 					break;
 				}
 				
@@ -379,6 +379,7 @@ public class Play extends BasicGameState {
 				break;
 			}
 		}
+		this.strat.update();
 	}
 	
 	public int checkLevelEnd() {
@@ -750,7 +751,11 @@ public class Play extends BasicGameState {
 
 			case Input.KEY_SPACE:
 				//Play.cursor.testSelectMove();
-				state = playing;
+				if(chara.isEmpty()) {
+					System.out.println("Aucune unitÃ© sur la carte !");
+				} else {
+					state = playing;
+				}				
 				break;
 				
 			case Input.KEY_A:
