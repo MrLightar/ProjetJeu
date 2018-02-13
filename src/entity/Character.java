@@ -320,10 +320,11 @@ public abstract class Character extends Entity {
 	public void attack(Cell pos) {
 		//if Port�e
 		//if ! deja attack
-		this.attacking = true;
-		if(this.moving == false) {
+		if(verifPosChara()) {
+			this.attacking = true;
+			if(this.moving == false) {
 			
-			if(verifPosChara()) {
+//			if(verifPosChara()) {
 				System.out.println("Atatatataa");
 
 
