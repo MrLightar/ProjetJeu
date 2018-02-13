@@ -49,8 +49,8 @@ public class BalancedStrategy extends Strategy {
 		tempPM = PM;
 
 
-		// Pour le personnage considéré,
-		// déterminer sa zone d'action
+		// Pour le personnage considÃ©rÃ©,
+		// dÃ©terminer sa zone d'action
 		// + chercher tous les adversaires
 		// chercher les bonus
 		this.analyseMap(PM);
@@ -70,7 +70,7 @@ public class BalancedStrategy extends Strategy {
 			}
 		}
 
-		// achever l’ennemi
+		// achever lâ€™ennemi
 		if (play) {
 //			System.out.println(1);
 //			System.out.println("chemin d'attaque =" + pathsave2);
@@ -98,7 +98,7 @@ public class BalancedStrategy extends Strategy {
 				}
 			}
 
-			// attaquer l’ennemi
+			// attaquer lâ€™ennemi
 			if (play) {
 //				System.out.println(2);
 //				System.out.println("chemin d'attaque =" + pathsave2);
@@ -138,7 +138,7 @@ public class BalancedStrategy extends Strategy {
 				// sinon
 				else {
 					// si il reste des PM
-					// avancer vers l’ennemi le plus proche
+					// avancer vers lâ€™ennemi le plus proche
 					Cell closestEnemy = this.getClosest(this.chara.getPos(), this.enemies);
 					if (this.evaluatePath(this.chara.getPos(), closestEnemy) != null) {
 						this.applyPath(this.evaluatePath(this.chara.getPos(), closestEnemy), tempPM);
@@ -162,7 +162,7 @@ public class BalancedStrategy extends Strategy {
 				pathsave1 = this.evaluatePath(current, bonus);
 				if (pathsave1 != null && pathsave1.size() < distance) {
 					cellsave = bonus;
-					System.out.println(cellsave);
+//					System.out.println(cellsave);
 					pathsave2 = pathsave1;
 					distance = pathsave2.size();
 					play = true;
@@ -182,8 +182,8 @@ public class BalancedStrategy extends Strategy {
 			if (tempPM > 0) {
 				play = false;
 //				System.out.println("on continue");
-				// chercher la position la plus défensive
-				// aller vers la position la plus défensive
+				// chercher la position la plus dÃ©fensive
+				// aller vers la position la plus dÃ©fensive
 				this.analyseMap(tempPM);
 				this.defensSort(this.rangeOfActionBonuses);
 				celldef = this.rangeOfActionBonuses.get(0);
