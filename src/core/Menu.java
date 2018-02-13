@@ -31,6 +31,7 @@ public class Menu extends BasicGameState {
 	private int selectedButton;
 	private boolean inGame;
 	
+	private Image mainTitle;
 	private Image resumeButton;
 	private Image newGameButton;
 	private Image exitButton;
@@ -70,6 +71,8 @@ public class Menu extends BasicGameState {
 		heightButton = Main.height / 8;
 		widthButton = Main.width / 3;
 		
+		this.mainTitle = new Image("res/titre.png");
+		this.mainTitle = this.mainTitle.getScaledCopy(widthButton*2, heightButton*2);
 		this.resumeButton = new Image("res/resumeButton.png");
 		this.resumeButton = this.resumeButton.getScaledCopy(widthButton, heightButton);
 		this.newGameButton = new Image("res/newGameButton.png");
@@ -85,8 +88,8 @@ public class Menu extends BasicGameState {
 
 		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 8, 0, 100);
 		
-//		Music background = new Music("res/MainMenu.ogg");
-//		background.loop();
+		Music background = new Music("res/MainMenu.ogg");
+		background.loop();
 		
 		
 		selectedButton = newGame;
@@ -102,7 +105,7 @@ public class Menu extends BasicGameState {
 		if(inGame) {
 			g.drawImage(resumeButton, widthButton *1, heightButton *2);
 		} else {
-			g.drawImage(resumeButton, widthButton *1, heightButton *2, Color.transparent);
+			g.drawImage(mainTitle, widthButton /2, heightButton);
 		}
 		
 		g.drawImage(newGameButton, widthButton *1, heightButton *4);

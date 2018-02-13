@@ -16,6 +16,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.particles.ConfigurableEmitter.RandomValue;
@@ -211,6 +212,8 @@ public class Play extends BasicGameState {
 		System.out.println("\n");
 		System.out.println("\n");
 		System.out.println("\n");
+		
+		
 	}
 	
 	
@@ -307,7 +310,9 @@ public class Play extends BasicGameState {
 		}
 		
 		if(state == win) {
-			g.drawImage(image_youWin, Main.width/6, Main.height/4);		}
+			g.drawImage(image_youWin, Main.width/6, Main.height/4);	
+			
+			}
 		
 		if(state == gameOver) {
 			g.drawImage(image_gameOver, Main.width/6, Main.height/4);
@@ -409,6 +414,8 @@ public class Play extends BasicGameState {
 		if(mapLevel == 9) {
 			System.out.println("YOU WIN !!!");
 			state = win;
+			
+			
 		}
 		else {
 			writeNewCharaDB();
@@ -452,13 +459,13 @@ public class Play extends BasicGameState {
 				if(chara.get(i).isAlive()) {
 					switch(chara.get(i).getJob()) {
 					case Character.mage:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+6) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; "); 
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+8) + " ; " + (chara.get(i).getAtt()+3) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; "); 
 						break;
 					case Character.warrior:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+12) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+20) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
 						break;
 					case Character.archer:
-						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+8) + " ; " + (chara.get(i).getAtt()+1) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
+						fw.write(chara.get(i).getJob() + " ; " + (chara.get(i).getLevel()+1) + " ; " + (chara.get(i).getPv_max()+10) + " ; " + (chara.get(i).getAtt()+2) + " ; " + chara.get(i).getPO() + " ; " + chara.get(i).getPM() + " ; " + (chara.get(i).getPrice()+50) + " ; ");
 						break;
 					}
 					fw.write("\n");
@@ -878,6 +885,10 @@ public class Play extends BasicGameState {
 						break;
 				}
 				break;
+		case Input.KEY_F12:
+			state = win;
+			
+			break;
 		}
 		
 	}
