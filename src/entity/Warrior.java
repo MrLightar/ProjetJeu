@@ -18,15 +18,15 @@ public class Warrior extends Character {
 		this.textureSimple = new Image("res/guerrier.png");
 	}
 	
-	public Warrior(int job, int lvl, int pv_max, int att, int PO, int PM, int team) throws SlickException {
-		super(job, lvl, pv_max, att, PO, PM, team);
+	public Warrior(int job, int lvl, int pv_max, int att, int PO, int PM, int price, int team) throws SlickException {
+		super(job, lvl, pv_max, att, PO, PM, price, team);
 		// TODO Auto-generated constructor stub
 		this.textureSimple = new Image("res/guerrier.png");
 	}
 
 	
 	public void init() throws SlickException {
-		//super.init(gc);
+		super.init();
 		//animation de mouvement et d'attaque du personnage
 		this.texture = new Image("res/animationguerrier.png");
 		this.texture = this.texture.getScaledCopy(Grid.cellSize*9, Grid.cellSize*9);	
@@ -45,7 +45,7 @@ public class Warrior extends Character {
 		this.animations[5] = loadAnimation(spriteSheet, 1, 9, 5, 150);
 		this.animations[6] = loadAnimation(spriteSheet, 1, 9, 6, 150);
 		this.animations[7] = loadAnimation(spriteSheet, 1, 9, 7, 150);
-		this.animations[8] = loadAnimation(spriteSheet, 1, 7, 8, 250);
+		this.animations[8] = loadAnimation(spriteSheet, 1, 7, 8, 350);
 	//	this.animations[9] = loadAnimation(sS2, 0, 16, 0, 50);
 	}
 	
@@ -56,21 +56,26 @@ public class Warrior extends Character {
 		super.render(gc, g);
 					
 			if(action >= 0 && action <= 3) {				
-				
-				animations[action].setAutoUpdate(false);
-				animations[action].start();			
+//				
+//				animations[action].setAutoUpdate(false);
+//				animations[action].start();			
+//				animations[action].draw(this.x, this.y);
+//				animations[action].update(18);
 				animations[action].draw(this.x, this.y);
-				animations[action].update(18);
-				
 				if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
 					animations[action].setCurrentFrame(0);
 					animations[action].restart();
+					this.attacking = false;
 					this.action = this.action + 4;
+					
 				}
 			} else {
 				if(action == 8) {
 					animations[8].draw(this.x, this.y);
 					animations[8].setLooping(false);
+					if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
+						this.aliveAnim = false;
+					}
 				} else {
 					if((this.underAttack == true) ) {		
 						animations[action].draw(this.x, this.y , Color.red);
@@ -101,24 +106,30 @@ public class Warrior extends Character {
 		super.renderEnemy(gc, g);
 		if(action >= 0 && action <= 3) {				
 			
-			animations[action].setAutoUpdate(false);
-			animations[action].start();			
-			animations[action].draw(this.x, this.y, Color.lightGray);
-			animations[action].update(18);
-			
+//			animations[action].setAutoUpdate(false);
+//			animations[action].start();			
+//			animations[action].draw(this.x, this.y, Color.lightGray);
+//			animations[action].update(18);
+			animations[action].draw(this.x, this.y);
 			if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
 				animations[action].setCurrentFrame(0);
 				animations[action].restart();
+				this.attacking = false;
 				this.action = this.action + 4;
 			}
 		} else {
 			if(action == 8) {
 				animations[8].draw(this.x, this.y, Color.lightGray);
 				animations[8].setLooping(false);
+				if (animations[action].getFrame() == animations[action].getFrameCount()-1 ) {
+					this.aliveAnim = false;
+				}
+				
 			} else {
 				if((this.underAttack == true) ) {		
 					animations[action].draw(this.x, this.y , Color.red);
-					if(animations[action].getFrame()  < 4) {
+					
+					if(animations[action].getFrame()  < 3) {
 						animations[action].draw(this.x, this.y, Color.lightGray);
 						
 					} else {

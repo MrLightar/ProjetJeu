@@ -29,8 +29,8 @@ public class SelectCell {
 	private Image image_po;
 	private Image image_pm;
 	
-	//COUT DE l'UNITE
-	Integer testCout = new Integer(200);
+	//Prix DE l'UNITE
+	Integer testPrice = new Integer(200);
 		
 
 	public SelectCell(int i, int j) throws SlickException {
@@ -40,7 +40,7 @@ public class SelectCell {
 		
 		placed = false;
 		
-		background = new Image("/res/wood_wall.png");
+		background = new Image("res/wood_wall.png");
 		background = background.getScaledCopy(SelectGrid.cellSizeX, SelectGrid.cellSizeY);
 		image_pv = new Image("res/pv.png");
 		image_pv = image_pv.getScaledCopy(SelectGrid.cellSizeX/8, SelectGrid.cellSizeX/8);
@@ -116,7 +116,8 @@ public class SelectCell {
 				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getAtt()).toString());
 				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPO()).toString());
 				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPM()).toString());
-				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*3, y + SelectGrid.cellSizeY/6*5, testCout.toString()); //new Integer(this.chara.getCout()).toString());
+				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*5, new Integer(this.chara.getPrice()).toString() + "$");
+				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*5, "Lvl." + new Integer(this.chara.getLevel()).toString());
 			}
 			else {
 				g.drawImage(this.chara.getTextureSimple().getScaledCopy(SelectGrid.cellSizeY/2, SelectGrid.cellSizeY/2), x + SelectGrid.cellSizeY/4, y, Color.gray);
@@ -129,7 +130,8 @@ public class SelectCell {
 				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*3, new Integer(this.chara.getAtt()).toString(), Color.gray);
 				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*2, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPO()).toString(), Color.gray);
 				SelectGrid.ttf1.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*4, new Integer(this.chara.getPM()).toString(), Color.gray);
-				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*3, y + SelectGrid.cellSizeY/6*5, testCout.toString(), Color.gray); //new Integer(this.chara.getCout()).toString());
+				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*5, y + SelectGrid.cellSizeY/6*5, new Integer(this.chara.getPrice()).toString() + "$", Color.gray);
+				SelectGrid.ttf2.drawString(x + SelectGrid.cellSizeX/8*1, y + SelectGrid.cellSizeY/6*5, "Lvl." + new Integer(this.chara.getLevel()).toString(), Color.gray);
 			}
 			
 		}

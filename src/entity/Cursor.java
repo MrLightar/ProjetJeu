@@ -65,19 +65,24 @@ public class Cursor extends Entity {
 	}
 	
 	public boolean isPlacable() {
-		if(this.pos.getJ() <= Play.gameGrid.getCols()/5) {
-			if(this.pos.getChara()==null) {
-				if(verifTypeCell()) {
-					return true;
+		if (Play.getCurrentPrice() + this.selection.getPrice() <= Play.getMaxPrice()) {
+			if(this.pos.getJ() <= 3) {
+				if(this.pos.getChara()==null) {
+					if(verifTypeCell()) {
+						return true;
+					} else {
+						System.out.println("Case impraticable !");
+					}	
 				} else {
-					System.out.println("Case impraticable !");
-				}	
+					System.out.println("Case occupee !");
+				}
 			} else {
-				System.out.println("Case occupee !");
+				System.out.println("Hors de la zone de spawn");
 			}
 		} else {
-			System.out.println("Hors de la zone de spawn");
+			System.out.println("Limite de prix depassee !");
 		}
+		
 		return false;
 	}
 
@@ -91,8 +96,9 @@ public class Cursor extends Entity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		Play.updatePrice(this.selection.getPrice());
 		this.selection = null;
-		System.out.println("Perso deplace !");
+		System.out.println("Unite place !");
 	}
 	
 	public void selectMove() {
@@ -102,7 +108,7 @@ public class Cursor extends Entity {
 					this.selection.moveCharacter(this.pos);
 					this.selection = null;
 					this.selected = false;
-					System.out.println("Perso deplace !");
+					System.out.println("Unite deplace !");
 				} else {
 					System.out.println("Case impraticable !");
 				}		
@@ -118,7 +124,6 @@ public class Cursor extends Entity {
 		if (this.verifPosChara()) {
 			this.selection = this.pos.getChara();
 			this.selected = true;
-			// affichage info
 			System.out.println("Personnage selectionne !");
 		}
 	}
@@ -130,13 +135,13 @@ public class Cursor extends Entity {
 	
 	public void supr() {
 		pos.setChara(null);
-		this.selection.alive = false;
 //		this.selection.action = 8;
 		Play.getChara().remove(selection);
 		SelectCharaScreen.choiceGrid.replacable(selection);
+		Play.updatePrice(- this.selection.getPrice());
 		this.selection = null;
 		this.selected = false;
-		System.out.println("supression");
+		System.out.println("Personnage suprimme !");
 	}
 	
 	
@@ -174,13 +179,13 @@ public class Cursor extends Entity {
 								pos.setCellType(0);
 							}
 							this.selection = null;
-							System.out.println("Perso deplace !");
+							System.out.println("Personnage deplace !");
 						} else {
 							System.out.println("Case occupee !");
 						}
 					} else {
 						this.selection = null;
-						System.out.println("Perso deselectionne");
+						System.out.println("Personnage deselectionne");
 					}	
 				} else {
 					System.out.println("Case non praticable !");

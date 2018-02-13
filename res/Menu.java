@@ -88,8 +88,8 @@ public class Menu extends BasicGameState {
 
 		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 8, 0, 100);
 		
-		Music background = new Music("res/MainMenu.ogg");
-		background.loop();
+//		Music background = new Music("res/MainMenu.ogg");
+//		background.loop();
 		
 		
 		selectedButton = newGame;

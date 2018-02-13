@@ -19,19 +19,18 @@ import map.Cell;
 
 public class Main extends StateBasedGame {
 
-//	public static final int width = 960;
-//	public static final int height = 540;
-	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-	public static final int height = width*9/16;
+	public static final int width = 960;
+	public static final int height = 540;
+//	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+//	public static final int height = width*9/16;
 //	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-	private static final boolean fullscreen = true;
+	private static final boolean fullscreen = false;
 	private static final String gameName = "Projet Poutinator";
 
 	public static final int menu = 0;
 	public static final int play = 1;
 	public static final int selectCharaScreen = 2;
-	
-	public static ByteArrayOutputStream baos;
+
 	
 	public Main(String name) {
 		super(name);
@@ -45,28 +44,12 @@ public class Main extends StateBasedGame {
 	public static void main(String[] args) {
 		try {
 			
-			// Create a stream to hold the output
-		    baos = new ByteArrayOutputStream();
-		    PrintStream ps = new PrintStream(baos);
-		    // IMPORTANT: Save the old System.out!
-		    PrintStream old = System.out;
-		    // Tell Java to use your special stream
-		    System.setOut(ps);
-//		    // Print some output: goes to your special stream
-//		    System.out.println("Foofoofoo!");
-//		    // Put things back
-//		    System.out.flush();
-//		    System.setOut(old);
-//		    // Show what happened
-//		    System.out.println("Here: " + baos.toString());
-			
-			System.out.println(height);
 			AppGameContainer app = new AppGameContainer(new Main(Main.gameName));
 			app.setDisplayMode(Main.width, Main.height, Main.fullscreen);
 			app.setTitle("Grid");
 			app.setForceExit(true);
-			app.setTargetFrameRate(60);
-			app.setShowFPS(false);
+			app.setTargetFrameRate(500);
+			app.setShowFPS(true);
 			app.start();
 		} catch (SlickException e) {
 			e.printStackTrace();

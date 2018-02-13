@@ -3,6 +3,11 @@ package selectScreen;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 
 import org.newdawn.slick.GameContainer;
@@ -82,35 +87,35 @@ public class SelectGrid {
 			}
 		}
 		
-		File f = new File("../ProjetJeu/res/character.txt");
+		File f = new File("res/character.txt");
 		
 		try {
 			Scanner sc = new Scanner(f);
 			
 			int i = 0;
 			int j = 0;
-			int stat[] = new int[6];
+			int stat[] = new int[7];
 			while (!sc.hasNext("&")) {
-				for (int k = 0; k < 6; k++) {
+				for (int k = 0; k < 7; k++) {
 					stat[k] = sc.nextInt();
 					sc.next(";");
 				}
 				
 				switch(stat[0]) {
 					case 0:
-						SelectGrid.grid[i][j].setChara(new Mage(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
+						SelectGrid.grid[i][j].setChara(new Mage(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], stat[6], Character.ally));
 						break;
 				
 					case 1:
-						SelectGrid.grid[i][j].setChara(new Warrior(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
+						SelectGrid.grid[i][j].setChara(new Warrior(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], stat[6], Character.ally));
 						break;
 				
 					case 2:
-						SelectGrid.grid[i][j].setChara(new Archer(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], Character.ally));
+						SelectGrid.grid[i][j].setChara(new Archer(stat[0], stat[1], stat[2], stat[3], stat[4], stat[5], stat[6], Character.ally));
 						break;
 					}
 				
-				if(j<cols) {
+				if(j<cols-1) {
 					j++;
 				}
 				else {
@@ -133,4 +138,51 @@ public class SelectGrid {
 			}
 		}
 	}
+	
+	public void writeNewCharaDB() {
+		File f = new File("res/temporary.txt");
+		File ff = new File("res/character.txt");
+		
+		
+		
+		try {
+			Scanner sc = new Scanner(ff);
+			FileWriter fw=new FileWriter(f);
+			for (int i = 0; i < this.rows; i++) {
+				for (int j = 0; j < this.cols; j++) {
+					if(SelectGrid.grid[i][j].hasChara()) {
+						if(!SelectGrid.grid[i][j].isPlaced()) {
+							fw.write(sc.nextLine());
+							fw.write("\n");
+						}else {
+							sc.nextLine();
+						}
+					}
+				}
+			}
+		
+			fw.close();
+			sc.close();
+			
+			Files.copy(Paths.get("res/temporary.txt"), Paths.get("res/character.txt"), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public boolean verifPool() {
+		for (int i = 0; i < this.rows; i++) {
+			for (int j = 0; j < this.cols; j++) {
+				if(SelectGrid.grid[i][j].hasChara()) {
+					if(!SelectGrid.grid[i][j].isPlaced()) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
 }
