@@ -265,11 +265,14 @@ public class DefensiveStrategy extends Strategy {
 								cellsave = this.getClosest(this.chara.getPos(), this.enemiesInRange);
 								pathsave1 = this.evaluatePathAttack(this.chara.getPos(), cellsave);
 								Cell current=chara.getPos();
-								int min=Math.min(pathsave1.size()-1, tempPM);
+
+									
+								
+	
 								if(pathsave1!=null) {
+									int min=Math.min(pathsave1.size()-1, tempPM);
 									this.applyPath(pathsave1, tempPM);
 									current=pathsave1.get(pathsave1.size() - 1 - min);
-									
 									if(attackable(current, cellsave)) {
 										attack(cellsave);
 									}
