@@ -885,10 +885,13 @@ public class Play extends BasicGameState {
 						break;
 				}
 				break;
-		case Input.KEY_F12:
-			state = win;
 			
-			break;
+			case Input.KEY_F11:
+				nextLevel(sbg, gc);				
+				break;		
+			case Input.KEY_F12:
+				state = win;			
+				break;
 		}
 		
 	}
