@@ -257,17 +257,18 @@ public abstract class Strategy {
 		int dp, deltaE, deltaNE;
 		
 		ArrayList<Cell> path = new ArrayList<>();
-
+		
+		//remplacer x,y par coordonées des pixels ==ok
 		if (start.getI() < end.getI()) {
-			yhaut = start.getI();
-			ybas = end.getI();
-			xhaut = start.getJ();
-			xbas = end.getJ();
+			yhaut = start.getIcenter();
+			ybas = end.getIcenter();
+			xhaut = start.getJcenter();
+			xbas = end.getJcenter();
 		} else {
-			ybas = start.getI();
-			yhaut = end.getI();
-			xbas = start.getJ();
-			xhaut = end.getJ();
+			ybas = start.getIcenter();
+			yhaut = end.getIcenter();
+			xbas = start.getJcenter();
+			xhaut = end.getJcenter();
 		}
 
 		if (xhaut >= xbas) {
@@ -279,7 +280,9 @@ public abstract class Strategy {
 				deltaNE = 2 * (dy - dx);
 				x = xbas;
 				y = ybas;
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -289,7 +292,9 @@ public abstract class Strategy {
 						x++;
 						y--;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+					}
 				}
 			} else {
 				dp = 2 * dx - dy;
@@ -298,7 +303,9 @@ public abstract class Strategy {
 				x = xbas;
 				y = ybas;
 
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -308,7 +315,9 @@ public abstract class Strategy {
 						x++;
 						y--;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+					}
 				}
 			}
 		} else {
@@ -321,7 +330,9 @@ public abstract class Strategy {
 				x = xhaut;
 				y = yhaut;
 
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -331,7 +342,9 @@ public abstract class Strategy {
 						x++;
 						y++;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+					}
 				}
 			} else {
 				dp = 2 * dx - dy;
@@ -340,7 +353,9 @@ public abstract class Strategy {
 				x = xhaut;
 				y = yhaut;
 
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -350,10 +365,14 @@ public abstract class Strategy {
 						x++;
 						y++;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+						
+					}
+				
 				}
 			}
-		}
+		} 
 		
 		if (start.hasChara()) {
 			path.remove(start);
@@ -361,7 +380,6 @@ public abstract class Strategy {
 		if (end.hasChara()) {
 			path.remove(end);
 		}
-		
 		return path;
 	}
 	
@@ -580,11 +598,7 @@ public abstract class Strategy {
 		
 		//on lance defensSortcomposite de 0 � taille de rangegrid
 		
-		bonusesInRange=defensSortcomposite(rangegrid);
-		for(int i=0; i<bonusesInRange.size()-1;i++) {
-			System.out.println(bonusesInRange.get(i)+" def= "+defensvalue(bonusesInRange.get(i)));
-		}
-		System.out.println();
+		rangegrid=defensSortcomposite(rangegrid);
 	}
 
 }
