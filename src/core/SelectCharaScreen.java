@@ -7,6 +7,9 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import map.Cell;
+import map.Grid;
+import selectScreen.SelectCell;
 import selectScreen.SelectCursor;
 import selectScreen.SelectGrid;
 
@@ -28,7 +31,7 @@ public class SelectCharaScreen extends BasicGameState {
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		this.sbg = sbg;
-		this.gc = gc;
+		this.setGc(gc);
 		
 		//initialisation grille
 
@@ -93,6 +96,16 @@ public class SelectCharaScreen extends BasicGameState {
 //						cursor.getPos().setPlaced(true);
 						Play.getCursor().setSelection(cursor.getPos().getChara());
 						sbg.enterState(Main.play);
+						Cell focusCell=null;
+						if(gc.getInput().getAbsoluteMouseY()< (Play.gameGrid.getRows() - 1)*Grid.cellSize && gc.getInput().getAbsoluteMouseX()< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
+							focusCell=Play.gameGrid.getCellContaining(gc.getInput().getAbsoluteMouseX(), gc.getInput().getAbsoluteMouseY());
+							System.out.println("yes");
+						}
+					
+						if (focusCell!=null) {
+							Play.getCursor().setPosFromIndex(focusCell.getI(), focusCell.getJ());
+							
+						}
 					}
 				break;
 
@@ -105,4 +118,51 @@ public class SelectCharaScreen extends BasicGameState {
 		
 	}
 
+
+	public GameContainer getGc() {
+		return gc;
+	}
+
+
+	public void setGc(GameContainer gc) {
+		this.gc = gc;
+	}
+
+	public void mouseMoved(int oldx, int oldy,int x, int y) {
+
+		SelectCell focusCell=null;
+		if(y< (SelectCharaScreen.choiceGrid.getRows() - 1)*SelectGrid.cellSizeY && x< (SelectCharaScreen.choiceGrid.getCols() - 1)*SelectGrid.cellSizeX) {
+			focusCell=choiceGrid.getCellContaining(x, y);
+			SelectCharaScreen.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+			
+		}
+
+	
+	}
+	
+	
+	public void mouseClicked(int button, int x, int y,int clickcount) {
+		SelectCell focusCell=null;
+		if(y< (SelectCharaScreen.choiceGrid.getRows() - 1)*SelectGrid.cellSizeY && x< (SelectCharaScreen.choiceGrid.getCols() - 1)*SelectGrid.cellSizeX) {
+			focusCell=choiceGrid.getCellContaining(x, y);
+			SelectCharaScreen.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+		}
+		
+		
+		if(cursor.getPos().hasChara() && !cursor.getPos().isPlaced()) {
+//			cursor.getPos().setPlaced(true);
+			Play.getCursor().setSelection(cursor.getPos().getChara());
+			sbg.enterState(Main.play);
+			Cell focusCellPlay=null;
+			if(gc.getInput().getAbsoluteMouseY()< (Play.gameGrid.getRows() - 1)*Grid.cellSize && gc.getInput().getAbsoluteMouseX()< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
+				focusCellPlay=Play.gameGrid.getCellContaining(gc.getInput().getAbsoluteMouseX(), gc.getInput().getAbsoluteMouseY());
+				System.out.println("yes");
+			}
+		
+			if (focusCellPlay!=null) {
+				Play.getCursor().setPosFromIndex(focusCellPlay.getI(), focusCellPlay.getJ());
+				
+			}
+		}
+	}
 }

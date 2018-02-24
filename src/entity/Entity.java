@@ -4,7 +4,6 @@ package entity;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
-import core.Main;
 import core.Play;
 import map.Cell;
 
