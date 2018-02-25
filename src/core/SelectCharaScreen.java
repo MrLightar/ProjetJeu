@@ -131,7 +131,7 @@ public class SelectCharaScreen extends BasicGameState {
 	public void mouseMoved(int oldx, int oldy,int x, int y) {
 
 		SelectCell focusCell=null;
-		if(y< (SelectCharaScreen.choiceGrid.getRows() - 1)*SelectGrid.cellSizeY && x< (SelectCharaScreen.choiceGrid.getCols() - 1)*SelectGrid.cellSizeX) {
+		if(y< (SelectCharaScreen.choiceGrid.getRows() )*SelectGrid.cellSizeY && x< (SelectCharaScreen.choiceGrid.getCols() )*SelectGrid.cellSizeX) {
 			focusCell=choiceGrid.getCellContaining(x, y);
 			SelectCharaScreen.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
 			
@@ -143,7 +143,7 @@ public class SelectCharaScreen extends BasicGameState {
 	
 	public void mouseClicked(int button, int x, int y,int clickcount) {
 		SelectCell focusCell=null;
-		if(y< (SelectCharaScreen.choiceGrid.getRows() - 1)*SelectGrid.cellSizeY && x< (SelectCharaScreen.choiceGrid.getCols() - 1)*SelectGrid.cellSizeX) {
+		if(y< (SelectCharaScreen.choiceGrid.getRows() )*SelectGrid.cellSizeY && x< (SelectCharaScreen.choiceGrid.getCols() )*SelectGrid.cellSizeX) {
 			focusCell=choiceGrid.getCellContaining(x, y);
 			SelectCharaScreen.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
 		}

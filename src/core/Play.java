@@ -41,9 +41,8 @@ public class Play extends BasicGameState {
 
 	private static ArrayList<Character> chara;
 	private static ArrayList<Character> enemyTeam;
+	private static ArrayList<Character> allTeams;
 	
-	private int indexAlly;
-	private int indexEnemy;
 	private int indexTeam;
 	
 	private static int mapLevel;
@@ -154,9 +153,8 @@ public class Play extends BasicGameState {
 		
 		chara = new ArrayList<>();
 		enemyTeam = new ArrayList<>();
+		allTeams=new ArrayList<>();
 		
-		indexAlly = 0;
-		indexEnemy = 0;
 		indexTeam = 0;
 		
 		//initialisation grille
@@ -210,7 +208,6 @@ public class Play extends BasicGameState {
 		Cell focusCell=null;
 		if(gc.getInput().getAbsoluteMouseY()< (Play.gameGrid.getRows() - 1)*Grid.cellSize && gc.getInput().getAbsoluteMouseX()< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
 			focusCell=gameGrid.getCellContaining(gc.getInput().getAbsoluteMouseX(), gc.getInput().getAbsoluteMouseY());
-			System.out.println("yes");
 		}
 	
 		if (focusCell!=null) {
@@ -218,6 +215,14 @@ public class Play extends BasicGameState {
 			
 		}
 		
+		for(int i=0; i<Math.max(enemyTeam.size()-1, chara.size()-1);i++) {
+			if(i<chara.size()) {
+				allTeams.add(chara.get(i));
+			}
+			if(i<enemyTeam.size()) {
+				allTeams.add(enemyTeam.get(i));
+			}
+		}
 		
 		System.out.println("\n");
 		System.out.println("\n");
@@ -367,26 +372,12 @@ public class Play extends BasicGameState {
 		if (!Strategy.isPlaying()) {
 			switch(checkLevelEnd()) {
 			case 0 :
-				switch(indexTeam%2) {
-				case 0 :
-					if(chara.get(indexAlly).isAlive()) {
-						strat = chara.get(indexAlly).getStrategy();
-						strat.gameTurn();
-						indexTeam++;
-					}
-					indexAlly = (indexAlly+1)%chara.size();
-					//this.strat.update();
-					break;
-				case 1 :
-					if(enemyTeam.get(indexEnemy).isAlive()) {
-						strat = enemyTeam.get(indexEnemy).getStrategy();
-						strat.gameTurn();
-						indexTeam++;
-					}
-					indexEnemy = (indexEnemy+1)%enemyTeam.size();
-					//this.strat.update();
-					break;
+
+				if(allTeams.get(indexTeam).isAlive()) {
+					strat = allTeams.get(indexTeam).getStrategy();
+					strat.gameTurn();
 				}
+				indexTeam = (indexTeam+1)%allTeams.size();
 				
 				break;
 			case 1 : 
@@ -776,6 +767,14 @@ public class Play extends BasicGameState {
 					System.out.println("Aucune unitee sur la carte !");
 				} else {
 					state = playing;
+					for(int i=Math.max(enemyTeam.size()-1, chara.size()-1); i>=0;i--) {
+						if(i<chara.size()) {
+							allTeams.add(0,chara.get(i));
+						}
+						if(i<enemyTeam.size()) {
+							allTeams.add(0,enemyTeam.get(i));
+						}
+					}
 				}				
 				break;
 				
@@ -925,88 +924,94 @@ public class Play extends BasicGameState {
 	
 	public void mouseMoved(int oldx, int oldy,int x, int y) {
 
-		Cell focusCell=null;
-		if(y< (Play.gameGrid.getRows() - 1)*Grid.cellSize && x< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
-			focusCell=gameGrid.getCellContaining(x, y);
-		}
-		
-		switch(state) {
-		case placement:
-			if (focusCell!=null) {
-				Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
-				
+		if(timerLevelStart<=0) {
+			Cell focusCell=null;
+			if(y< (Play.gameGrid.getRows())*Grid.cellSize && x< (Play.gameGrid.getCols())*Grid.cellSize) {
+				focusCell=gameGrid.getCellContaining(x, y);
 			}
-			break;
 			
-		case stratSelect:
-			if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*5)/16 && y<(Main.height*5)/16+heightButton) {
-				selectedStrat = offensive;
-			}
-			if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*6)/16 && y<(Main.height*6)/16+heightButton) {
-				selectedStrat = balanced;
-			}
-			if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*7)/16 && y<(Main.height*7)/16+heightButton) {
-				selectedStrat = defensive;
-			}
-			break;
-	
-//			g.drawImage(offensiveButton, Main.width*14/24, Main.height/16*5);
-//			g.drawImage(balancedButton, Main.width*14/24, Main.height/16*6);
-//			g.drawImage(defensiveButton, Main.width*14/24, Main.height/16*7);
-	}
+			switch(state) {
+			case placement:
+				if (focusCell!=null) {
+					Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+					
+				}
+				break;
+				
+			case stratSelect:
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*5)/16 && y<(Main.height*5)/16+heightButton) {
+					selectedStrat = offensive;
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*6)/16 && y<(Main.height*6)/16+heightButton) {
+					selectedStrat = balanced;
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*7)/16 && y<(Main.height*7)/16+heightButton) {
+					selectedStrat = defensive;
+				}
+				break;
+		
+
+		}
+		}
+
 	}
 	
 	public void mouseClicked(int button, int x, int y,int clickcount) {
-		Cell focusCell=null;
-		if(y< (Play.gameGrid.getRows() - 1)*Grid.cellSize && x< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
-			focusCell=gameGrid.getCellContaining(x, y);
+		
+		if(timerLevelStart<=0) {
+
+			Cell focusCell=null;
+			if(y< (Play.gameGrid.getRows())*Grid.cellSize && x< (Play.gameGrid.getCols())*Grid.cellSize) {
+				focusCell=gameGrid.getCellContaining(x, y);
+			}
+			
+			switch(state) {
+			case placement:
+				if (focusCell!=null) {
+					Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+					if(cursor.isSelected()) {
+						if(cursor.getSelection().getTeam()==Character.ally) {
+							cursor.selectMove();
+						}
+					}
+					else if(cursor.hasCharacter()) {
+						if (cursor.isPlacable()) {
+							state = stratSelect;
+						}
+					}
+					else if(cursor.onCharacter()){
+						cursor.select();
+					}
+					else {
+						sbg.enterState(Main.selectCharaScreen);
+					}
+				}
+				
+				
+				break;
+
+			case stratSelect:
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*5)/16 && y<(Main.height*5)/16+heightButton) {
+					selectedStrat = offensive;
+					cursor.getSelection().setStrategie(new OffensiveStrategy(cursor.getSelection()));
+					cursor.placeCharacter();
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*6)/16 && y<(Main.height*6)/16+heightButton) {
+					selectedStrat = balanced;
+					cursor.getSelection().setStrategie(new BalancedStrategy(cursor.getSelection()));
+					cursor.placeCharacter();
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*7)/16 && y<(Main.height*7)/16+heightButton) {
+					selectedStrat = defensive;
+					cursor.getSelection().setStrategie(new DefensiveStrategy(cursor.getSelection()));
+					cursor.placeCharacter();
+				}
+				selectedStrat = offensive;
+				state = placement;
+				break;
+		
+			}
+		}
 		}
 		
-		switch(state) {
-		case placement:
-			if (focusCell!=null) {
-				Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
-				if(cursor.isSelected()) {
-					if(cursor.getSelection().getTeam()==Character.ally) {
-						cursor.selectMove();
-					}
-				}
-				else if(cursor.hasCharacter()) {
-					if (cursor.isPlacable()) {
-						state = stratSelect;
-					}
-				}
-				else if(cursor.onCharacter()){
-					cursor.select();
-				}
-				else {
-					sbg.enterState(Main.selectCharaScreen);
-				}
-			}
-			
-			
-			break;
-
-		case stratSelect:
-			if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*5)/16 && y<(Main.height*5)/16+heightButton) {
-				selectedStrat = offensive;
-				cursor.getSelection().setStrategie(new OffensiveStrategy(cursor.getSelection()));
-				cursor.placeCharacter();
-			}
-			if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*6)/16 && y<(Main.height*6)/16+heightButton) {
-				selectedStrat = balanced;
-				cursor.getSelection().setStrategie(new BalancedStrategy(cursor.getSelection()));
-				cursor.placeCharacter();
-			}
-			if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*7)/16 && y<(Main.height*7)/16+heightButton) {
-				selectedStrat = defensive;
-				cursor.getSelection().setStrategie(new DefensiveStrategy(cursor.getSelection()));
-				cursor.placeCharacter();
-			}
-			selectedStrat = offensive;
-			state = placement;
-			break;
-	
-		}
-	}
 }

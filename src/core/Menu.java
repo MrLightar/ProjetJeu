@@ -224,23 +224,25 @@ public class Menu extends BasicGameState {
 	}
 	
 	public void mouseClicked(int button, int x, int y,int clickcount) {
-
-		if(x>widthButton && x<2*widthButton && y>4*heightButton && y<5*heightButton) {
-				selectedButton=newGame;
-				startGame(sbg, gc);
-		}
-		
-		if(x>widthButton && x<2*widthButton && y>6*heightButton && y<7*heightButton) {
-			selectedButton=exit;
-			System.exit(0);
-		}
-		
-		if(inGame) {
-			if(x>widthButton && x<2*widthButton && y>2*heightButton && y<3*heightButton) {
-				selectedButton=resume;
-				sbg.enterState(Main.play);
+		if(clickcount<=1) {
+			if(x>widthButton && x<2*widthButton && y>4*heightButton && y<5*heightButton) {
+					selectedButton=newGame;
+					startGame(sbg, gc);
+			}
+			
+			if(x>widthButton && x<2*widthButton && y>6*heightButton && y<7*heightButton) {
+				selectedButton=exit;
+				System.exit(0);
+			}
+			
+			if(inGame) {
+				if(x>widthButton && x<2*widthButton && y>2*heightButton && y<3*heightButton) {
+					selectedButton=resume;
+					sbg.enterState(Main.play);
+				}
 			}
 		}
+
 	}
 
 }
