@@ -257,17 +257,18 @@ public abstract class Strategy {
 		int dp, deltaE, deltaNE;
 		
 		ArrayList<Cell> path = new ArrayList<>();
-
+		
+		//remplacer x,y par coordonées des pixels ==ok
 		if (start.getI() < end.getI()) {
-			yhaut = start.getI();
-			ybas = end.getI();
-			xhaut = start.getJ();
-			xbas = end.getJ();
+			yhaut = start.getIcenter();
+			ybas = end.getIcenter();
+			xhaut = start.getJcenter();
+			xbas = end.getJcenter();
 		} else {
-			ybas = start.getI();
-			yhaut = end.getI();
-			xbas = start.getJ();
-			xhaut = end.getJ();
+			ybas = start.getIcenter();
+			yhaut = end.getIcenter();
+			xbas = start.getJcenter();
+			xhaut = end.getJcenter();
 		}
 
 		if (xhaut >= xbas) {
@@ -279,7 +280,9 @@ public abstract class Strategy {
 				deltaNE = 2 * (dy - dx);
 				x = xbas;
 				y = ybas;
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -289,7 +292,9 @@ public abstract class Strategy {
 						x++;
 						y--;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+					}
 				}
 			} else {
 				dp = 2 * dx - dy;
@@ -298,7 +303,9 @@ public abstract class Strategy {
 				x = xbas;
 				y = ybas;
 
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xhaut || y > yhaut) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -308,7 +315,9 @@ public abstract class Strategy {
 						x++;
 						y--;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+					}
 				}
 			}
 		} else {
@@ -321,7 +330,9 @@ public abstract class Strategy {
 				x = xhaut;
 				y = yhaut;
 
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -331,7 +342,9 @@ public abstract class Strategy {
 						x++;
 						y++;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+					}
 				}
 			} else {
 				dp = 2 * dx - dy;
@@ -340,7 +353,9 @@ public abstract class Strategy {
 				x = xhaut;
 				y = yhaut;
 
-				path.add(Play.gameGrid.getCell(y, x));
+				if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+					path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+				}
 				while (x < xbas || y < ybas) {
 					if (dp <= 0) {
 						dp = dp + deltaE;
@@ -350,10 +365,14 @@ public abstract class Strategy {
 						x++;
 						y++;
 					}
-					path.add(Play.gameGrid.getCell(y, x));
+					if(!path.contains(Play.gameGrid.getCellContaining(x, y))) {
+						path.add(Play.gameGrid.getCellContaining(x, y));	//remplacer par le contains du pixel
+						
+					}
+				
 				}
 			}
-		}
+		} 
 		
 		if (start.hasChara()) {
 			path.remove(start);
@@ -361,7 +380,6 @@ public abstract class Strategy {
 		if (end.hasChara()) {
 			path.remove(end);
 		}
-		
 		return path;
 	}
 	
@@ -527,51 +545,60 @@ public abstract class Strategy {
 		
 		return res;
 	}
+	
+	public ArrayList<Cell> fusiondefensSort(ArrayList<Cell> rangegrid1, ArrayList<Cell> rangegrid2 ) {
+		ArrayList<Cell> res1= new ArrayList<>(rangegrid1);
+		ArrayList<Cell> res2=new ArrayList<>(rangegrid2);
+
+		if(rangegrid1.isEmpty()) {
+			return rangegrid2;
+		}
+
+		if(rangegrid2.isEmpty()) {
+			return rangegrid1;
+		}
+
+		if(defensvalue(res1.get(0))>=defensvalue(res2.get(0))) {
+
+			res1.remove(0);
+			res1=fusiondefensSort(res1, rangegrid2);
+			res1.add(0, rangegrid1.get(0));
+			return res1;		
+		}
+		else {
+			res2.remove(0);
+			res2=fusiondefensSort(rangegrid1, res2);
+			res2.add(0, rangegrid2.get(0));
+			return res2;		
+		}
+		
+	}
+	
+	public ArrayList<Cell> defensSortcomposite(ArrayList<Cell> rangegrid) {
+		ArrayList<Cell> res1=new ArrayList<>();
+		ArrayList<Cell> res2=new ArrayList<>();
+
+		if(rangegrid.size()<=1 ) {
+			return rangegrid;
+		}
+		else {
+			for(int i=0; i<=((rangegrid.size()-1)/2);i++) {
+				res1.add(rangegrid.get(i));
+			}
+			for(int i=((rangegrid.size()-1)/2)+1; i<=rangegrid.size()-1;i++) {
+				res2.add(rangegrid.get(i));
+			}
+			return fusiondefensSort(defensSortcomposite(res1),defensSortcomposite(res2));
+		}
+	}
 
 	public void defensSort(ArrayList<Cell> rangegrid) {
 		// on cree le tableau de valeur defensive
 		rangegrid.add(this.chara.getPos());
-		int tab[] = new int[rangegrid.size()];
-		boolean sorted = false;
-		int save;
 		
-		for (int i = 0; i < rangegrid.size(); i++) {
-			tab[i] = this.defensvalue(rangegrid.get(i));
-		}
+		//on lance defensSortcomposite de 0 � taille de rangegrid
 		
-		// tri bulle
-		int i = rangegrid.size() - 1;
-		while (!sorted && i > 0) {
-			sorted = true;
-			for (int j = 0; j < i; j++) {
-				if (tab[j + 1] > tab[j]) {
-					save = tab[j];
-					tab[j] = tab[j + 1];
-					tab[j + 1] = save;
-					sorted = false;
-					
-					rangegrid.add(j + 2, rangegrid.get(j));
-					rangegrid.remove(rangegrid.get(j));
-					
-				}
-				if (tab[j + 1] == tab[j]) {
-					if (rangegrid.get(j + 1).distanceFrom(this.chara.getPos()) < rangegrid.get(j)
-							.distanceFrom(this.chara.getPos())) {
-						save = tab[j];
-						tab[j] = tab[j + 1];
-						tab[j + 1] = save;
-						sorted = false;
-						
-						rangegrid.add(j + 2, rangegrid.get(j));
-						rangegrid.remove(rangegrid.get(j));
-					}
-				}
-			}
-			i--;
-		}
-//		for (int k = 0; k < rangegrid.size(); k++) {
-//			System.out.println("i= " + rangegrid.get(k).getI() + " j= " + rangegrid.get(k).getJ() + " value= " + tab[k]);
-//		}
+		rangegrid=defensSortcomposite(rangegrid);
 	}
 
 }

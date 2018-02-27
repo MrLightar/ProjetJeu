@@ -1,14 +1,11 @@
 package selectScreen;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
-import core.Play;
 import core.SelectCharaScreen;
-import map.Grid;
 
 public class SelectCursor {
 	

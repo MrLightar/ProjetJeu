@@ -147,7 +147,18 @@ public class Cell {
 			return false;
 		}
 	}
+	
+	public int getIcenter() {
+		return Grid.cellSize*i+Grid.cellSize/2;
+	}
+	
+	public int getJcenter() {
+		return Grid.cellSize*j+Grid.cellSize/2;
+	}
 
+	public boolean Contains(int x, int y) {
+		return (x<=Grid.cellSize*j+Grid.cellSize && x>=Grid.cellSize*j && y<=Grid.cellSize*i+Grid.cellSize && y>=Grid.cellSize*i);
+	}
 
 	public int distanceFrom(Cell other) {
 		return Math.abs(other.i - this.i) + Math.abs(other.j - this.j);

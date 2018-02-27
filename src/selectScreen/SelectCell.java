@@ -1,5 +1,7 @@
 package selectScreen;
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -7,12 +9,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 
-import core.SelectCharaScreen;
 import entity.Character;
-import entity.Mage;
-import map.Cell;
-
-import java.util.*;
 
 
 public class SelectCell {
@@ -88,8 +85,45 @@ public class SelectCell {
 	public void setPlaced(boolean placed) {
 		this.placed = placed;
 	}
-
 	
+	public boolean Contains(int x, int y) {
+		return (x<=SelectGrid.cellSizeX*j+SelectGrid.cellSizeX && x>=SelectGrid.cellSizeX*j && y<=SelectGrid.cellSizeY*i+SelectGrid.cellSizeY && y>=SelectGrid.cellSizeY*i);
+	}
+
+
+	public ArrayList<SelectCell> getAllNeighbors(SelectGrid selectGrid) {
+		int i = this.i;
+		int j = this.j;
+		ArrayList<SelectCell> res = new ArrayList<>();
+		if (j < selectGrid.getCols() - 1) {
+			res.add(selectGrid.getCell(i, j + 1));
+		}
+		if (j > 0) {
+			res.add(selectGrid.getCell(i, j - 1));
+		}
+
+		if (i < selectGrid.getRows() - 1) {
+			res.add(selectGrid.getCell(i + 1, j));
+		}
+		if (i > 0) {
+			res.add(selectGrid.getCell(i - 1, j));
+		}
+		if (j < selectGrid.getCols() - 1 && i < selectGrid.getRows() - 1) {
+			res.add(selectGrid.getCell(i + 1, j + 1));
+		}
+		if (j < selectGrid.getCols() - 1 && i > 0) {
+			res.add(selectGrid.getCell(i - 1, j + 1));
+		}
+		if (j > 0 && i < selectGrid.getRows() - 1) {
+			res.add(selectGrid.getCell(i + 1, j - 1));
+		}
+		if (j > 0 && i > 0) {
+			res.add(selectGrid.getCell(i - 1, j - 1));
+		}
+
+		return res;
+	}
+
 	
 	public void render(GameContainer gc, Graphics g) {
 		int x = this.j * SelectGrid.cellSizeX;

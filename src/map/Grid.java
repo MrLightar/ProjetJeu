@@ -1,6 +1,8 @@
 package map;
 
 
+import java.util.ArrayList;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -41,6 +43,24 @@ public class Grid {
 		return Grid.grid[i][j];
 	}
 	
+	public Cell getCellContaining(int i, int j) {
+		ArrayList<Cell> search=new ArrayList<>();
+		search=getCell(j/cellSize,i/cellSize).getAllNeighbors(this);
+		search.add(getCell(j/cellSize,i/cellSize));
+		Cell res=null;
+		int k=0;
+		while(search!=null && k<search.size()){
+			if(search.get(k).Contains(i, j)) {
+				res=search.get(k);
+				if(res.getCellType()==Cell.wallCell) {
+					return res;
+				}
+			}
+			
+			k++;
+		}
+		return res;
+	}
 	
 	public boolean isInGrid(int i, int j) {
 		return i >= 0 && i < this.rows && j >= 0 && j < this.cols;

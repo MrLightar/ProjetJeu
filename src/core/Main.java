@@ -4,18 +4,6 @@ package core;
 import org.newdawn.slick.*;
 import org.newdawn.slick.state.*;
 
-import java.awt.Dimension;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.util.Scanner;
-
-import entity.Character;
-import entity.Cursor;
-import map.Grid;
-import map.Cell;
-
 
 public class Main extends StateBasedGame {
 
@@ -24,7 +12,7 @@ public class Main extends StateBasedGame {
 	public static final int width = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 	public static final int height = width*9/16;
 //	public static final int height = (int) java.awt.Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-	private static final boolean fullscreen = true;
+	public static final boolean fullscreen = true;
 	private static final String gameName = "Projet Poutinator";
 
 	public static final int menu = 0;
@@ -64,6 +52,7 @@ public class Main extends StateBasedGame {
 		this.getState(Main.selectCharaScreen).init(gc, this);
 		this.enterState(Main.menu);
 	}
+	
 
 
 }

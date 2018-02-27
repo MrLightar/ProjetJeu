@@ -30,7 +30,7 @@ public class BalancedStrategy extends Strategy {
 		int PM = this.chara.getPM();
 		int Att = this.chara.getAtt();
 		Cell celldef;
-		Cell current = null;
+		Cell current = chara.getPos();
 		int tempPM;
 		int i = 0;
 		ArrayList<Cell> pathsave1 = new ArrayList<>();
@@ -61,10 +61,16 @@ public class BalancedStrategy extends Strategy {
 		for (Cell enemy : this.enemiesInRange) {
 			if (enemy.getChara().isKillable(Att)) {
 				pathsave1 = this.evaluatePathAttack(this.chara.getPos(), enemy);
-				if (pathsave1 != null && pathsave1.size() < distance && this.attackable(pathsave1.get(0), enemy)) {
+				int min=0;
+				
+				if(pathsave1!=null) {
+					min = Math.min(pathsave1.size() - 1, tempPM);
+				}
+
+				if (pathsave1 != null && min < distance && this.attackable(pathsave1.get(pathsave1.size() - 1 - min), enemy)) {
 					cellsave = enemy;
 					pathsave2 = pathsave1;
-					distance = pathsave1.size();
+					distance = min;
 					play = true;
 				}
 			}
@@ -76,10 +82,10 @@ public class BalancedStrategy extends Strategy {
 //			System.out.println("chemin d'attaque =" + pathsave2);
 			this.applyPath(pathsave2, tempPM);
 //			System.out.println("on attaque" + cellsave);
+			
 			int min = Math.min(pathsave2.size() - 1, tempPM);
-			if (this.attackable(pathsave2.get(pathsave2.size() - 1 - min), cellsave)) {
-				this.attack(cellsave);
-			}
+			this.attack(cellsave);
+	
 			tempPM -= distance - 1;
 			current = pathsave2.get(pathsave2.size() - 1 - min);
 		}
@@ -90,10 +96,16 @@ public class BalancedStrategy extends Strategy {
 			distance = 1000;
 			for (Cell enemie : this.enemiesInRange) {
 				pathsave1 = this.evaluatePathAttack(this.chara.getPos(), enemie);
-				if (pathsave1 != null && pathsave1.size() < distance && this.attackable(pathsave1.get(0), enemie)) {
+				int min=0;
+				
+				if(pathsave1!=null) {
+					min = Math.min(pathsave1.size() - 1, tempPM);
+				}
+
+				if (pathsave1 != null && min < distance && this.attackable(pathsave1.get(pathsave1.size() - 1 - min), enemie)) {
 					cellsave = enemie;
 					pathsave2 = pathsave1;
-					distance = pathsave2.size();
+					distance =min;
 					play = true;
 				}
 			}
@@ -105,9 +117,7 @@ public class BalancedStrategy extends Strategy {
 				this.applyPath(pathsave2, tempPM);
 //				System.out.println("on attaque" + cellsave);
 				int min = Math.min(pathsave2.size() - 1, tempPM);
-				if (this.attackable(pathsave2.get(pathsave2.size() - 1 - min), cellsave)) {
-					this.attack(cellsave);
-				}
+				this.attack(cellsave);
 				tempPM -= distance - 1;
 				current = pathsave2.get(pathsave2.size() - 1 - min);
 			}

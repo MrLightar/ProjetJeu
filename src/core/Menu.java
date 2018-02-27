@@ -1,24 +1,20 @@
 package core;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import map.Grid;
 import strategy.Strategy;
 import core.Main;
 
@@ -28,7 +24,7 @@ public class Menu extends BasicGameState {
 	private GameContainer gc;
 	
 	
-	private int selectedButton;
+	public static int selectedButton;
 	private boolean inGame;
 	
 	private Image mainTitle;
@@ -50,6 +46,13 @@ public class Menu extends BasicGameState {
 	
 	public Menu(int state) {
 		
+	}
+	
+	
+	public void setSelectedButton(int i) {
+		if(i==resume || i==exit || i==newGame) {
+			selectedButton=i;
+		}
 	}
 	
 	
@@ -88,8 +91,9 @@ public class Menu extends BasicGameState {
 
 		this.animationMenu = loadAnimation(spriteSheetMenu, 0, 8, 0, 100);
 		
-		Music background = new Music("res/MainMenu.ogg");
-		background.loop();
+//		Music background = new Music("res/MainMenu.ogg");
+//		background.loop();
+
 		
 		
 		selectedButton = newGame;
@@ -99,6 +103,7 @@ public class Menu extends BasicGameState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		
 		
 		animationMenu.draw(0, 0);
 		
@@ -111,6 +116,7 @@ public class Menu extends BasicGameState {
 		g.drawImage(newGameButton, widthButton *1, heightButton *4);
 		g.drawImage(exitButton, widthButton *1, heightButton *6);
 		g.drawImage(menuCursor, widthButton *1, (selectedButton*2 + 2) * heightButton);
+		
 		
 	}
 
@@ -200,4 +206,43 @@ public class Menu extends BasicGameState {
 		}
 	}
 	
+	public void mouseMoved(int oldx, int oldy,int x, int y) {
+
+		if(x>widthButton && x<2*widthButton && y>4*heightButton && y<5*heightButton) {
+				selectedButton=newGame;
+		}
+		
+		if(x>widthButton && x<2*widthButton && y>6*heightButton && y<7*heightButton) {
+			selectedButton=exit;
+		}
+		
+		if(inGame) {
+			if(x>widthButton && x<2*widthButton && y>2*heightButton && y<3*heightButton) {
+				selectedButton=resume;
+			}
+		}
+	}
+	
+	public void mouseClicked(int button, int x, int y,int clickcount) {
+		if(clickcount<=1) {
+			if(x>widthButton && x<2*widthButton && y>4*heightButton && y<5*heightButton) {
+					selectedButton=newGame;
+					startGame(sbg, gc);
+			}
+			
+			if(x>widthButton && x<2*widthButton && y>6*heightButton && y<7*heightButton) {
+				selectedButton=exit;
+				System.exit(0);
+			}
+			
+			if(inGame) {
+				if(x>widthButton && x<2*widthButton && y>2*heightButton && y<3*heightButton) {
+					selectedButton=resume;
+					sbg.enterState(Main.play);
+				}
+			}
+		}
+
+	}
+
 }

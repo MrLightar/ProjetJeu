@@ -16,10 +16,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.Music;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.particles.ConfigurableEmitter.RandomValue;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -28,8 +26,8 @@ import entity.Character;
 import entity.Cursor;
 import entity.Mage;
 import entity.Warrior;
+import map.Cell;
 import map.Grid;
-import selectScreen.SelectGrid;
 import strategy.*;
 
 public class Play extends BasicGameState {
@@ -43,9 +41,8 @@ public class Play extends BasicGameState {
 
 	private static ArrayList<Character> chara;
 	private static ArrayList<Character> enemyTeam;
+	private static ArrayList<Character> allTeams;
 	
-	private int indexAlly;
-	private int indexEnemy;
 	private int indexTeam;
 	
 	private static int mapLevel;
@@ -102,9 +99,10 @@ public class Play extends BasicGameState {
 	    baos = new ByteArrayOutputStream();
 	    PrintStream ps = new PrintStream(baos);
 	    // IMPORTANT: Save the old System.out!
-	    PrintStream old = System.out;
+//	    PrintStream old = System.out;
 	    // Tell Java to use your special stream
 	    System.setOut(ps);
+		
 	    // Put things back
 //	    System.out.flush();
 //	    System.setOut(old);
@@ -150,13 +148,13 @@ public class Play extends BasicGameState {
 		this.sbg = sbg;
 		this.gc = gc;
 		
+		
 		timerLevelStart = 100;
 		
 		chara = new ArrayList<>();
 		enemyTeam = new ArrayList<>();
+		allTeams=new ArrayList<>();
 		
-		indexAlly = 0;
-		indexEnemy = 0;
 		indexTeam = 0;
 		
 		//initialisation grille
@@ -206,6 +204,25 @@ public class Play extends BasicGameState {
 		
 		selectedStrat = offensive;
 		state = placement;
+		
+		Cell focusCell=null;
+		if(gc.getInput().getAbsoluteMouseY()< (Play.gameGrid.getRows() - 1)*Grid.cellSize && gc.getInput().getAbsoluteMouseX()< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
+			focusCell=gameGrid.getCellContaining(gc.getInput().getAbsoluteMouseX(), gc.getInput().getAbsoluteMouseY());
+		}
+	
+		if (focusCell!=null) {
+			Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+			
+		}
+		
+		for(int i=0; i<Math.max(enemyTeam.size()-1, chara.size()-1);i++) {
+			if(i<chara.size()) {
+				allTeams.add(chara.get(i));
+			}
+			if(i<enemyTeam.size()) {
+				allTeams.add(enemyTeam.get(i));
+			}
+		}
 		
 		System.out.println("\n");
 		System.out.println("\n");
@@ -319,6 +336,7 @@ public class Play extends BasicGameState {
 		}
 		
 		if(timerLevelStart>0) {
+			baos.reset();	//on enlève les message d'erreur pendant l'écran noir	
 			g.setColor(Color.black);
 			g.fillRect(0, 0, Main.height, Main.height);
 			g.setColor(Color.white);
@@ -354,26 +372,12 @@ public class Play extends BasicGameState {
 		if (!Strategy.isPlaying()) {
 			switch(checkLevelEnd()) {
 			case 0 :
-				switch(indexTeam%2) {
-				case 0 :
-					if(chara.get(indexAlly).isAlive()) {
-						strat = chara.get(indexAlly).getStrategy();
-						strat.gameTurn();
-						indexTeam++;
-					}
-					indexAlly = (indexAlly+1)%chara.size();
-					//this.strat.update();
-					break;
-				case 1 :
-					if(enemyTeam.get(indexEnemy).isAlive()) {
-						strat = enemyTeam.get(indexEnemy).getStrategy();
-						strat.gameTurn();
-						indexTeam++;
-					}
-					indexEnemy = (indexEnemy+1)%enemyTeam.size();
-					//this.strat.update();
-					break;
+
+				if(allTeams.get(indexTeam).isAlive()) {
+					strat = allTeams.get(indexTeam).getStrategy();
+					strat.gameTurn();
 				}
+				indexTeam = (indexTeam+1)%allTeams.size();
 				
 				break;
 			case 1 : 
@@ -763,6 +767,14 @@ public class Play extends BasicGameState {
 					System.out.println("Aucune unitee sur la carte !");
 				} else {
 					state = playing;
+					for(int i=Math.max(enemyTeam.size()-1, chara.size()-1); i>=0;i--) {
+						if(i<chara.size()) {
+							allTeams.add(0,chara.get(i));
+						}
+						if(i<enemyTeam.size()) {
+							allTeams.add(0,enemyTeam.get(i));
+						}
+					}
 				}				
 				break;
 				
@@ -885,13 +897,121 @@ public class Play extends BasicGameState {
 						break;
 				}
 				break;
-		case Input.KEY_F12:
-			state = win;
-			
-			break;
+				
+			case Input.KEY_F9:
+				baos.reset();			
+				break;
+			case Input.KEY_F10:
+
+				try {
+					gc.setFullscreen(!gc.isFullscreen());
+				} catch (SlickException e) {                                    
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				break;
+				
+			case Input.KEY_F11:
+				nextLevel(sbg, gc);				
+				break;		
+			case Input.KEY_F12:
+				state = win;			
+				break;
 		}
 		
 	}
 	
+	public void mouseMoved(int oldx, int oldy,int x, int y) {
 
+		if(timerLevelStart<=0) {
+			Cell focusCell=null;
+			if(y< (Play.gameGrid.getRows())*Grid.cellSize && x< (Play.gameGrid.getCols())*Grid.cellSize) {
+				focusCell=gameGrid.getCellContaining(x, y);
+			}
+			
+			switch(state) {
+			case placement:
+				if (focusCell!=null) {
+					Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+					
+				}
+				break;
+				
+			case stratSelect:
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*5)/16 && y<(Main.height*5)/16+heightButton) {
+					selectedStrat = offensive;
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*6)/16 && y<(Main.height*6)/16+heightButton) {
+					selectedStrat = balanced;
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*7)/16 && y<(Main.height*7)/16+heightButton) {
+					selectedStrat = defensive;
+				}
+				break;
+		
+
+		}
+		}
+
+	}
+	
+	public void mouseClicked(int button, int x, int y,int clickcount) {
+		
+		if(timerLevelStart<=0) {
+
+			Cell focusCell=null;
+			if(y< (Play.gameGrid.getRows())*Grid.cellSize && x< (Play.gameGrid.getCols())*Grid.cellSize) {
+				focusCell=gameGrid.getCellContaining(x, y);
+			}
+			
+			switch(state) {
+			case placement:
+				if (focusCell!=null) {
+					Play.cursor.setPosFromIndex(focusCell.getI(), focusCell.getJ());
+					if(cursor.isSelected()) {
+						if(cursor.getSelection().getTeam()==Character.ally) {
+							cursor.selectMove();
+						}
+					}
+					else if(cursor.hasCharacter()) {
+						if (cursor.isPlacable()) {
+							state = stratSelect;
+						}
+					}
+					else if(cursor.onCharacter()){
+						cursor.select();
+					}
+					else {
+						sbg.enterState(Main.selectCharaScreen);
+					}
+				}
+				
+				
+				break;
+
+			case stratSelect:
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*5)/16 && y<(Main.height*5)/16+heightButton) {
+					selectedStrat = offensive;
+					cursor.getSelection().setStrategie(new OffensiveStrategy(cursor.getSelection()));
+					cursor.placeCharacter();
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*6)/16 && y<(Main.height*6)/16+heightButton) {
+					selectedStrat = balanced;
+					cursor.getSelection().setStrategie(new BalancedStrategy(cursor.getSelection()));
+					cursor.placeCharacter();
+				}
+				if (x>Main.width*14/24 && x<(Main.width*14/24)+widthButton && y>(Main.height*7)/16 && y<(Main.height*7)/16+heightButton) {
+					selectedStrat = defensive;
+					cursor.getSelection().setStrategie(new DefensiveStrategy(cursor.getSelection()));
+					cursor.placeCharacter();
+				}
+				selectedStrat = offensive;
+				state = placement;
+				break;
+		
+			}
+		}
+		}
+		
 }

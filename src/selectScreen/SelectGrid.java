@@ -8,11 +8,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.TrueTypeFont;
 
@@ -45,6 +45,21 @@ public class SelectGrid {
 
 	}
 	
+	public SelectCell getCellContaining(int i, int j) {
+		ArrayList<SelectCell> search=new ArrayList<>();
+		search=getCell(j/cellSizeY,i/cellSizeX).getAllNeighbors(this);
+		search.add(getCell(j/cellSizeY,i/cellSizeX));
+		SelectCell res=null;
+		int k=0;
+		while(search!=null && k<search.size()){
+			if(search.get(k).Contains(i, j)) {
+				res=search.get(k);
+			}
+			
+			k++;
+		}
+		return res;
+	}
 	
 	public int getRows() {
 		return this.rows;
