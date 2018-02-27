@@ -99,7 +99,6 @@ public class SelectCharaScreen extends BasicGameState {
 						Cell focusCell=null;
 						if(gc.getInput().getAbsoluteMouseY()< (Play.gameGrid.getRows() - 1)*Grid.cellSize && gc.getInput().getAbsoluteMouseX()< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
 							focusCell=Play.gameGrid.getCellContaining(gc.getInput().getAbsoluteMouseX(), gc.getInput().getAbsoluteMouseY());
-							System.out.println("yes");
 						}
 					
 						if (focusCell!=null) {
@@ -156,7 +155,6 @@ public class SelectCharaScreen extends BasicGameState {
 			Cell focusCellPlay=null;
 			if(gc.getInput().getAbsoluteMouseY()< (Play.gameGrid.getRows() - 1)*Grid.cellSize && gc.getInput().getAbsoluteMouseX()< (Play.gameGrid.getCols() - 1)*Grid.cellSize) {
 				focusCellPlay=Play.gameGrid.getCellContaining(gc.getInput().getAbsoluteMouseX(), gc.getInput().getAbsoluteMouseY());
-				System.out.println("yes");
 			}
 		
 			if (focusCellPlay!=null) {
